@@ -2,21 +2,21 @@
 import { useWindowScroll } from "@vueuse/core";
 import { computed, onMounted, ref } from "vue";
 import { useData } from "vitepress";
-import { useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
-import VPLocalNavOutlineDropdown from "vitepress/dist/client/theme-default/components/VPLocalNavOutlineDropdown.vue";
+import { useSidebar } from "../support/vitepress-default-theme";
+import DocsLocalOutlineDropdown from "../components/DocsLocalOutlineDropdown.vue";
 
-defineProps<{
+const props = defineProps<{
   open: boolean;
+  screenOpen: boolean;
 }>();
 
 defineEmits<{
   (e: "open-menu"): void;
 }>();
 
-const { theme, frontmatter, page } = useData();
+const { page, theme, frontmatter } = useData();
 const { hasSidebar } = useSidebar();
 const { y } = useWindowScroll();
-
 const navHeight = ref(0);
 const headers = computed(() => page.value.headers ?? []);
 
@@ -29,20 +29,23 @@ onMounted(() => {
 
 const empty = computed(() => headers.value.length === 0);
 const emptyAndNoSidebar = computed(() => empty.value && !hasSidebar.value);
+const shouldRender = computed(
+  () =>
+    frontmatter.value.layout !== "home" &&
+    (!emptyAndNoSidebar.value || y.value >= navHeight.value)
+);
 
 const classes = computed(() => ({
   VPLocalNav: true,
   "has-sidebar": hasSidebar.value,
   empty: empty.value,
-  fixed: emptyAndNoSidebar.value
+  fixed: emptyAndNoSidebar.value,
+  "screen-open": props.screenOpen
 }));
 </script>
 
 <template>
-  <div
-    v-if="frontmatter.layout !== 'home' && (!emptyAndNoSidebar || y >= navHeight)"
-    :class="classes"
-  >
+  <div v-if="shouldRender" :class="classes">
     <div class="container">
       <button
         v-if="hasSidebar"
@@ -57,7 +60,7 @@ const classes = computed(() => ({
         </span>
       </button>
 
-      <VPLocalNavOutlineDropdown :headers="headers" :nav-height="navHeight" />
+      <DocsLocalOutlineDropdown :headers="headers" />
     </div>
   </div>
 </template>

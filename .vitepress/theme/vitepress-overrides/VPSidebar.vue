@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useScrollLock } from "@vueuse/core";
 import { inBrowser, useData } from "vitepress";
-import { ref, watch } from "vue";
-import { useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
-import VPSidebarGroup from "vitepress/dist/client/theme-default/components/VPSidebarGroup.vue";
+import { nextTick, ref, watch } from "vue";
 import { resolveDocsA11yLabel } from "../support/a11y-labels";
+import { useSidebar } from "../support/vitepress-default-theme";
+import DocsSidebarItems from "../components/DocsSidebarItems.vue";
 
 const { sidebarGroups, hasSidebar } = useSidebar();
 const { theme } = useData();
@@ -16,28 +16,42 @@ const props = defineProps<{
 const navEl = ref<HTMLElement | null>(null);
 const isLocked = useScrollLock(inBrowser ? document.body : null);
 
+function focusSidebarNav() {
+  const nav = navEl.value;
+
+  if (!(nav instanceof HTMLElement)) {
+    return;
+  }
+
+  const firstInteractiveElement = nav.querySelector<HTMLElement>(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+
+  (firstInteractiveElement ?? nav).focus();
+}
+
 watch(
   [props, navEl],
-  () => {
+  async () => {
     if (props.open) {
       isLocked.value = true;
-      navEl.value?.focus();
+      await nextTick();
+      focusSidebarNav();
     } else {
       isLocked.value = false;
+
+      if (
+        typeof document !== "undefined" &&
+        document.activeElement instanceof HTMLElement &&
+        navEl.value?.contains(document.activeElement)
+      ) {
+        document.querySelector<HTMLElement>('.VPLocalNav .menu[aria-controls="VPSidebarNav"]')?.focus();
+      }
     }
   },
   { immediate: true, flush: "post" }
 );
 
-const key = ref(0);
-
-watch(
-  sidebarGroups,
-  () => {
-    key.value += 1;
-  },
-  { deep: true }
-);
 </script>
 
 <template>
@@ -45,12 +59,12 @@ watch(
     v-if="hasSidebar"
     class="VPSidebar"
     :class="{ open }"
-    ref="navEl"
     @click.stop
   >
     <div class="curtain" />
 
     <nav
+      ref="navEl"
       class="nav"
       id="VPSidebarNav"
       aria-labelledby="sidebar-aria-label"
@@ -61,7 +75,7 @@ watch(
       </span>
 
       <slot name="sidebar-nav-before" />
-      <VPSidebarGroup :items="sidebarGroups" :key="key" />
+      <DocsSidebarItems :items="sidebarGroups" />
       <slot name="sidebar-nav-after" />
     </nav>
   </aside>
@@ -79,6 +93,7 @@ watch(
   max-width: 320px;
   background-color: var(--vp-sidebar-bg-color);
   opacity: 0;
+  visibility: hidden;
   box-shadow: var(--vp-c-shadow-3);
   overflow-x: hidden;
   overflow-y: auto;
@@ -94,10 +109,6 @@ watch(
   transition:
     opacity 0.25s,
     transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.dark .VPSidebar {
-  box-shadow: var(--vp-shadow-1);
 }
 
 @media (min-width: 960px) {
@@ -136,5 +147,11 @@ watch(
 
 .nav {
   outline: 0;
+}
+
+@media (min-width: 960px) {
+  .nav {
+    padding-top: 14px;
+  }
 }
 </style>

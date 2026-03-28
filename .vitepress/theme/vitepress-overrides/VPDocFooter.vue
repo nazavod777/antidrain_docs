@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useData } from "vitepress";
-import { useEditLink } from "vitepress/dist/client/theme-default/composables/edit-link.js";
-import { usePrevNext } from "vitepress/dist/client/theme-default/composables/prev-next.js";
-import VPDocFooterLastUpdated from "vitepress/dist/client/theme-default/components/VPDocFooterLastUpdated.vue";
-import VPLink from "vitepress/dist/client/theme-default/components/VPLink.vue";
 import { resolveDocsA11yLabel } from "../support/a11y-labels";
+import DocsLastUpdated from "../components/DocsLastUpdated.vue";
+import {
+  VPLink,
+  useEditLink,
+  usePrevNext
+} from "../support/vitepress-default-theme";
 
 const { theme, page, frontmatter } = useData();
 
@@ -38,7 +40,7 @@ const showFooter = computed(
       </div>
 
       <div v-if="hasLastUpdated" class="last-updated">
-        <VPDocFooterLastUpdated />
+        <DocsLastUpdated />
       </div>
     </div>
 

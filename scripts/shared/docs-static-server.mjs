@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
+import {
+  getCleanDocsPath,
+  getRedirectTargetPathname,
+  normalizeDocsPathname
+} from "../../shared/docs-site-policy.mjs";
 
 function getContentType(filePath) {
   const extension = path.extname(filePath).toLowerCase();
@@ -29,68 +34,66 @@ function getContentType(filePath) {
   }
 }
 
-export function getCleanDocsPath(pathname) {
-  const normalizedPath = pathname.replace(/\/+$/u, "") || "/";
-
-  if (/^\/index\.(?:html?|md)$/iu.test(normalizedPath)) {
-    return "/";
-  }
-
-  const nestedIndexMatch = normalizedPath.match(/^\/(.+)\/index\.(?:html?|md)$/iu);
-
-  if (nestedIndexMatch) {
-    return `/${nestedIndexMatch[1].replace(/\/+$/u, "")}`;
-  }
-
-  const directExtensionMatch = normalizedPath.match(/^(.*)\.(?:html?|md)$/iu);
-
-  if (!directExtensionMatch) {
-    return null;
-  }
-
-  return directExtensionMatch[1] || "/";
+function isInsideRoot(rootDir, candidatePath) {
+  const relativePath = path.relative(rootDir, candidatePath);
+  return (
+    relativePath === "" ||
+    (
+      relativePath !== ".." &&
+      !relativePath.startsWith(`..${path.sep}`) &&
+      !path.isAbsolute(relativePath)
+    )
+  );
 }
 
-function getRedirectTargetPathname(pathname) {
-  const normalizedPath = pathname.replace(/\/+$/u, "") || "/";
-
-  if (normalizedPath === "/") {
-    return "/getting-started";
+function isExistingFile(filePath) {
+  try {
+    return fs.statSync(filePath).isFile();
+  } catch {
+    return false;
   }
-
-  if (normalizedPath === "/ru") {
-    return "/ru/getting-started";
-  }
-
-  return null;
 }
 
 function resolveRequestPath(rootDir, pathname) {
   if (pathname === "/") {
-    return path.join(rootDir, "index.html");
+    const rootIndexPath = path.resolve(rootDir, "index.html");
+    return isExistingFile(rootIndexPath) ? rootIndexPath : null;
   }
 
-  const directPath = path.join(rootDir, pathname.replace(/^\/+/, ""));
+  const safePathname = normalizeDocsPathname(pathname).replace(/^\/+/, "");
+  const directPath = path.resolve(rootDir, safePathname);
 
-  if (fs.existsSync(directPath) && fs.statSync(directPath).isFile()) {
+  if (!isInsideRoot(rootDir, directPath)) {
+    return null;
+  }
+
+  if (isExistingFile(directPath)) {
     return directPath;
   }
 
   if (!path.extname(directPath)) {
-    const htmlPath = `${directPath}.html`;
+    const htmlPath = path.resolve(rootDir, `${safePathname}.html`);
 
-    if (fs.existsSync(htmlPath) && fs.statSync(htmlPath).isFile()) {
+    if (isInsideRoot(rootDir, htmlPath) && isExistingFile(htmlPath)) {
       return htmlPath;
     }
 
-    const nestedIndexPath = path.join(directPath, "index.html");
+    const nestedIndexPath = path.resolve(rootDir, safePathname, "index.html");
 
-    if (fs.existsSync(nestedIndexPath) && fs.statSync(nestedIndexPath).isFile()) {
+    if (
+      isInsideRoot(rootDir, nestedIndexPath) &&
+      isExistingFile(nestedIndexPath)
+    ) {
       return nestedIndexPath;
     }
   }
 
   return null;
+}
+
+function resolveNotFoundPage(rootDir) {
+  const notFoundPath = path.resolve(rootDir, "404.html");
+  return isExistingFile(notFoundPath) ? notFoundPath : null;
 }
 
 export async function startDocsStaticServer({
@@ -100,7 +103,8 @@ export async function startDocsStaticServer({
 }) {
   const server = http.createServer((request, response) => {
     const requestUrl = new URL(request.url || "/", `http://${host}`);
-    const redirectTarget = getRedirectTargetPathname(requestUrl.pathname);
+    const normalizedPath = normalizeDocsPathname(requestUrl.pathname);
+    const redirectTarget = getRedirectTargetPathname(normalizedPath);
 
     if (redirectTarget) {
       response.writeHead(308, {
@@ -111,9 +115,9 @@ export async function startDocsStaticServer({
       return;
     }
 
-    const cleanPath = getCleanDocsPath(requestUrl.pathname);
+    const cleanPath = getCleanDocsPath(normalizedPath);
 
-    if (cleanPath && cleanPath !== requestUrl.pathname) {
+    if (cleanPath && cleanPath !== normalizedPath) {
       response.writeHead(308, {
         location: `${cleanPath}${requestUrl.search}`,
         "cache-control": "no-store"
@@ -122,11 +126,41 @@ export async function startDocsStaticServer({
       return;
     }
 
-    const filePath = resolveRequestPath(rootDir, requestUrl.pathname);
+    const filePath = resolveRequestPath(rootDir, normalizedPath);
 
     if (!filePath) {
-      response.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-      response.end("Not found");
+      const notFoundFilePath = resolveNotFoundPage(rootDir);
+
+      if (!notFoundFilePath) {
+        response.writeHead(404, {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        });
+        response.end("Not found");
+        return;
+      }
+
+      response.writeHead(404, {
+        "content-type": getContentType(notFoundFilePath),
+        "cache-control": "no-store"
+      });
+
+      const notFoundStream = fs.createReadStream(notFoundFilePath);
+
+      notFoundStream.on("error", () => {
+        if (!response.headersSent) {
+          response.writeHead(500, {
+            "content-type": "text/plain; charset=utf-8",
+            "cache-control": "no-store"
+          });
+          response.end("Internal error");
+          return;
+        }
+
+        response.destroy();
+      });
+
+      notFoundStream.pipe(response);
       return;
     }
 
@@ -134,7 +168,23 @@ export async function startDocsStaticServer({
       "content-type": getContentType(filePath),
       "cache-control": "no-store"
     });
-    fs.createReadStream(filePath).pipe(response);
+
+    const fileStream = fs.createReadStream(filePath);
+
+    fileStream.on("error", () => {
+      if (!response.headersSent) {
+        response.writeHead(500, {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        });
+        response.end("Internal error");
+        return;
+      }
+
+      response.destroy();
+    });
+
+    fileStream.pipe(response);
   });
 
   await new Promise((resolve, reject) => {

@@ -1,7 +1,27 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+.vitepress/dist/
+
+# VitePress / Vite caches
 .vitepress/cache/
+.vitepress/.cache/
 .vitepress/temp/
+.vitepress/.temp/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS noise
 .DS_Store
 Thumbs.db
-*.log
+.vscode/
+.idea/
+*.swp
+.claude

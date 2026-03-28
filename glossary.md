@@ -42,6 +42,7 @@ Available route families:
 - `Pool Withdrawal [BETA]`
 
 ## Partner link
+<!-- aliases: affiliate link | referral link | partner links -->
 
 A normal AntiDrain link that carries the reward address of the person who shared it.
 
@@ -93,6 +94,7 @@ Examples:
 - MEV-protected RPC
 
 ## Block explorer
+<!-- aliases: block explorers -->
 
 A read-only site that shows on-chain data.
 
@@ -104,6 +106,7 @@ You use it to verify things like:
 - whether a transaction is still pending or already confirmed
 
 ## MEV-protected or private RPC
+<!-- aliases: MEV-protected RPC | private RPC | private or MEV-protected RPC -->
 
 An RPC path designed to reduce public mempool exposure or route the transaction more privately.
 
@@ -246,6 +249,7 @@ The exported donor wallet Backup JSON file.
 This is your durable fallback if the tab closes, crashes, or loses session state.
 
 ## Beta route
+<!-- aliases: beta-route -->
 
 A shortcut route that can still be useful, but should be treated more cautiously.
 
@@ -267,6 +271,7 @@ The interface description used to encode or decode contract methods and argument
 AntiDrain includes an ABI Encoder to help with this.
 
 ## Good beginner rule
+<!-- aliases: beginner rule -->
 
 If you do not understand a term, do not guess.
 

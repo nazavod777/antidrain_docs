@@ -10,9 +10,10 @@ const logoSrc = withBase("/antidrain-mark.png");
       class="docs-brand-mark-image"
       :src="logoSrc"
       alt=""
+      width="18"
+      height="20"
       draggable="false"
       decoding="async"
-      aria-hidden="true"
     />
   </span>
 </template>

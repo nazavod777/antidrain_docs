@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useRoute, useData } from "vitepress";
 import { computed } from "vue";
-import { useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
-import VPDocAside from "vitepress/dist/client/theme-default/components/VPDocAside.vue";
+import { VPDocAside, useSidebar } from "../support/vitepress-default-theme";
 import VPDocFooter from "../vitepress-overrides/VPDocFooter.vue";
 
 const { theme } = useData();

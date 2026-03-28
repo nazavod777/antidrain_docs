@@ -11,7 +11,6 @@ const props = defineProps<{
   headers: OutlineItem[];
   activeHash: string | null;
   root?: boolean;
-  onActivate?: (hash: string) => void;
 }>();
 
 function onClick(event: MouseEvent, link: string) {
@@ -19,8 +18,6 @@ function onClick(event: MouseEvent, link: string) {
   if (!element?.href) {
     return;
   }
-
-  props.onActivate?.(link);
 
   const rawFragment = element.hash.startsWith("#") ? element.hash.slice(1) : "";
   const heading = document.getElementById(safeDecodeHashFragment(rawFragment));
@@ -45,7 +42,6 @@ function onClick(event: MouseEvent, link: string) {
         <CustomDocOutlineItem
           :headers="children"
           :active-hash="activeHash"
-          :on-activate="onActivate"
         />
       </template>
     </li>

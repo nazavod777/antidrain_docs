@@ -38,6 +38,7 @@ const { theme } = useData();
   align-items: center;
   width: 48px;
   height: var(--vp-nav-height);
+  pointer-events: auto;
 }
 
 @media (min-width: 1180px) {

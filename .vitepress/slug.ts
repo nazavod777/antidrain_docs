@@ -52,6 +52,12 @@ export function slugifyHeading(value: string) {
   );
 }
 
+/**
+ * Legacy slug format used by pre-migration docs URLs.
+ *
+ * `use-docs-runtime-effects.ts` uses this helper to translate old deep links whose
+ * hash fragments were generated before the ASCII-only slug policy was introduced.
+ */
 export function legacySlugifyHeading(value: string) {
   return (
     value

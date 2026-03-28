@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { useData } from "vitepress";
-import VPNavBarMenuGroup from "vitepress/dist/client/theme-default/components/VPNavBarMenuGroup.vue";
-import VPNavBarMenuLink from "vitepress/dist/client/theme-default/components/VPNavBarMenuLink.vue";
 import { resolveDocsA11yLabel } from "../support/a11y-labels";
+import {
+  VPNavBarMenuGroup,
+  VPNavBarMenuLink
+} from "../support/vitepress-default-theme";
 
 const { theme } = useData();
 </script>
@@ -16,7 +18,10 @@ const { theme } = useData();
     <span id="main-nav-aria-label" class="visually-hidden">
       {{ resolveDocsA11yLabel(theme, "mainNavigation") }}
     </span>
-    <template v-for="item in theme.nav" :key="JSON.stringify(item)">
+    <template
+      v-for="(item, index) in theme.nav"
+      :key="'link' in item ? item.link : 'text' in item ? item.text : String(index)"
+    >
       <VPNavBarMenuLink v-if="'link' in item" :item="item" />
       <component
         v-else-if="'component' in item"

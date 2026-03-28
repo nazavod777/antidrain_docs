@@ -1,42 +1,63 @@
 <script setup lang="ts">
-import { inBrowser, useData } from "vitepress";
-import { computed, onUnmounted, provide, watchEffect } from "vue";
-import { useNav } from "vitepress/dist/client/theme-default/composables/nav.js";
+import { useData } from "vitepress";
+import { computed, nextTick, watch } from "vue";
 import VPNavBar from "./VPNavBar.vue";
-import VPNavScreen from "vitepress/dist/client/theme-default/components/VPNavScreen.vue";
+import { VPNavScreen } from "../support/vitepress-default-theme";
 
-const { isScreenOpen, closeScreen, toggleScreen } = useNav();
+const props = defineProps<{
+  isScreenOpen: boolean;
+  usesScreenMenu: boolean;
+}>();
+
+defineEmits<{
+  (e: "toggle-screen"): void;
+}>();
+
 const { frontmatter } = useData();
 
 const hasNavbar = computed(() => {
   return frontmatter.value.navbar !== false;
 });
 
-provide("close-screen", closeScreen);
+watch(
+  () => props.isScreenOpen,
+  async (isOpen) => {
+    if (!hasNavbar.value || typeof document === "undefined") {
+      return;
+    }
 
-watchEffect(() => {
-  if (inBrowser) {
-    document.documentElement.classList.toggle("hide-nav", !hasNavbar.value);
-    document.documentElement.classList.toggle("docs-screen-open", hasNavbar.value && isScreenOpen.value);
-  }
-});
+    await nextTick();
 
-onUnmounted(() => {
-  if (inBrowser) {
-    document.documentElement.classList.remove("docs-screen-open");
-  }
-});
+    if (isOpen) {
+      const navScreen = document.getElementById("VPNavScreen");
+      const firstInteractiveElement = navScreen?.querySelector<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      firstInteractiveElement?.focus();
+      return;
+    }
+
+    if (document.activeElement instanceof HTMLElement) {
+      const navScreen = document.getElementById("VPNavScreen");
+
+      if (navScreen?.contains(document.activeElement)) {
+        document.querySelector<HTMLElement>(".VPNavBarHamburger")?.focus();
+      }
+    }
+  },
+  { flush: "post" }
+);
 </script>
 
 <template>
   <header v-if="hasNavbar" class="VPNav">
-    <VPNavBar :is-screen-open="isScreenOpen" @toggle-screen="toggleScreen">
+    <VPNavBar :is-screen-open="props.isScreenOpen" @toggle-screen="$emit('toggle-screen')">
       <template #nav-bar-title-before><slot name="nav-bar-title-before" /></template>
       <template #nav-bar-title-after><slot name="nav-bar-title-after" /></template>
       <template #nav-bar-content-before><slot name="nav-bar-content-before" /></template>
       <template #nav-bar-content-after><slot name="nav-bar-content-after" /></template>
     </VPNavBar>
-    <VPNavScreen :open="isScreenOpen">
+    <VPNavScreen v-if="props.usesScreenMenu || props.isScreenOpen" :open="props.isScreenOpen">
       <template #nav-screen-content-before><slot name="nav-screen-content-before" /></template>
       <template #nav-screen-content-after><slot name="nav-screen-content-after" /></template>
     </VPNavScreen>
@@ -50,7 +71,6 @@ onUnmounted(() => {
   left: 0;
   z-index: var(--vp-z-index-nav);
   width: 100%;
-  pointer-events: none;
   transition: background-color 0.5s;
 }
 

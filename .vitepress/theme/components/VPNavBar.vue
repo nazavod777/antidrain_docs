@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { useWindowScroll } from "@vueuse/core";
-import { ref, watchPostEffect } from "vue";
+import { computed } from "vue";
 import { useData } from "vitepress";
-import { useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
-import VPNavBarAppearance from "vitepress/dist/client/theme-default/components/VPNavBarAppearance.vue";
-import VPNavBarSearch from "vitepress/dist/client/theme-default/components/VPNavBarSearch.vue";
-import VPNavBarSocialLinks from "vitepress/dist/client/theme-default/components/VPNavBarSocialLinks.vue";
-import VPNavBarTitle from "vitepress/dist/client/theme-default/components/VPNavBarTitle.vue";
-import VPNavBarTranslations from "vitepress/dist/client/theme-default/components/VPNavBarTranslations.vue";
-import VPNavBarExtra from "../vitepress-overrides/VPNavBarExtra.vue";
+import { useSidebar } from "../support/vitepress-default-theme";
 import VPNavBarHamburger from "../vitepress-overrides/VPNavBarHamburger.vue";
 import VPNavBarMenu from "../vitepress-overrides/VPNavBarMenu.vue";
+import {
+  VPNavBarSearch,
+  VPNavBarTitle,
+  VPNavBarTranslations
+} from "../support/vitepress-default-theme";
 
 const props = defineProps<{
   isScreenOpen: boolean;
@@ -24,16 +23,12 @@ const { y } = useWindowScroll();
 const { hasSidebar } = useSidebar();
 const { frontmatter } = useData();
 
-const classes = ref<Record<string, boolean>>({});
-
-watchPostEffect(() => {
-  classes.value = {
-    "has-sidebar": hasSidebar.value,
-    home: frontmatter.value.layout === "home",
-    top: y.value === 0,
-    "screen-open": props.isScreenOpen
-  };
-});
+const classes = computed(() => ({
+  "has-sidebar": hasSidebar.value,
+  home: frontmatter.value.layout === "home",
+  top: y.value === 0,
+  "screen-open": props.isScreenOpen
+}));
 </script>
 
 <template>
@@ -53,22 +48,11 @@ watchPostEffect(() => {
             <VPNavBarSearch class="search" />
             <VPNavBarMenu class="menu" />
             <VPNavBarTranslations class="translations" />
-            <VPNavBarAppearance class="appearance" />
-            <VPNavBarSocialLinks class="social-links" />
-            <VPNavBarExtra class="extra" />
             <slot name="nav-bar-content-after" />
-            <VPNavBarHamburger
-              class="hamburger"
-              :active="isScreenOpen"
-              @click="$emit('toggle-screen')"
-            />
+            <VPNavBarHamburger class="hamburger" :active="props.isScreenOpen" @click="$emit('toggle-screen')" />
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="divider">
-      <div class="divider-line" />
     </div>
   </div>
 </template>
@@ -77,28 +61,27 @@ watchPostEffect(() => {
 .VPNavBar {
   position: relative;
   height: var(--vp-nav-height);
-  pointer-events: none;
   white-space: nowrap;
+  background-color: var(--docs-header-bg);
   transition: background-color 0.25s;
 }
 
 .VPNavBar.screen-open {
   transition: none;
-  background-color: var(--vp-nav-bg-color);
-  border-bottom: 1px solid var(--vp-c-divider);
+  background-color: var(--docs-header-bg);
 }
 
 .VPNavBar:not(.home) {
-  background-color: var(--vp-nav-bg-color);
+  background-color: var(--docs-header-bg);
 }
 
 @media (min-width: 960px) {
   .VPNavBar:not(.home) {
-    background-color: transparent;
+    background-color: var(--docs-header-bg);
   }
 
   .VPNavBar:not(.has-sidebar):not(.home.top) {
-    background-color: var(--vp-nav-bg-color);
+    background-color: var(--docs-header-bg);
   }
 }
 
@@ -124,16 +107,6 @@ watchPostEffect(() => {
   margin: 0 auto;
   max-width: calc(var(--vp-layout-max-width) - 64px);
   height: var(--vp-nav-height);
-  pointer-events: none;
-}
-
-.container > .title,
-.container > .content {
-  pointer-events: none;
-}
-
-.container :deep(*) {
-  pointer-events: auto;
 }
 
 @media (min-width: 960px) {
@@ -157,7 +130,7 @@ watchPostEffect(() => {
     padding: 0 32px;
     width: var(--vp-sidebar-width);
     height: var(--vp-nav-height);
-    background-color: transparent;
+    background-color: var(--docs-header-bg);
   }
 }
 
@@ -193,17 +166,18 @@ watchPostEffect(() => {
   justify-content: flex-end;
   align-items: center;
   height: var(--vp-nav-height);
+  background-color: var(--docs-header-bg);
   transition: background-color 0.5s;
 }
 
 @media (min-width: 960px) {
   .VPNavBar:not(.home.top) .content-body {
     position: relative;
-    background-color: var(--vp-nav-bg-color);
+    background-color: var(--docs-header-bg);
   }
 
   .VPNavBar:not(.has-sidebar):not(.home.top) .content-body {
-    background-color: transparent;
+    background-color: var(--docs-header-bg);
   }
 }
 
@@ -213,52 +187,12 @@ watchPostEffect(() => {
   }
 }
 
-.menu + .translations::before,
-.menu + .appearance::before,
-.menu + .social-links::before,
-.translations + .appearance::before,
-.appearance + .social-links::before {
+.menu + .translations::before {
   margin-right: 8px;
   margin-left: 8px;
   width: 1px;
   height: 24px;
   background-color: var(--vp-c-divider);
   content: "";
-}
-
-.menu + .appearance::before,
-.translations + .appearance::before {
-  margin-right: 16px;
-}
-
-.appearance + .social-links::before {
-  margin-left: 16px;
-}
-
-.social-links {
-  margin-right: -8px;
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-}
-
-@media (min-width: 960px) {
-  .VPNavBar.has-sidebar .divider {
-    padding-left: var(--vp-sidebar-width);
-  }
-}
-
-@media (min-width: 1440px) {
-  .VPNavBar.has-sidebar .divider {
-    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
-  }
-}
-
-.divider-line {
-  width: 100%;
-  height: 1px;
-  transition: background-color 0.5s;
 }
 </style>

@@ -1,22 +1,9 @@
 import { fileURLToPath } from "node:url";
+import { readServerCliOptions } from "./shared/cli-options.mjs";
 import { startDocsStaticServer } from "./shared/docs-static-server.mjs";
 
 const distDir = fileURLToPath(new URL("../.vitepress/dist/", import.meta.url));
-
-function readCliOption(name, fallbackValue) {
-  const args = process.argv.slice(2);
-  const optionIndex = args.lastIndexOf(name);
-
-  if (optionIndex === -1) {
-    return fallbackValue;
-  }
-
-  const nextValue = args[optionIndex + 1];
-  return nextValue || fallbackValue;
-}
-
-const host = readCliOption("--host", "127.0.0.1");
-const port = Number.parseInt(readCliOption("--port", "4175"), 10);
+const { host, port } = readServerCliOptions();
 
 if (!Number.isInteger(port) || port <= 0) {
   throw new Error(`Invalid docs preview port: ${port}`);

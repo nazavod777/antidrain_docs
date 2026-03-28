@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useData } from "vitepress";
-import { useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
-import NotFound from "vitepress/dist/client/theme-default/NotFound.vue";
-import VPHome from "vitepress/dist/client/theme-default/components/VPHome.vue";
-import VPPage from "vitepress/dist/client/theme-default/components/VPPage.vue";
+import { VPHome, VPPage, useSidebar } from "../support/vitepress-default-theme";
+import DocsNotFound from "./DocsNotFound.vue";
 import VPDoc from "./VPDoc.vue";
 
 const { page, frontmatter } = useData();
@@ -19,7 +17,7 @@ const { hasSidebar } = useSidebar();
       'is-home': frontmatter.layout === 'home'
     }"
   >
-    <slot name="not-found" v-if="page.isNotFound"><NotFound /></slot>
+    <slot name="not-found" v-if="page.isNotFound"><DocsNotFound /></slot>
 
     <VPPage v-else-if="frontmatter.layout === 'page'">
       <template #page-top><slot name="page-top" /></template>

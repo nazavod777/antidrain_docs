@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { useRoute } from "vitepress";
+import { useData, useRoute } from "vitepress";
 import { computed, provide, useSlots, watch } from "vue";
 import CustomDocAsideOutline from "./components/CustomDocAsideOutline.vue";
 import VPContent from "./components/VPContent.vue";
 import VPNav from "./components/VPNav.vue";
+import { useDocsRuntimeEffects } from "./runtime/use-docs-runtime-effects";
+import { useDocsNav } from "./support/docs-nav";
+import { provideOutlineState } from "./support/outline";
 import VPLocalNav from "./vitepress-overrides/VPLocalNav.vue";
 import VPSidebar from "./vitepress-overrides/VPSidebar.vue";
-import VPBackdrop from "vitepress/dist/client/theme-default/components/VPBackdrop.vue";
-import VPFooter from "vitepress/dist/client/theme-default/components/VPFooter.vue";
-import VPSkipLink from "vitepress/dist/client/theme-default/components/VPSkipLink.vue";
-import { useData } from "vitepress";
-import { useCloseSidebarOnEscape, useSidebar } from "vitepress/dist/client/theme-default/composables/sidebar.js";
+import {
+  VPBackdrop,
+  VPFooter,
+  VPSkipLink,
+  useSidebar
+} from "./support/vitepress-default-theme";
+import { onBeforeUnmount, onMounted } from "vue";
 
 const {
   isOpen: isSidebarOpen,
@@ -21,14 +26,34 @@ const {
 const route = useRoute();
 watch(() => route.path, closeSidebar);
 
-useCloseSidebarOnEscape(isSidebarOpen, closeSidebar);
-
-const { frontmatter } = useData();
+const { frontmatter, page, theme } = useData();
+const { isScreenOpen, closeScreen, toggleScreen, shouldRenderLocalNav, usesScreenMenu } = useDocsNav();
 
 const slots = useSlots();
 const heroImageSlotExists = computed(() => Boolean(slots["home-hero-image"]));
+const outlineHeaders = computed(() => page.value.headers ?? []);
+const routePath = computed(() => route.path);
+const themeValue = computed(() => theme.value as Record<string, any>);
 
 provide("hero-image-slot-exists", heroImageSlotExists);
+provide("close-screen", closeScreen);
+provideOutlineState(outlineHeaders, routePath, themeValue);
+
+useDocsRuntimeEffects();
+
+function handleEscape(event: KeyboardEvent) {
+  if (event.key === "Escape" && isSidebarOpen.value) {
+    closeSidebar();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleEscape);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleEscape);
+});
 </script>
 
 <template>
@@ -36,7 +61,11 @@ provide("hero-image-slot-exists", heroImageSlotExists);
     <slot name="layout-top" />
     <VPSkipLink />
     <VPBackdrop class="backdrop" :show="isSidebarOpen" @click="closeSidebar" />
-    <VPNav>
+    <VPNav
+      :is-screen-open="isScreenOpen"
+      :uses-screen-menu="usesScreenMenu"
+      @toggle-screen="toggleScreen"
+    >
       <template #nav-bar-title-before><slot name="nav-bar-title-before" /></template>
       <template #nav-bar-title-after><slot name="nav-bar-title-after" /></template>
       <template #nav-bar-content-before><slot name="nav-bar-content-before" /></template>
@@ -45,7 +74,12 @@ provide("hero-image-slot-exists", heroImageSlotExists);
       <template #nav-screen-content-after><slot name="nav-screen-content-after" /></template>
     </VPNav>
 
-    <VPLocalNav :open="isSidebarOpen" @open-menu="openSidebar" />
+    <VPLocalNav
+      v-if="shouldRenderLocalNav"
+      :open="isSidebarOpen"
+      :screen-open="isScreenOpen"
+      @open-menu="openSidebar"
+    />
 
     <VPSidebar :open="isSidebarOpen">
       <template #sidebar-nav-before><slot name="sidebar-nav-before" /></template>

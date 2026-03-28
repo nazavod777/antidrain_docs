@@ -2,13 +2,17 @@
   "private": true,
   "scripts": {
     "build": "vitepress build .",
-    "check": "npm run build && npm run check:build-output && npm run check:browser",
+    "check": "npm run build && npm run check:imports && npm run check:build-output && npm run check:links && npm run check:content && npm run check:browser",
     "check:browser": "node ./scripts/browser-smoke.mjs",
     "check:build-output": "node ./scripts/check-build-output.mjs",
+    "check:content": "node ./scripts/check-content-quality.mjs",
+    "check:links": "node ./scripts/check-links.mjs",
+    "check:imports": "node ./scripts/check-vitepress-imports.mjs",
     "dev": "vitepress dev .",
-    "preview": "node ./scripts/preview.mjs --host 127.0.0.1 --port 4175"
+    "preview": "node ./scripts/preview.mjs"
   },
   "devDependencies": {
-    "vitepress": "^1.6.4"
+    "playwright": "^1.55.1",
+    "vitepress": "1.6.4"
   }
 }
