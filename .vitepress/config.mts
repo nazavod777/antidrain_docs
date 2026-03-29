@@ -43,7 +43,9 @@ export default defineConfig({
   head: [
     ["meta", { name: "theme-color", content: "#0b1220" }],
     ["meta", { name: "color-scheme", content: "dark" }],
-    ["link", { rel: "icon", href: "/favicon.ico", sizes: "any" }]
+    ["link", { rel: "icon", href: "/favicon.ico", sizes: "any" }],
+    ["link", { rel: "shortcut icon", href: "/favicon.ico" }],
+    ["link", { rel: "apple-touch-icon", href: "/antidrain-mark.png" }]
   ],
   themeConfig: englishThemeConfig,
   locales: {

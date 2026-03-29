@@ -33,6 +33,9 @@ function buildRedirectFallbackHtml(pathname: keyof typeof DOCS_REDIRECT_MANIFEST
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="refresh" content="0;url=${page.targetRoute}">
     <link rel="canonical" href="${canonicalUrl}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/antidrain-mark.png">
     <style>
       :root {
         color-scheme: dark;

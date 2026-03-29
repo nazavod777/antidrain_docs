@@ -208,6 +208,21 @@
   -webkit-overflow-scrolling: touch;
 }
 
+#VPNavScreen.fade-enter-from,
+#VPNavScreen.fade-leave-to {
+  opacity: 1;
+}
+
+#VPNavScreen.fade-enter-active,
+#VPNavScreen.fade-leave-active {
+  transition: none;
+}
+
+#VPNavScreen.fade-enter-active .container,
+#VPNavScreen.fade-leave-active .container {
+  transition: transform 0.22s ease;
+}
+
 .VPNavScreenMenu.menu {
   background: transparent;
   display: grid;
