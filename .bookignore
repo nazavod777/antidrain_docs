@@ -1,0 +1,14 @@
+_book
+.bookignore
+.idea
+.playwright-mcp
+.nvmrc
+active-link-polish-mobile.png
+after-desktop.png
+after-mobile-menu.png
+after-mobile-top.png
+after-mobile.png
+before-desktop.png
+beginner-guide-*.png
+beginner-guide-snapshot.md
+page-toc-*.png

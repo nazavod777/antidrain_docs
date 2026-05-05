@@ -1,0 +1,15 @@
+{
+  "title": "AntiDrain Docs",
+  "theme": "default",
+  "plugins": [
+    "-fontsettings",
+    "page-toc",
+    "docs-header",
+    "search-polish"
+  ],
+  "pluginsConfig": {
+  },
+  "styles": {
+    "website": "styles/website.css"
+  }
+}
