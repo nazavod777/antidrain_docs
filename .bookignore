@@ -1,8 +1,13 @@
 _book
 .bookignore
+.git
+.github
+.gitignore
 .idea
 .playwright-mcp
 .nvmrc
+DEPLOY.md
+node_modules
 active-link-polish-mobile.png
 after-desktop.png
 after-mobile-menu.png
