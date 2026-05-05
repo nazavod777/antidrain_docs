@@ -6,6 +6,7 @@ This project is a legacy GitBook 3.2.3 site. Build it with Node 10, then publish
 
 ```bash
 PATH="/home/nazavod/.nvm/versions/node/v10.24.1/bin:$PATH" gitbook build
+node scripts/pretty-urls.js
 ```
 
 Do not build with Node 18/22. GitBook may clean `_book` without generating pages while returning exit code 0.
