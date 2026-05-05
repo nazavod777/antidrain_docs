@@ -512,6 +512,66 @@ body {
   display: inline-block;
 }
 
+.docs-social-links {
+  align-items: center;
+  display: inline-flex;
+  gap: 2px;
+  height: 44px;
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  z-index: 4;
+}
+
+.docs-social-link {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: var(--text-secondary) !important;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none !important;
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+  width: 44px;
+}
+
+.docs-social-link:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--accent) !important;
+  text-decoration: none !important;
+}
+
+.docs-social-link i {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.docs-social-link--text span {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.docs-social-link--site img {
+  display: block;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.82;
+  transition: opacity var(--transition);
+  width: 18px;
+}
+
+.docs-social-link--site:hover img {
+  opacity: 1;
+}
+
 .page-wrapper {
   background: var(--bg-primary) !important;
   padding-top: 56px !important;
@@ -1398,6 +1458,7 @@ body.with-search-command {
 .book-summary ul.summary li a:focus-visible,
 .book-summary .gitbook-link:focus-visible,
 .docs-home-link:focus-visible,
+.docs-social-link:focus-visible,
 .book-header .btn:focus-visible,
 .navigation:focus-visible,
 .markdown-section a:focus-visible,
@@ -1582,6 +1643,12 @@ body.with-search-command {
   }
   .docs-home-link__text {
     display: none;
+  }
+  .docs-social-links {
+    right: 4px;
+  }
+  .docs-social-link {
+    width: 38px;
   }
   .book-header h1 {
     display: none !important;

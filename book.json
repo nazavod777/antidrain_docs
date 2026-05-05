@@ -3,6 +3,7 @@
   "theme": "default",
   "plugins": [
     "-fontsettings",
+    "-sharing",
     "page-toc",
     "docs-header",
     "search-polish"

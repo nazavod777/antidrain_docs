@@ -1,5 +1,11 @@
 _book/
-node_modules/
+node_modules/*
+!node_modules/gitbook-plugin-docs-header/
+!node_modules/gitbook-plugin-docs-header/**
+!node_modules/gitbook-plugin-page-toc/
+!node_modules/gitbook-plugin-page-toc/**
+!node_modules/gitbook-plugin-search-polish/
+!node_modules/gitbook-plugin-search-polish/**
 .idea/
 .playwright-mcp/
 
