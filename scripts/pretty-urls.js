@@ -4,6 +4,19 @@ const fs = require('fs');
 const path = require('path');
 
 const bookDir = path.resolve(__dirname, '..', '_book');
+const socialImageSource = path.resolve(
+  __dirname,
+  '..',
+  'node_modules',
+  'gitbook-plugin-docs-header',
+  'assets',
+  'og-image.png'
+);
+const socialImageDestination = path.join(bookDir, 'og-image.png');
+const siteOrigin = 'https://docs.antidrain.me';
+const socialImageUrl = siteOrigin + '/og-image.png';
+const socialTitle = 'AntiDrain Docs';
+const socialDescription = 'Documentation for AntiDrain EVM wallet rescue workflows.';
 const cyrillicMap = {
   а: 'a',
   б: 'b',
@@ -105,7 +118,46 @@ function rewriteHtml(content, addDirectoryDepth) {
     });
   }
 
-  return next;
+  return injectSocialMeta(next);
+}
+
+function metaTag(attribute, name, content) {
+  return '<meta ' + attribute + '="' + name + '" content="' + escapeAttribute(content) + '">';
+}
+
+function escapeAttribute(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function stripSocialMeta(content) {
+  return content
+    .replace(/\s*<meta\s+(?:property|name)=["'](?:og:[^"']+|twitter:[^"']+)["'][^>]*>\s*/gi, '\n')
+    .replace(/\s*<meta\s+name=["']description["'][^>]*>\s*/gi, '\n');
+}
+
+function injectSocialMeta(content) {
+  const socialMeta = [
+    metaTag('name', 'description', socialDescription),
+    metaTag('property', 'og:type', 'website'),
+    metaTag('property', 'og:site_name', 'AntiDrain Docs'),
+    metaTag('property', 'og:title', socialTitle),
+    metaTag('property', 'og:description', socialDescription),
+    metaTag('property', 'og:image', socialImageUrl),
+    metaTag('name', 'twitter:card', 'summary_large_image'),
+    metaTag('name', 'twitter:title', socialTitle),
+    metaTag('name', 'twitter:description', socialDescription),
+    metaTag('name', 'twitter:image', socialImageUrl)
+  ].join('\n        ');
+
+  const stripped = stripSocialMeta(content);
+
+  if (!/<\/head>/i.test(stripped)) return stripped;
+
+  return stripped.replace(/<\/head>/i, '        ' + socialMeta + '\n    </head>');
 }
 
 function rewriteHeadingAnchors(content) {
@@ -242,6 +294,14 @@ function rewriteSearchIndex() {
   fs.writeFileSync(file, JSON.stringify(rewriteJson(data)));
 }
 
+function copySocialImage() {
+  if (!fs.existsSync(socialImageSource)) {
+    throw new Error('Missing docs social preview image: ' + socialImageSource);
+  }
+
+  fs.copyFileSync(socialImageSource, socialImageDestination);
+}
+
 function rewriteTextReferences(value) {
   return value.replace(/((?:\.\.?\/)?(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+)\.html\b/g, (match) => {
     return rewriteUrl(match, false);
@@ -281,6 +341,7 @@ function main() {
   });
 
   rewriteSearchIndex();
+  copySocialImage();
 }
 
 main();
