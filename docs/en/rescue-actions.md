@@ -9,6 +9,10 @@ The site has several action types. Choose the one that matches your case.
 
 If you are new, do not choose only by the name. First answer a simple question: what exactly do you want to do with the wallet or assets?
 
+This is what the choice looks like on step two of the workspace:
+
+![The Select Action step: four cards — Remove Delegation, Custom TX Builder, Permit Rescue and DeBank Withdraw, each with a short description underneath.](/screenshots/en/03-select-action.webp)
+
 ## Remove Delegation
 
 This action clears EIP-7702 delegation from added wallets.
@@ -32,41 +36,85 @@ Prepare:
 When to Stop:
 
 - The site says there is no delegation
-- Nonce loading fails
+- [Nonce](/en/glossary#nonce) loading fails — the nonce is the address's transaction counter
 - RPC cannot check delegation
 - You are not sure you added the correct wallet
 
-## Custom Batch
+## Custom TX Builder {#custom-batch}
 
-Custom Batch lets you build several actions into one rescue flow.
+The Custom TX Builder action lets you assemble several transfers into one flow and send them together. It has four transaction types, and the type you pick decides which fields you have to fill in.
 
-Examples:
+The order of work is the same for every type:
 
-- ERC-20 transfer
-- NFT transfer
-- Claim
-- Raw contract call
+1. Add the private key of the wallet you are rescuing assets from. You can add several wallets.
+2. Press Add Transaction and choose a type.
+3. Fill in that type's fields.
+4. Repeat for the remaining assets and wallets.
+5. Build the transaction and move on to simulation.
 
-This mode is better for experienced users. If you do not understand calldata or contract calls, use it carefully.
+::: warning The donor key does not go here
+This list takes the keys of the wallets you are rescuing **from**. The site will not accept the donor's private key here: the donor only pays gas and signs the send.
+:::
 
-For a beginner, the clearest TX Builder path is a normal ERC-20 or NFT transfer where you know the contract address, amount, and recipient.
+### Transfer Tokens (ERC-20)
 
-Prepare for ERC-20:
+The most common case: USDT, USDC and most other tokens. Suitable for a beginner as long as you know the token's contract address.
 
-- Private key of the wallet holding the token
-- Token contract address
-- Recipient address
-- Amount, or max mode if you want to move the full balance
-- Correct network
+Fields:
 
-Prepare for NFT:
+- **Token Contract** — the contract address of the token you are moving.
+- **Decimals** — a unit dropdown, where `Wei (10^-18)` corresponds to 18 places. Ordinary tokens use 18, but there are exceptions: USDT and USDC use 6. If you are unsure, check it in an [explorer](/en/glossary#explorer).
+- **Amount** — how much to move. There is a "max" toggle next to it: with it on, the field reads "Transferring all tokens" and the amount comes from the full balance at execution time.
+- **Recipient Address** — your new safe wallet.
 
-- Private key of the NFT owner wallet
-- Collection contract address
-- Token ID
-- Recipient address
+![The ERC-20 transfer form: Token Contract and Recipient Address on top, then Amount with its max toggle and the Decimals dropdown showing "Wei (10^-18) — Decimals 18". Required fields are marked with an asterisk.](/screenshots/en/06-tx-erc20.webp)
 
-Use raw custom transactions only if you know the target address, data, and native value. If those words do not mean anything to you, do not use that mode.
+### Transfer NFT (ERC-721)
+
+For NFTs that exist as a single copy. One item moves per transaction.
+
+Fields:
+
+- **NFT Contract** — the collection address.
+- **Token ID(s)** — the item's number inside the collection, for example `42`.
+- **Recipient Address**.
+
+The fee here is not a percentage but [fee units](/en/glossary#fee-unit): one per NFT transfer.
+
+![The ERC-721 transfer form: NFT Contract, Recipient Address and Token ID(s) with the hint "e.g. 42".](/screenshots/en/07-tx-erc721.webp)
+
+### Transfer NFT (ERC-1155)
+
+The same NFT family, except an item can exist in several copies and one transaction can move several different IDs at once.
+
+Fields:
+
+- **NFT Contract**.
+- **Token ID(s)** — one number or several separated by commas: `42` or `1,2,3`.
+- **Transfer Amount(s)** — correspondingly `10` or `1,5,2`. The order must match the order of the IDs.
+- **Recipient Address**.
+
+![The ERC-1155 transfer form: NFT Contract, Recipient Address, Token ID(s) hinted as "e.g. 42 or 1,2,3" and Transfer Amount(s) hinted as "e.g. 10 or 1,5,2".](/screenshots/en/08-tx-erc1155.webp)
+
+### Custom Transaction
+
+Full control over what goes to the network. Needed when an asset cannot be moved by an ordinary transfer — when you have to call a contract method, for example.
+
+Fields:
+
+- **Target Contract** — the address the call is addressed to.
+- **Calldata (hex)** — the [call data](/en/glossary#calldata) in hex form.
+- **Value (Native)** — how much native coin to attach to the call, as a decimal or as hex wei. Usually `0`. A **Unit** dropdown next to it picks the scale of that number: `Ether` or `wei`.
+
+There is no recipient field here: where the funds go is decided by the calldata itself.
+
+::: danger Do not use this type on a guess
+The site sends exactly the data you entered and does not check what it does. A mistake in the calldata can send assets to the wrong place or burn gas for nothing.
+
+If you do not know where to get calldata, use one of the three types above, or the [DeBank Withdraw](#debank-withdraw) action.
+:::
+
+![The custom transaction form: Target Contract and Calldata (hex) on top, then Value (Native) and a Unit dropdown showing "Ether (10^18 wei)". This form has no recipient field.](/screenshots/en/09-tx-custom.webp)
 
 ## Permit Rescue
 
@@ -101,7 +149,7 @@ When to Stop:
 
 DeBank Withdraw loads portfolio data from DeBank and helps prepare supported withdrawals.
 
-The current flow focuses on supported Bundler token transfers and pool exits.
+The current flow focuses on supported [Bundler](/en/glossary#bundler) token transfers and [pool exits](/en/glossary#pool-exit).
 
 If DeBank does not show assets or returns an error, check:
 
@@ -132,7 +180,7 @@ If a Permit token is selected inside DeBank Withdraw, sending may be unavailable
 | Action | When to Use | What to Prepare |
 | --- | --- | --- |
 | Remove Delegation | Need to clear EIP-7702 delegation | Private key of wallet, donor, correct network |
-| Custom Batch | Need to move tokens or NFTs manually | Private key, contract addresses, recipient, network |
+| Custom TX Builder | Need to move tokens or NFTs manually | Private key, contract addresses, recipient, network |
 | Permit Rescue | Token supports permit signatures | Private key, contract address, recipient, deadline, network |
 | DeBank Withdraw | Assets are visible in DeBank and supported | Private key, recipient, time for data load, network |
 
@@ -140,7 +188,7 @@ If a Permit token is selected inside DeBank Withdraw, sending may be unavailable
 
 If you need to clear EIP-7702 delegation, choose Remove Delegation.
 
-If you need to transfer normal tokens or NFTs through a prepared batch, choose Custom Batch.
+If you need to transfer normal tokens or NFTs through a prepared batch, choose Custom TX Builder.
 
 If the token supports permit and you need a permit-based transfer, choose Permit Rescue.
 
@@ -160,3 +208,9 @@ Do not guess. Use this safer order:
 4. Build the transaction.
 5. Run simulation.
 6. If the result is unclear, do not send.
+
+## Next
+
+- [Simulation, Funding, and Sending](/en/simulation-funding-sending) — what happens after building.
+- [Service Fees](/en/service-fees) — what each action is charged.
+- [Affiliate Link](/en/affiliate) — how the fee is split.

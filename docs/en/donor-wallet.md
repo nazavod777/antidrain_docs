@@ -17,11 +17,11 @@ The donor:
 - Sends the prepared rescue flow
 - Can execute EIP-7702 flows
 - Can send permit rescue flows
-- Can withdraw its own leftover assets through Asset Manager
+- Can withdraw its own leftover assets through Donor Asset Withdrawal
 
 ## How to Create a Donor
 
-1. Open `/workspace`.
+1. Open `https://antidrain.me/workspace`.
 2. On the first step, create a donor.
 3. Save the backup.
 4. Copy the donor address.
@@ -48,6 +48,8 @@ The site can start the backup download, but the browser does not always prove th
 
 ## Show / Hide Private Key {#show--hide-private-key}
 
+![The Donor Wallet panel with a created wallet: mnemonic, private key and address fields, each with an eye button to reveal the value and a copy button beside it. The values are blurred in this screenshot on purpose.](/screenshots/en/02-donor-created.webp)
+
 The Show button reveals the private key. Use it only when there is no screen share, screen recording, or other person nearby.
 
 After reload, the private key should be hidden again.
@@ -59,3 +61,9 @@ After reload, the private key should be hidden again.
 You do not need to fund the donor with a large amount in advance. Wait for the Fund Donor step. It shows the calculated required amount.
 
 :::
+
+## Next
+
+- [Workspace Flow](/en/workspace-flow) — the steps the workspace is made of.
+- [Donor Asset Manager](/en/asset-manager) — how to withdraw leftovers after a rescue.
+- [Service Fees](/en/service-fees) — what makes up the final amount.

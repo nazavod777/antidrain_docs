@@ -16,13 +16,15 @@ The basic idea is simple: prepare a new safe address, choose the action you need
 Before you start, prepare:
 
 - A clean browser without unnecessary extensions
-- The correct AntiDrain site link
+- The correct site links: the workspace is `https://antidrain.me/workspace`, the docs are `https://docs.antidrain.me`
 - A new safe recipient wallet where rescued funds should arrive
 - The networks where your assets are located, such as Ethereum, BNB Chain, Base, or Arbitrum
 - Token or NFT contract addresses, if you already know what you need to rescue
 - A small amount of native coin for donor gas, but only after the Fund Donor step shows the required amount
 
 :::
+
+The gas coin is needed on the donor wallet, not on the affected one. Never send gas to the affected address: it will be swept along with everything else — see [How Your Wallet Was Compromised](/en/wallet-compromised). [Before You Start](/en/prepare) covers how to gather all of this.
 
 If you are using someone else's computer, screen sharing, recording your screen, or working on a device with suspicious extensions, stop first.
 
@@ -46,11 +48,15 @@ If you are using someone else's computer, screen sharing, recording your screen,
 
 ## Which Action to Choose
 
-Choose **Remove Delegation** if the site shows active EIP-7702 delegation and you need to remove it. This removes delegated code, but it does not make the old private key safe again.
+Choose **Remove Delegation** if the site shows an active [EIP-7702 delegation](/en/glossary#eip-7702-delegation) and you need to remove it. This removes delegated code, but it does not make the old private key safe again.
 
-Choose **TX Builder** if you know exactly which token or NFT to send, and you have the contract address, recipient, and amount. For a normal ERC-20 transfer, this is the clearest manual path. Use raw custom calls only if you know the exact calldata.
+Choose **Custom TX Builder** if you know exactly which token or NFT to send, and you have the contract address, recipient, and amount.
 
-Choose **Permit Rescue** if the token supports Permit and the site can prepare the signature. Not every token supports this.
+For an ordinary token this is the clearest manual path. Ordinary tokens are the [ERC-20](/en/glossary#erc-20) standard: USDT, USDC and most others.
+
+The same action also has a raw contract call mode. It needs [calldata](/en/glossary#calldata) — the call data in hex form. If that phrase means nothing to you, leave that mode alone.
+
+Choose **Permit Rescue** if the token supports [permit](/en/glossary#permit) and the site can prepare the signature. Not every token supports this.
 
 Choose **DeBank Withdraw** if assets are visible through DeBank and the site marks them as supported for withdrawal. If an asset is missing or unsupported, do not try to send blindly.
 
@@ -58,7 +64,7 @@ If you do not know what to choose, start small: find the network and one asset, 
 
 ## Low-Risk Order of Actions
 
-1. Open `/workspace`.
+1. Open `https://antidrain.me/workspace`.
 2. Select the correct network at the top of the site.
 3. Create a new donor wallet and save the backup.
 4. Copy the donor address, but do not fund it with a large amount.
@@ -83,7 +89,7 @@ Do not send the transaction if:
 - The site shows an unexpected address
 - Simulation failed and you do not understand why
 - The amount is larger than expected
-- RPC shows a different chainId
+- RPC shows a different chain ID
 - The UI asks for an advanced override and you do not understand why
 - You accidentally pasted the donor private key into a rescue-wallet field
 
@@ -97,8 +103,20 @@ After a successful send:
 
 - Save the tx hash
 - Check that assets arrived at the recipient
-- Withdraw leftovers from the donor through Donor Asset Recovery
+- Withdraw leftovers from the donor through Donor Asset Withdrawal
 - Stop using the compromised wallet
 - Clear browser data if you used someone else's device
 
 AntiDrain helps you prepare and check actions, but you still decide whether to send.
+
+## What It Costs
+
+On top of network gas, the site takes 20% of the rescued amount on token and native withdrawals. Individual actions, an NFT transfer for example, are charged at $5 per unit.
+
+The amount is visible before sending, on the Fund Donor step. Every case is covered on [Service Fees](/en/service-fees).
+
+## Next
+
+- [Before You Start](/en/prepare) — how to create the recipient, find the network, and get the gas coin.
+- [Quick Start](/en/quick-start) — eight steps from donor to send.
+- [Glossary](/en/glossary) — what the terms mean.

@@ -123,3 +123,9 @@ Native service fee должна быть 0, если выбранный flow н�
 - Native service fee, если она есть.
 - Итоговую сумму, которую нужно положить на donor wallet.
 - Affiliate split, если активна affiliate-ссылка.
+
+## Дальше
+
+- [Партнёрская ссылка](/ru/affiliate) — как делится комиссия между protocol и партнёром.
+- [Rescue-сценарии](/ru/rescue-actions) — к каким сценариям какая комиссия применяется.
+- [Словарь](/ru/glossary#edinitsa-komissii-fee-unit) — что такое единица комиссии.

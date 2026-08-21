@@ -104,7 +104,7 @@ Affiliate получает выплату только если одноврем
 - При поддерживаемом ERC-20 token rescue, где применяется token fee.
 - При Permit Rescue, когда выбран режим с token fee.
 - При DeBank/Bundler token transfer или native transfer-all, если конкретный route применяет fee split.
-- При Custom Batch / DeBank действиях с native service fee, например raw call, NFT/pool действия или другие fee-bearing операции.
+- При Custom TX Builder / DeBank действиях с native service fee, например raw call, NFT/pool действия или другие fee-bearing операции.
 
 **Affiliate не получает выплату:**
 
@@ -137,3 +137,8 @@ Affiliate получает выплату только если одноврем
 - На странице `/affiliate` у пользователя отображается нужный сохранённый affiliate wallet.
 - Flow действительно поддерживает fee sharing.
 - В выбранном flow есть комиссия, из которой может быть выплата.
+
+## Дальше
+
+- [Комиссии сервиса](/ru/service-fees) — полный разбор комиссий.
+- [FAQ](/ru/faq) — короткие ответы на частые вопросы.

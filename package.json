@@ -20,7 +20,8 @@
     "docs:dev": "npm run dev",
     "docs:build": "npm run build",
     "docs:preview": "npm run preview",
-    "check:layout": "node docs/.vitepress/scripts/check-layout.mjs"
+    "check:layout": "node docs/.vitepress/scripts/check-layout.mjs",
+    "screenshots": "node docs/.vitepress/scripts/shoot-screenshots.mjs"
   },
   "devDependencies": {
     "axe-core": "^4.13.0",

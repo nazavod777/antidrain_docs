@@ -55,7 +55,7 @@ Before every send, make sure the selected network is correct.
 
 For example, if the assets are on Ethereum, do not send the flow on BNB Chain or another network.
 
-Also check RPC. If RPC returns a different chainId or does not respond, the site may block actions. That is expected: fixing RPC is safer than sending blindly.
+Also check RPC. If RPC returns a different chain ID or does not respond, the site may block actions. That is expected: fixing RPC is safer than sending blindly.
 
 ## Check the Recipient
 
@@ -73,7 +73,7 @@ If simulation failed, a normal user should not use advanced override. Override i
 
 ## Do Not Use the Site Blindly
 
-If you see an unexpected error, strange address, unexpected amount, or wrong network/chainId, stop.
+If you see an unexpected error, strange address, unexpected amount, or wrong network/chain ID, stop.
 
 It is better to spend time checking than to send the wrong transaction.
 
@@ -97,8 +97,14 @@ If you changed network, recipient, amount, keys, or action after simulation, reb
 
 After a successful rescue:
 
-- Save the transaction hash
+- Save the tx hash
 - Check the recipient balance
 - Withdraw leftover funds from the donor
 - Clear browser data if you used someone else's device
 - Do not keep using a compromised private key
+
+## Next
+
+- [Donor Wallet](/en/donor-wallet) — why gas needs a separate wallet.
+- [Simulation, Funding, and Sending](/en/simulation-funding-sending) — what to check on the final steps.
+- [How Your Wallet Was Compromised](/en/wallet-compromised) — why the old address can never be reused.

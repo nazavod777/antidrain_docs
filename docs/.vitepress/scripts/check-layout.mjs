@@ -39,6 +39,12 @@ const PAGES = [
   { url: '/ru/service-fees/', label: 'RU table + callouts' },
   { url: '/ru/troubleshooting/', label: 'RU widest table' },
   { url: '/en/rescue-actions/', label: 'EN table + callouts' },
+  // The only pages carrying screenshots — a wide image is the most likely
+  // source of horizontal scroll, so both languages are checked.
+  { url: '/ru/quick-start/', label: 'RU screenshots' },
+  { url: '/en/quick-start/', label: 'EN screenshots' },
+  { url: '/ru/rescue-actions/', label: 'RU screenshot + table' },
+  { url: '/ru/donor-wallet/', label: 'RU screenshot in a section' },
 ]
 
 /** From AGENTS.md: the site2 scale plus the two VitePress breakpoints. */

@@ -12,13 +12,23 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = resolve(HERE, '../dist')
 
+/**
+ * Pages that must resolve, per locale.
+ *
+ * The first twelve were live under GitBook, so their URLs are a contract with
+ * everyone holding a link. The last three are new and have no legacy URL —
+ * they are listed so the build fails if a page silently stops being generated,
+ * which is what happens when a label is missing from LABELS in config.ts and
+ * no rewrite gets produced.
+ */
 const PAGES = [
   'beginner-guide', 'quick-start', 'safety', 'donor-wallet', 'workspace-flow',
   'rescue-actions', 'simulation-funding-sending', 'asset-manager',
   'service-fees', 'affiliate', 'troubleshooting', 'faq',
+  'wallet-compromised', 'prepare', 'glossary',
 ]
 
-/** Every URL the live site answers, and the file that must back it. */
+/** Every URL the site must answer, and the file that must back it. */
 const expected = [
   ['/', 'index.html'],
   ...['ru', 'en'].flatMap((lang) => [

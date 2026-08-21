@@ -25,6 +25,7 @@ const structure = (file) => {
   const headings = []
   const callouts = []
   const tables = []
+  const images = []
   let inFence = false
   let currentTable = null
   let currentCallout = null
@@ -35,6 +36,18 @@ const structure = (file) => {
 
     const h = /^(#{1,4})\s+\S/.exec(line)
     if (h) { headings.push(h[1].length); currentTable = null; currentCallout = null; continue }
+
+    // Screenshots are structure too: one language gaining an illustration the
+    // other never gets is the same class of drift as a missing table. The alt
+    // text is deliberately not compared — it is prose, and it is translated.
+    const img = /^!\[([^\]]*)\]\(([^)]+)\)/.exec(line)
+    if (img) {
+      images.push(img[2].replace(/\/(ru|en)\//, '/<lang>/'))
+      if (!img[1].trim()) {
+        images.push('MISSING-ALT')
+      }
+      continue
+    }
 
     const c = /^:::\s*(\w+)(.*)$/.exec(line)
     if (c) {
@@ -76,6 +89,7 @@ const structure = (file) => {
     headings,
     callouts,
     tables: tables.map((t) => `${t.cols}x${t.rows}`),
+    images,
   }
 }
 
@@ -95,6 +109,9 @@ for (const name of ruFiles.filter((f) => enFiles.includes(f))) {
   for (const [lang, s] of [['ru', ru], ['en', en]]) {
     if (!s.hasTitle) failures.push(`${lang}/${name}: frontmatter has no title`)
     if (!s.hasDescription) failures.push(`${lang}/${name}: frontmatter has no description`)
+    if (s.images.includes('MISSING-ALT')) {
+      failures.push(`${lang}/${name}: an image has no alt text, which AGENTS.md requires`)
+    }
     s.callouts.forEach((c, i) => {
       if (!c.titled) {
         failures.push(`${lang}/${name}: callout #${i + 1} (::: ${c.type}) has no title, so it renders as the English word "${c.type.toUpperCase()}"`)
@@ -111,6 +128,7 @@ for (const name of ruFiles.filter((f) => enFiles.includes(f))) {
   const shape = (c) => `${c.type}(${c.items} items, ${c.paras} paras)`
   cmp('callout types/order', ru.callouts.map(shape), en.callouts.map(shape))
   cmp('tables (cols x rows)', ru.tables, en.tables)
+  cmp('images', ru.images, en.images)
 }
 
 if (failures.length) {

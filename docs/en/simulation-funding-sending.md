@@ -73,10 +73,16 @@ Before clicking Send, check:
 - Gas/funding summary
 - Simulation result
 
-After sending, wait for the transaction hash and final status.
+After sending, wait for the tx hash and final status.
 
 ## If Sending Fails
 
-Save the error and transaction hash if there is one.
+Save the error and tx hash if there is one.
 
 Check whether the transaction was actually broadcast. Sometimes a UI error does not mean nothing happened on-chain.
+
+## Next
+
+- [Donor Asset Manager](/en/asset-manager) — what to do with leftovers after sending.
+- [Troubleshooting](/en/troubleshooting) — if simulation or sending failed.
+- [Service Fees](/en/service-fees) — what goes into the Fund Donor amount.

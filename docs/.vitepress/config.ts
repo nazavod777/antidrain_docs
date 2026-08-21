@@ -6,11 +6,11 @@ const APP = 'https://antidrain.me'
 
 /** Page slugs in reading order, grouped the way the sidebar presents them. */
 const GROUPS = [
-  { key: 'start', pages: ['', 'beginner-guide', 'quick-start'] },
+  { key: 'start', pages: ['', 'wallet-compromised', 'beginner-guide', 'prepare', 'quick-start'] },
   { key: 'safety', pages: ['safety', 'donor-wallet'] },
   { key: 'workflow', pages: ['workspace-flow', 'rescue-actions', 'simulation-funding-sending', 'asset-manager'] },
   { key: 'reference', pages: ['service-fees', 'affiliate'] },
-  { key: 'help', pages: ['troubleshooting', 'faq'] },
+  { key: 'help', pages: ['troubleshooting', 'faq', 'glossary'] },
 ] as const
 
 /** Sidebar group headings and per-page labels, per locale. */
@@ -25,7 +25,9 @@ const LABELS = {
     },
     pages: {
       '': 'Что такое AntiDrain',
+      'wallet-compromised': 'Как ваш кошелёк взломали',
       'beginner-guide': 'Если вы новичок и кошелёк под угрозой',
+      prepare: 'Подготовка',
       'quick-start': 'Быстрый старт',
       safety: 'Главные правила безопасности',
       'donor-wallet': 'Кошелёк-донор',
@@ -37,6 +39,7 @@ const LABELS = {
       affiliate: 'Партнёрская ссылка',
       troubleshooting: 'Ошибки и решения',
       faq: 'FAQ',
+      glossary: 'Словарь',
     },
   },
   en: {
@@ -49,7 +52,9 @@ const LABELS = {
     },
     pages: {
       '': 'What AntiDrain Is',
+      'wallet-compromised': 'How Your Wallet Was Compromised',
       'beginner-guide': 'If You Are New and Your Wallet Is at Risk',
+      prepare: 'Before You Start',
       'quick-start': 'Quick Start',
       safety: 'Core Safety Rules',
       'donor-wallet': 'Donor Wallet',
@@ -61,6 +66,7 @@ const LABELS = {
       affiliate: 'Affiliate Link',
       troubleshooting: 'Troubleshooting',
       faq: 'FAQ',
+      glossary: 'Glossary',
     },
   },
 } as const
@@ -210,7 +216,12 @@ export default defineConfig({
       // scrolling, so the table gets its own scroll container. Without this a
       // wide table pushes the whole page sideways — 6px at 390px on
       // rescue-actions, which is exactly the bug this fixes.
-      md.renderer.rules.table_open = () => '<div class="vp-table-scroll">\n<table>\n'
+      // tabindex="0" because a scrollable box must be reachable by keyboard —
+      // otherwise a keyboard user cannot scroll a wide table at all. axe flags
+      // this as scrollable-region-focusable, and check:layout caught it on
+      // rescue-actions at 390px. VitePress does the same on its code blocks.
+      md.renderer.rules.table_open = () =>
+        '<div class="vp-table-scroll" tabindex="0">\n<table>\n'
       md.renderer.rules.table_close = () => '</table>\n</div>\n'
     },
   },
