@@ -33,11 +33,23 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      # PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD stops the playwright postinstall from
+      # fetching Chromium, Firefox AND WebKit — roughly a gigabyte, of which we
+      # need one browser.
       - run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+      # check:layout drives a real browser over dist/, so it needs a Chromium.
+      # npx resolves the playwright already in node_modules, so the browser
+      # revision always matches the library. --with-deps pulls the system
+      # libraries a headless Chromium needs on a clean runner.
+      - run: npx playwright install --with-deps chromium
 
       # `build` runs `lint` first (contrast, anchors, RU/EN parity), then the
       # VitePress build with its dead-link check, then the legacy redirect
-      # stubs and check:urls. Any of them failing stops the deploy.
+      # stubs, check:urls and check:layout. Any of them failing stops the
+      # deploy.
       - run: npm run build
 
       - uses: actions/upload-artifact@v4
