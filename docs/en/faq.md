@@ -11,7 +11,7 @@ No. AntiDrain does not monitor wallets and does not block transactions automatic
 
 ## I am completely new. Where should I start?
 
-Start with a new safe recipient address and `/workspace`. Create a donor, select the network, build one clear action, run simulation, and do not send until you understand the summary.
+Start with a new safe recipient address and `https://antidrain.me/workspace`. Create a donor, select the network, build one clear action, run simulation, and do not send until you understand the summary.
 
 ## Do my keys leave the browser?
 
@@ -31,7 +31,7 @@ After successful simulation, on the Fund Donor step. The site shows total requir
 
 ## What should I do after a successful rescue?
 
-Check recipient balance, save the transaction hash, withdraw leftovers from the donor, and stop using the compromised key.
+Check recipient balance, save the tx hash, withdraw leftovers from the donor, and stop using the compromised key.
 
 ## Why do I need simulation?
 
@@ -65,7 +65,7 @@ It is the main coin used for gas on a network: ETH, BNB, MATIC, and similar coin
 
 ## What is RPC?
 
-It is the connection to the network. Through RPC, the site reads balances, checks chainId, runs simulation, and sends the transaction. If RPC is bad or unavailable from the browser, choose another one.
+It is the connection to the network. Through RPC, the site reads balances, checks chain ID, runs simulation, and sends the transaction. If RPC is bad or unavailable from the browser, choose another one.
 
 ## What if I have a tx hash but the UI shows an error?
 
@@ -74,3 +74,9 @@ Check the tx hash in an explorer. Sometimes the transaction was already sent, bu
 ## What if I am not sure?
 
 Do not send the transaction. First check network, addresses, amounts, simulation, and transaction details.
+
+## Next
+
+- [Glossary](/en/glossary) — what the terms mean.
+- [Troubleshooting](/en/troubleshooting) — if something is not working.
+- [Quick Start](/en/quick-start) — the step-by-step path.

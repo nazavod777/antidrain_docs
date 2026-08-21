@@ -106,7 +106,7 @@ The affiliate can receive a payout in these cases:
 - Supported ERC-20 token rescue where token fee applies
 - Permit Rescue when the selected mode uses token fee
 - DeBank/Bundler token transfer or native transfer-all when that route applies fee split
-- Custom Batch / DeBank actions with native service fee, such as raw calls, NFT/pool actions, or other fee-bearing operations
+- Custom TX Builder / DeBank actions with native service fee, such as raw calls, NFT/pool actions, or other fee-bearing operations
 
 The affiliate does not receive a payout if:
 
@@ -139,3 +139,8 @@ Check that:
 - `/affiliate` shows the expected saved affiliate wallet for the user
 - The flow actually supports fee sharing
 - The selected flow has a fee that can produce a payout
+
+## Next
+
+- [Service Fees](/en/service-fees) — the full fee breakdown.
+- [FAQ](/en/faq) — short answers to common questions.

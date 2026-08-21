@@ -92,9 +92,10 @@ languages have quietly diverged. Several of them already have.
   `quick-start.md` — pages are rewritten into directories and the build fails
   on dead links.
 - **RU and EN are edited as a pair.** `check:parity` compares structure —
-  heading levels, table shapes, and callouts by type, order **and what they
-  wrap**. It also fails any callout without a title, because an untitled
-  `::: danger` renders the English word "DANGER" on a Russian page.
+  heading levels, table shapes, images, and callouts by type, order **and what
+  they wrap**. It also fails any callout without a title (an untitled
+  `::: danger` renders the English word "DANGER" on a Russian page) and any
+  image without alt text.
 - **Adding a page is three edits in `docs/.vitepress/config.ts`**: `GROUPS`,
   `LABELS.ru.pages`, `LABELS.en.pages`. Miss a label and it renders
   `undefined` and no rewrite is generated for the page.
@@ -161,6 +162,7 @@ file adds:
 | `npm run build` | Everything: `lint`, the VitePress build with its dead-link check, redirect stubs, `check:urls`, `check:layout` |
 | `npm run preview` | Serve the built output |
 | `npm run tokens:check` | Local only: diff `tokens.css` against site2. Needs `ANTIDRAIN_SITE2` |
+| `npm run screenshots` | Regenerates the UI screenshots from a live site2. Local only; review every image before committing |
 
 ## Verification
 

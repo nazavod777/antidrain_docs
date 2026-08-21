@@ -5,7 +5,7 @@ description: How to withdraw leftover funds and manage assets in the donor walle
 
 # Donor Asset Manager
 
-Asset Manager helps manage assets on the donor wallet.
+Donor Asset Withdrawal is the panel on step one that helps you manage the donor wallet's assets.
 
 It is usually used after rescue to withdraw leftover donor funds.
 
@@ -20,8 +20,8 @@ Depending on the network and available assets, you can:
 
 ## How to Withdraw Native Balance
 
-1. Open Workspace.
-2. Go to donor asset management.
+1. Open the workspace: `https://antidrain.me/workspace`.
+2. Go to Donor Asset Withdrawal on step one.
 3. Enter the recipient.
 4. Click Withdraw.
 5. Check the confirmation.
@@ -53,6 +53,11 @@ Before withdrawing, check:
 | Recipient is invalid | Enter the correct recipient address |
 | Recipient equals donor | Cannot send to the same address |
 | RPC is unavailable | Check your connection and try another RPC |
-| ChainId does not match | Wrong network selected, choose the correct one |
+| chain ID does not match | Wrong network selected, choose the correct one |
 | Gas is not enough | Insufficient funds on the donor for gas |
 | Token is not found | Token contract is not supported |
+
+## Next
+
+- [Service Fees](/en/service-fees) — whether a fee applies to donor withdrawals.
+- [Troubleshooting](/en/troubleshooting) — if the withdraw button is disabled.

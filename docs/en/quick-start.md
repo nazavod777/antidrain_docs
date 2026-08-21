@@ -5,7 +5,9 @@ description: Step-by-step guide through the workspace to rescue wallet assets.
 
 # Quick Start
 
-This guide shows the simplest path through `/workspace`.
+This guide shows the simplest path through the workspace: `https://antidrain.me/workspace`.
+
+If this is your first time, read [Before You Start](/en/prepare) first: it covers creating the recipient wallet, finding the network, and getting the gas coin. On top of gas, the site takes 20% of the rescued amount on token and native withdrawals, and some actions are charged at $5 per unit; see [Service Fees](/en/service-fees).
 
 If this is your first web3 rescue, keep three addresses in mind:
 
@@ -29,6 +31,12 @@ Go to:
 
 Make sure the correct network is selected. If you need another network, use the network selector at the top of the site.
 
+![The site header: the network selector with the current network and its coin on the left, the block number and gas price next to it, and the advanced-mode and EN/RU language toggles on the right.](/screenshots/en/04-header.webp)
+
+The first step's panel looks like this, with the fields still empty:
+
+![The Donor Wallet panel with empty mnemonic, private key and address fields and the Generate Wallet, Import Wallet and Export Backup buttons.](/screenshots/en/01-donor-empty.webp)
+
 Network checking is mandatory. If tokens are on one network and the site is set to another, that transaction will not rescue those tokens.
 
 ## 2. Create or Import a Donor Wallet
@@ -40,7 +48,9 @@ You can:
 - Create a new donor wallet
 - Import an existing donor wallet
 
-After creating a donor, save the backup. Without a backup, you may lose access to the donor.
+After creating a donor, save the backup. Without a backup, you may lose access to the donor. Until the backup is exported, the action step stays locked.
+
+![The same panel after the donor is created: the mnemonic, private key and address fields are filled, each with an eye button and a copy button beside it. The values are blurred on purpose — the site hides them behind dots by default.](/screenshots/en/02-donor-created.webp)
 
 The donor should not be your main wallet. It is better to create a new one and keep only the amount needed for the current operation.
 
@@ -48,8 +58,11 @@ The donor should not be your main wallet. It is better to create a new one and k
 
 Choose one action:
 
+![The Select Action panel: four cards — Remove Delegation, Custom TX Builder, Permit Rescue and DeBank Withdraw, each with a short description of what the action does underneath.](/screenshots/en/03-select-action.webp)
+
+
 - Remove Delegation
-- Custom Batch
+- Custom TX Builder
 - Permit Rescue
 - DeBank Withdraw
 
@@ -58,7 +71,7 @@ If you are not sure what to choose, start with [Rescue Actions](/en/rescue-actio
 A simple guide:
 
 - Need to remove EIP-7702 delegation: Remove Delegation
-- Need to manually move ERC-20 tokens or NFTs: TX Builder
+- Need to manually move ERC-20 tokens or NFTs: Custom TX Builder
 - The token supports Permit: Permit Rescue
 - Assets are visible through DeBank and supported by the site: DeBank Withdraw
 
@@ -107,4 +120,10 @@ Before sending, check again:
 
 After sending, wait for the logs and result state.
 
-Save the tx hash. If the UI closes or the RPC is delayed, the tx hash helps you check the real transaction state in an explorer.
+Save the tx hash. If the UI closes or the RPC is delayed, the tx hash helps you check the real transaction state in an [explorer](/en/glossary#explorer).
+
+## Next
+
+- [Rescue Actions](/en/rescue-actions) — how the four actions differ.
+- [Simulation, Funding, and Sending](/en/simulation-funding-sending) — steps 6 to 8 in detail.
+- [Troubleshooting](/en/troubleshooting) — if something did not work.

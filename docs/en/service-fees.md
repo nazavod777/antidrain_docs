@@ -124,3 +124,9 @@ Before sending, check:
 - Native service fee, if present
 - Total amount that must be funded to the donor wallet
 - Affiliate split, if an affiliate link is active
+
+## Next
+
+- [Affiliate Link](/en/affiliate) — how the fee is split between protocol and affiliate.
+- [Rescue Actions](/en/rescue-actions) — which fee applies to which action.
+- [Glossary](/en/glossary#fee-unit) — what a fee unit is.

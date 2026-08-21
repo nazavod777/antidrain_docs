@@ -53,7 +53,7 @@ Try:
 
 - Refresh the page
 - Select another RPC
-- Check chainId
+- Check chain ID
 - Check your internet connection
 - Try again later
 
@@ -115,7 +115,7 @@ What to do:
 
 ## Transaction Is Pending
 
-Check the transaction hash in the explorer.
+Check the tx hash in the explorer.
 
 If the transaction is pending:
 
@@ -139,3 +139,9 @@ Two things are possible:
 - The transaction reverted or was rejected by the network
 
 Do not send again until you understand what happened to the first tx hash.
+
+## Next
+
+- [FAQ](/en/faq) — if the question is not about an error.
+- [Glossary](/en/glossary) — if a term in the error message is unclear.
+- [Core Safety Rules](/en/safety) — what to check so it does not happen again.

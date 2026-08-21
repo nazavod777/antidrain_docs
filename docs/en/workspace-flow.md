@@ -18,7 +18,7 @@ Until the donor is ready, other steps may be unavailable.
 Choose what you want to do:
 
 - Remove EIP-7702 delegation
-- Build a custom batch
+- Build a transaction in Custom TX Builder
 - Use Permit Rescue
 - Prepare DeBank Withdraw
 
@@ -46,10 +46,16 @@ Fund the donor and refresh the balance.
 
 This is the final step. The site sends the transaction.
 
-Before sending, check all details. After sending, watch the logs and transaction hash.
+Before sending, check all details. After sending, watch the logs and tx hash.
 
 ## Can You Go Back?
 
 Yes, but after changing important data, old simulation/funding/send results may become outdated.
 
 If you changed network, recipient, keys, or action type, rebuild and simulate again.
+
+## Next
+
+- [Rescue Actions](/en/rescue-actions) — which action to choose.
+- [Simulation, Funding, and Sending](/en/simulation-funding-sending) — the last three steps.
+- [Glossary](/en/glossary) — what the terms mean.
