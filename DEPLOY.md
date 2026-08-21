@@ -34,6 +34,22 @@ npm run preview
 Note that `vitepress preview` resolves extensionless paths differently from
 GitHub Pages. To test URL behaviour the way production sees it, serve `dist`
 with a server that tries `<path>`, then `<path>.html`, then `<path>/index.html`.
+`check:layout` already does exactly that, so running the build is the quickest
+way to exercise production URL semantics.
+
+`check:layout` needs a Chromium, and finds one in this order: an explicit
+`PLAYWRIGHT_CHROMIUM_PATH`, then Playwright's own download, then a system
+Chromium (`/usr/bin/chromium-browser` and friends). So on a machine that
+already has Chrome or Chromium, nothing extra is required.
+
+Playwright's postinstall otherwise fetches Chromium, Firefox **and** WebKit —
+about a gigabyte for the one browser we use. CI sets
+`PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` on `npm ci` and then installs only
+Chromium. Locally you can do the same:
+
+```bash
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
+```
 
 ## The checks
 
@@ -46,6 +62,7 @@ with a server that tries `<path>`, then `<path>.html`, then `<path>/index.html`.
 | `npm run check:parity` | The RU and EN trees stay structurally 1:1 — same heading levels, same table shapes, and callouts matching in type, order **and what they wrap**, plus `title`/`description` frontmatter. Also fails any callout with no title, since an untitled one renders the English type name. Compares structure only, never wording. |
 | VitePress dead-link check | Internal links. Relative links break because pages are rewritten into directories — always link `/ru/page`, never `page.md`. |
 | `npm run check:urls` | All 51 live URLs are backed by a file, including the legacy `*.html` redirect stubs. |
+| `npm run check:layout` | Drives a real browser over `dist/` at six widths in both themes: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, and `prefers-reduced-motion` actually suppressing transitions. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
 
 `npm run tokens:check` is separate and local-only: it diffs the vendored token
 block against site2. site2 is not available in CI, so point `ANTIDRAIN_SITE2` at
