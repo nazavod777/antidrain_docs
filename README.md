@@ -44,7 +44,7 @@ docs/
 ## Checks
 
 ```bash
-npm run lint     # contrast (both themes) + anchor contract + RU/EN parity
+npm run lint     # contrast, anchor contract, RU/EN parity, anchor links
 npm run build    # the above, plus dead links, redirect stubs, URL and layout contracts
 npm run tokens:check  # local only: diff tokens.css against antidrain_site2
 ```

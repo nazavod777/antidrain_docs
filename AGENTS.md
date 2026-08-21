@@ -87,7 +87,8 @@ languages have quietly diverged. Several of them already have.
 - **Same-page links use the transliterated ASCII slug**, not the Cyrillic
   heading: `[Кнопка недоступна](#knopka-nedostupna)`. The transliteration lives
   in `docs/.vitepress/slugify.ts` and is the only copy — GitBook carried three
-  and they had to stay byte-identical.
+  and they had to stay byte-identical. `check:anchors` verifies every
+  `#fragment` resolves; VitePress checks the page but not the fragment.
 - **Cross-page links are absolute and locale-rooted**: `/ru/quick-start`. Never
   `quick-start.md` — pages are rewritten into directories and the build fails
   on dead links.
