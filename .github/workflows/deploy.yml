@@ -2,9 +2,9 @@ name: Deploy Docs Site
 
 on:
   push:
-    branches:
-      - main
-      - gh-pages
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,29 +14,57 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  # Builds on every push AND every pull request, so a broken contrast ratio,
+  # a lost anchor, a missing URL or a dead link fails review rather than
+  # reaching production. The old workflow published a pre-built gh-pages
+  # branch and never built anything, so CSS edits on main did not deploy.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # git-based "last updated" timestamps
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # `build` runs `lint` first (contrast, anchors, RU/EN parity), then the
+      # VitePress build with its dead-link check, then the legacy redirect
+      # stubs and check:urls. Any of them failing stops the deploy.
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-dist
+          path: docs/.vitepress/dist
+          retention-days: 7
+
   deploy:
+    # Only main deploys; pull requests stop at a verified build.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout built site
-        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          ref: gh-pages
+          name: docs-dist
+          path: dist
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v5
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
 
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4

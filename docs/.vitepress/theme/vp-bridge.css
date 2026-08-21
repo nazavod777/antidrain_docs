@@ -1,0 +1,267 @@
+/*
+ * Maps VitePress's default-theme variables onto AntiDrain tokens.
+ *
+ * This file is the whole restyle. It contains no !important and no layout
+ * overrides — every rule here reassigns a variable the default theme already
+ * reads, which is why the old stylesheet's 405 !important declarations are
+ * gone. If something cannot be expressed as a variable, it belongs in
+ * prose.css, not here.
+ *
+ * Both themes are covered by one block: the values are our tokens, and
+ * tokens.css / light.css decide what they resolve to.
+ */
+:root {
+  /* --- surfaces ------------------------------------------------------- */
+  --vp-c-bg: var(--color-bg-primary);
+  --vp-c-bg-alt: var(--color-bg-secondary);
+  --vp-c-bg-elv: var(--color-bg-card);
+  --vp-c-bg-soft: var(--color-bg-secondary);
+  --vp-sidebar-bg-color: var(--color-bg-primary);
+  --vp-nav-bg-color: var(--color-bg-primary);
+  --vp-nav-screen-bg-color: var(--color-bg-primary);
+  --vp-local-nav-bg-color: var(--color-bg-primary);
+  --vp-backdrop-bg-color: var(--color-scrim);
+
+  /* --- text ----------------------------------------------------------- */
+  --vp-c-text-1: var(--color-text-primary);
+  --vp-c-text-2: var(--color-text-secondary);
+  --vp-c-text-3: var(--color-text-muted);
+
+  /* --- hairlines ------------------------------------------------------ */
+  --vp-c-border: var(--color-border);
+  --vp-c-divider: var(--color-border);
+  --vp-c-gutter: var(--color-border);
+
+  /* --- brand ---------------------------------------------------------
+     brand-1 is the text/link weight, brand-2 the fill, brand-3 the hover
+     fill. In light mode these are three different teals for contrast
+     reasons; in dark mode brand-1 collapses onto the accent. */
+  --vp-c-brand-1: var(--color-accent-text);
+  --vp-c-brand-2: var(--color-accent);
+  --vp-c-brand-3: var(--color-accent-hover);
+  --vp-c-brand-soft: var(--color-accent-dim);
+  --vp-c-brand: var(--color-accent);
+
+  /* --- status families ------------------------------------------------
+     VitePress splits these into note/tip/warning/danger/caution/important.
+     Mapped onto our four families so a callout can never introduce a fifth
+     hue: meaning is carried by the hue, per site2's token comment. */
+  --vp-c-tip-1: var(--color-success-text);
+  --vp-c-tip-2: var(--color-success);
+  --vp-c-tip-3: var(--color-success);
+  --vp-c-tip-soft: var(--color-success-dim);
+
+  --vp-c-note-1: var(--color-accent-text);
+  --vp-c-note-2: var(--color-accent);
+  --vp-c-note-3: var(--color-accent);
+  --vp-c-note-soft: var(--color-accent-dim);
+
+  --vp-c-green-1: var(--color-success-text);
+  --vp-c-green-2: var(--color-success);
+  --vp-c-green-3: var(--color-success);
+  --vp-c-green-soft: var(--color-success-dim);
+
+  --vp-c-warning-1: var(--color-warning-text);
+  --vp-c-warning-2: var(--color-warning);
+  --vp-c-warning-3: var(--color-warning);
+  --vp-c-warning-soft: var(--color-warning-dim);
+
+  --vp-c-caution-1: var(--color-warning-text);
+  --vp-c-caution-2: var(--color-warning);
+  --vp-c-caution-3: var(--color-warning);
+  --vp-c-caution-soft: var(--color-warning-dim);
+
+  --vp-c-yellow-1: var(--color-warning-text);
+  --vp-c-yellow-2: var(--color-warning);
+  --vp-c-yellow-3: var(--color-warning);
+  --vp-c-yellow-soft: var(--color-warning-dim);
+
+  --vp-c-danger-1: var(--color-danger-text);
+  --vp-c-danger-2: var(--color-danger);
+  --vp-c-danger-3: var(--color-danger);
+  --vp-c-danger-soft: var(--color-danger-dim);
+
+  --vp-c-red-1: var(--color-danger-text);
+  --vp-c-red-2: var(--color-danger);
+  --vp-c-red-3: var(--color-danger);
+  --vp-c-red-soft: var(--color-danger-dim);
+
+  --vp-c-important-1: var(--color-accent-text);
+  --vp-c-important-2: var(--color-accent);
+  --vp-c-important-3: var(--color-accent);
+  --vp-c-important-soft: var(--color-accent-dim);
+
+  --vp-c-default-1: var(--color-text-primary);
+  --vp-c-default-2: var(--color-text-secondary);
+  --vp-c-default-3: var(--color-text-muted);
+  --vp-c-default-soft: var(--color-bg-secondary);
+
+  --vp-c-gray-1: var(--color-text-secondary);
+  --vp-c-gray-2: var(--color-border-hover);
+  --vp-c-gray-3: var(--color-border);
+  --vp-c-gray-soft: var(--color-bg-secondary);
+
+  --vp-c-indigo-1: var(--color-accent-text);
+  --vp-c-indigo-2: var(--color-accent);
+  --vp-c-indigo-3: var(--color-accent);
+  --vp-c-indigo-soft: var(--color-accent-dim);
+
+  /* --- typography ----------------------------------------------------- */
+  --vp-font-family-base: var(--font-family);
+  --vp-font-family-mono: var(--font-mono);
+
+  /* --- layout --------------------------------------------------------
+     Header height follows the control scale, so it grows with the token
+     step at 1024px instead of being a magic 56px repeated six times. */
+  --vp-nav-height: calc(var(--control-height-xl) + var(--spacing-xs));
+  --vp-nav-logo-height: var(--icon-size-xl);
+  --vp-sidebar-width: 300px;
+  /* --vp-layout-max-width is deliberately NOT overridden. At >=1440px
+     VPSidebar computes its width as
+       (100% - (layout-max-width - 64px)) / 2 + sidebar-width - 32px
+     so raising the value above the viewport makes the first term negative and
+     silently shrinks the sidebar — 1680px cost 120px of sidebar at exactly
+     1440px wide. VitePress's 1440px default keeps that term at zero or above. */
+
+  /* --- elevation ------------------------------------------------------ */
+  --vp-shadow-1: var(--shadow-card);
+  --vp-shadow-2: var(--shadow-card);
+  --vp-shadow-3: var(--shadow-card-hover);
+  --vp-shadow-4: var(--shadow-lg);
+  --vp-shadow-5: var(--shadow-lg);
+
+  /* --- z-index ---------------------------------------------------------
+     Deliberately NOT mapped onto site2's --z-* scale. The two scales describe
+     different component sets, and VitePress's ordering is load-bearing:
+     --vp-z-index-sidebar is 60 on mobile (the drawer must cover the nav) but
+     drops to 25 at >=960px (below the nav's 30) so the nav title paints above
+     the desktop sidebar. A flat mapping to --z-modal hid the logo and
+     wordmark behind the sidebar. Left to VitePress. */
+
+  /* --- code ----------------------------------------------------------
+     The terminal surface from site2's .tx-log: a shade below the page in
+     dark mode, an inset panel in light mode. */
+  --vp-code-block-bg: var(--color-code-surface);
+  --vp-code-block-color: var(--color-text-secondary);
+  --vp-code-block-divider-color: var(--color-border);
+  --vp-code-bg: var(--color-accent-dim);
+  --vp-code-color: var(--color-accent-text);
+  --vp-code-link-color: var(--color-accent-text);
+  --vp-code-link-hover-color: var(--color-accent-hover);
+  --vp-code-copy-code-bg: var(--color-bg-card);
+  --vp-code-copy-code-hover-bg: var(--color-bg-card-hover);
+  --vp-code-copy-code-border-color: var(--color-border);
+  --vp-code-copy-code-hover-border-color: var(--color-border-hover);
+  --vp-code-copy-code-active-text: var(--color-accent-text);
+  --vp-code-tab-divider: var(--color-border);
+  --vp-code-tab-text-color: var(--color-text-muted);
+  --vp-code-tab-bg: var(--color-code-surface);
+  --vp-code-tab-hover-text-color: var(--color-text-primary);
+  --vp-code-tab-active-text-color: var(--color-accent-text);
+  --vp-code-tab-active-bar-color: var(--color-accent);
+
+  /* --- inputs / local search ------------------------------------------ */
+  --vp-input-bg-color: var(--color-bg-secondary);
+  --vp-input-border-color: var(--color-border);
+  --vp-input-switch-bg-color: var(--color-border);
+  --vp-local-search-bg: var(--color-bg-card);
+  --vp-local-search-result-bg: var(--color-bg-card);
+  --vp-local-search-result-border: var(--color-border);
+  --vp-local-search-result-selected-bg: var(--color-bg-card-hover);
+  --vp-local-search-result-selected-border: var(--color-accent-border);
+  --vp-local-search-highlight-bg: var(--color-accent);
+  --vp-local-search-highlight-text: var(--color-on-accent);
+
+  /* --- buttons -------------------------------------------------------
+     Accent-filled buttons carry an accent-text border so the control
+     boundary clears 3:1 independently of the fill — required in light
+     mode, harmless in dark. */
+  --vp-button-brand-bg: var(--color-accent);
+  --vp-button-brand-text: var(--color-on-accent);
+  --vp-button-brand-border: var(--color-accent-text);
+  --vp-button-brand-hover-bg: var(--color-accent-hover);
+  --vp-button-brand-hover-text: var(--color-on-accent);
+  --vp-button-brand-hover-border: var(--color-accent-text);
+  --vp-button-brand-active-bg: var(--color-accent);
+  --vp-button-brand-active-text: var(--color-on-accent);
+  --vp-button-brand-active-border: var(--color-accent-text);
+
+  --vp-button-alt-bg: var(--color-bg-card);
+  --vp-button-alt-text: var(--color-text-primary);
+  --vp-button-alt-border: var(--color-border);
+  --vp-button-alt-hover-bg: var(--color-bg-card-hover);
+  --vp-button-alt-hover-text: var(--color-accent-text);
+  --vp-button-alt-hover-border: var(--color-border-hover);
+  --vp-button-alt-active-bg: var(--color-bg-card-hover);
+  --vp-button-alt-active-text: var(--color-accent-text);
+  --vp-button-alt-active-border: var(--color-accent-border);
+
+  /* --- badges --------------------------------------------------------- */
+  --vp-badge-info-bg: var(--color-accent-dim);
+  --vp-badge-info-border: var(--color-accent-border);
+  --vp-badge-info-text: var(--color-accent-text);
+  --vp-badge-tip-bg: var(--color-success-dim);
+  --vp-badge-tip-border: var(--color-success-border);
+  --vp-badge-tip-text: var(--color-success-text);
+  --vp-badge-warning-bg: var(--color-warning-dim);
+  --vp-badge-warning-border: var(--color-warning-border);
+  --vp-badge-warning-text: var(--color-warning-text);
+  --vp-badge-danger-bg: var(--color-danger-dim);
+  --vp-badge-danger-border: var(--color-danger-border);
+  --vp-badge-danger-text: var(--color-danger-text);
+
+  /* --- home hero ------------------------------------------------------ */
+  --vp-home-hero-name-color: var(--color-accent-text);
+
+  /* --- misc ----------------------------------------------------------- */
+  --vp-header-anchor-symbol: '#';
+  --vp-custom-block-font-size: 0.95rem;
+  --vp-custom-block-code-font-size: 0.85rem;
+}
+
+/*
+ * Callout blocks. VitePress derives these from its own soft/1 pairs; pointing
+ * them at our families gives the exact formula site2 uses for a status
+ * surface: 1px border in -border, background in -dim, title in -text.
+ */
+:root {
+  --vp-custom-block-info-bg: var(--color-accent-dim);
+  --vp-custom-block-info-border: var(--color-accent-border);
+  --vp-custom-block-info-text: var(--color-text-primary);
+  --vp-custom-block-info-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-note-bg: var(--color-bg-secondary);
+  --vp-custom-block-note-border: var(--color-border);
+  --vp-custom-block-note-text: var(--color-text-primary);
+  --vp-custom-block-note-code-bg: var(--color-bg-card);
+
+  --vp-custom-block-tip-bg: var(--color-success-dim);
+  --vp-custom-block-tip-border: var(--color-success-border);
+  --vp-custom-block-tip-text: var(--color-text-primary);
+  --vp-custom-block-tip-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-warning-bg: var(--color-warning-dim);
+  --vp-custom-block-warning-border: var(--color-warning-border);
+  --vp-custom-block-warning-text: var(--color-text-primary);
+  --vp-custom-block-warning-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-caution-bg: var(--color-warning-dim);
+  --vp-custom-block-caution-border: var(--color-warning-border);
+  --vp-custom-block-caution-text: var(--color-text-primary);
+  --vp-custom-block-caution-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-danger-bg: var(--color-danger-dim);
+  --vp-custom-block-danger-border: var(--color-danger-border);
+  --vp-custom-block-danger-text: var(--color-text-primary);
+  --vp-custom-block-danger-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-important-bg: var(--color-accent-dim);
+  --vp-custom-block-important-border: var(--color-accent-border);
+  --vp-custom-block-important-text: var(--color-text-primary);
+  --vp-custom-block-important-code-bg: var(--color-bg-secondary);
+
+  --vp-custom-block-details-bg: var(--color-bg-secondary);
+  --vp-custom-block-details-border: var(--color-border);
+  --vp-custom-block-details-text: var(--color-text-primary);
+  --vp-custom-block-details-code-bg: var(--color-bg-card);
+}

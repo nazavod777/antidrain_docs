@@ -1,0 +1,95 @@
+/*
+ * Light theme — a docs-only artefact. site2 is dark-only by deliberate choice
+ * (see its DESIGN_SYSTEM.md "Known gaps"), so there was no light palette to
+ * copy and this one was derived here.
+ *
+ * METHOD — the same operation site2 documents for its -text steps, run in the
+ * opposite direction: take the base colour into CIE Lab, move L* until it
+ * clears 4.5:1 on --color-bg-card-hover (the worst light surface), keep a* and
+ * b* untouched so the hue survives.
+ *
+ * Two asymmetries against site2 that are easy to get wrong:
+ *
+ *  1. -text-hover moves DARKER (-7 L*), not lighter. On a dark background a
+ *     lighter step moves away from the surface and gains contrast; on a light
+ *     background it moves toward it and loses contrast.
+ *
+ *  2. The -rgb triplets are overridden too, not just the -text steps. Every
+ *     component composes tints as rgba(var(--color-x-rgb), a); pointing the
+ *     triplet at the light-mode value keeps all of those compositions correct
+ *     in both themes without touching a single component rule.
+ *
+ * Every pair below is verified — body text 4.5:1, focus rings and control
+ * boundaries 3:1. Do not hand-tune a value without re-running the check.
+ */
+:root:not(.dark) {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f8;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f0f0f5;
+
+  --color-text-primary: #14141e;
+  --color-text-secondary: #4a4a60;
+  --color-text-muted: #6b6b82;
+
+  --color-border: #e3e3ec;
+  --color-border-hover: #c9c9d8;
+
+  /* Accent splits into three roles here, because one teal cannot do all of
+     them on white: a fill that clears 3:1 as a control boundary, a lighter
+     hover fill that keeps the dark ink readable, and a darker step for text.
+     Accent-filled controls also carry a --color-accent-text border so the
+     boundary passes at rest AND on hover, independent of the fill. */
+  --color-accent-rgb: 0, 169, 130;
+  --color-accent: #00a982;
+  --color-accent-hover: #00b88f;
+  --color-accent-text: #007d5a;
+  --color-accent-dim: rgba(var(--color-accent-rgb), 0.08);
+  --color-accent-border: rgba(var(--color-accent-rgb), 0.32);
+
+  --color-danger-rgb: 205, 49, 60;
+  --color-danger: #cd313c;
+  --color-danger-dim: rgba(var(--color-danger-rgb), 0.08);
+  --color-danger-border: rgba(var(--color-danger-rgb), 0.28);
+  --color-danger-text: #cd313c;
+  --color-danger-text-hover: #b7162c;
+
+  --color-warning-rgb: 163, 91, 0;
+  --color-warning: #a35b00;
+  --color-warning-dim: rgba(var(--color-warning-rgb), 0.08);
+  --color-warning-border: rgba(var(--color-warning-rgb), 0.28);
+  --color-warning-text: #a35b00;
+  --color-warning-text-hover: #8f4a00;
+
+  --color-success-rgb: 0, 126, 76;
+  --color-success: #007e4c;
+  --color-success-dim: rgba(var(--color-success-rgb), 0.08);
+  --color-success-border: rgba(var(--color-success-rgb), 0.28);
+  --color-success-text: #007e4c;
+
+  /* Ring is built from the text-weight accent, never the fill and never a
+     translucent colour — site2's rule, and it is the reason this is opaque. */
+  --focus-ring: 2px solid var(--color-accent-text);
+
+  /* Shadows on white need to be far softer than on near-black, or cards look
+     like they are floating in smoke. */
+  --shadow-card: 0 1px 3px rgba(20, 20, 30, 0.08);
+  --shadow-card-hover: 0 4px 16px rgba(20, 20, 30, 0.12);
+  --shadow-lg: 0 8px 32px rgba(20, 20, 30, 0.16);
+
+  /* An inset panel rather than a darker-than-page terminal: on white there is
+     nothing below the page background to go to. */
+  --color-code-surface: #f7f7fa;
+  --color-scrim: rgba(20, 20, 30, 0.4);
+}
+
+/* Ink for text sitting on an accent fill. Dark mode can use the page
+   background; light mode cannot, because white on the accent fill is only
+   3:1. Components must use this token rather than --color-bg-primary. */
+:root {
+  --color-on-accent: var(--color-bg-primary);
+}
+
+:root:not(.dark) {
+  --color-on-accent: #04110e;
+}

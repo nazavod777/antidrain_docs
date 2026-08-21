@@ -1,0 +1,27 @@
+{
+  "name": "antidrain-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentation for AntiDrain EVM wallet rescue workflows",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "npm run lint && vitepress build docs && node docs/.vitepress/scripts/html-stubs.mjs && npm run check:urls",
+    "preview": "vitepress preview docs",
+    "lint": "npm run check:contrast && npm run check:slugs && npm run check:parity",
+    "check:contrast": "node docs/.vitepress/scripts/check-contrast.mjs",
+    "check:slugs": "node --experimental-strip-types docs/.vitepress/scripts/check-slugs.mjs",
+    "check:parity": "node docs/.vitepress/scripts/check-parity.mjs",
+    "check:urls": "node docs/.vitepress/scripts/check-urls.mjs",
+    "tokens:check": "node docs/.vitepress/scripts/check-tokens.mjs",
+    "docs:dev": "npm run dev",
+    "docs:build": "npm run build",
+    "docs:preview": "npm run preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}

@@ -1,0 +1,266 @@
+import { defineConfig } from 'vitepress'
+import { slugify } from './slugify'
+
+const SITE = 'https://docs.antidrain.me'
+const APP = 'https://antidrain.me'
+
+/** Page slugs in reading order, grouped the way the sidebar presents them. */
+const GROUPS = [
+  { key: 'start', pages: ['', 'beginner-guide', 'quick-start'] },
+  { key: 'safety', pages: ['safety', 'donor-wallet'] },
+  { key: 'workflow', pages: ['workspace-flow', 'rescue-actions', 'simulation-funding-sending', 'asset-manager'] },
+  { key: 'reference', pages: ['service-fees', 'affiliate'] },
+  { key: 'help', pages: ['troubleshooting', 'faq'] },
+] as const
+
+/** Sidebar group headings and per-page labels, per locale. */
+const LABELS = {
+  ru: {
+    groups: {
+      start: 'Начало',
+      safety: 'Безопасность',
+      workflow: 'Рабочий процесс',
+      reference: 'Справочник',
+      help: 'Помощь',
+    },
+    pages: {
+      '': 'Что такое AntiDrain',
+      'beginner-guide': 'Если вы новичок и кошелёк под угрозой',
+      'quick-start': 'Быстрый старт',
+      safety: 'Главные правила безопасности',
+      'donor-wallet': 'Кошелёк-донор',
+      'workspace-flow': 'Рабочий процесс',
+      'rescue-actions': 'Rescue-сценарии',
+      'simulation-funding-sending': 'Симуляция, пополнение и отправка',
+      'asset-manager': 'Управление активами донора',
+      'service-fees': 'Комиссии сервиса',
+      affiliate: 'Партнёрская ссылка',
+      troubleshooting: 'Ошибки и решения',
+      faq: 'FAQ',
+    },
+  },
+  en: {
+    groups: {
+      start: 'Getting started',
+      safety: 'Safety',
+      workflow: 'Workflow',
+      reference: 'Reference',
+      help: 'Help',
+    },
+    pages: {
+      '': 'What AntiDrain Is',
+      'beginner-guide': 'If You Are New and Your Wallet Is at Risk',
+      'quick-start': 'Quick Start',
+      safety: 'Core Safety Rules',
+      'donor-wallet': 'Donor Wallet',
+      'workspace-flow': 'Workspace Flow',
+      'rescue-actions': 'Rescue Actions',
+      'simulation-funding-sending': 'Simulation, Funding, and Sending',
+      'asset-manager': 'Donor Asset Manager',
+      'service-fees': 'Service Fees',
+      affiliate: 'Affiliate Link',
+      troubleshooting: 'Troubleshooting',
+      faq: 'FAQ',
+    },
+  },
+} as const
+
+type Lang = keyof typeof LABELS
+
+const sidebar = (lang: Lang) =>
+  GROUPS.map(({ key, pages }) => ({
+    text: LABELS[lang].groups[key],
+    // `collapsed` is deliberately absent. Setting it (even to false) makes
+    // VitePress render the group header as role="button" wrapping the item
+    // link, which axe flags as nested-interactive. Five fixed groups of two to
+    // four pages do not need collapsing anyway.
+    items: pages.map((page) => ({
+      text: LABELS[lang].pages[page],
+      link: `/${lang}/${page}`,
+    })),
+  }))
+
+/**
+ * The live site serves directory URLs (`/ru/quick-start/`). Rewriting flat
+ * sources into `<page>/index.md` keeps that shape byte for byte, so every
+ * shared link and search result survives the migration. Verified by
+ * scripts/check-urls.mjs against the deployed URL list.
+ */
+const rewrites = Object.fromEntries(
+  (['ru', 'en'] as const).flatMap((lang) =>
+    GROUPS.flatMap(({ pages }) =>
+      pages
+        .filter((page) => page !== '')
+        .map((page) => [`${lang}/${page}.md`, `${lang}/${page}/index.md`]),
+    ),
+  ),
+)
+
+const social = {
+  telegram: 'M21.8 4.6 18.5 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.9 13.5 1 12c-1-.3-1-1 .2-1.5L20.4 3.1c.9-.3 1.7.2 1.4 1.5Z',
+  x: 'M18.9 2h3.3l-7.2 8.2L23.5 22h-6.6l-5.2-6.8L5.8 22H2.5l7.7-8.8L2 2h6.8l4.7 6.2L18.9 2Zm-1.2 17.9h1.8L7.8 4H5.9l11.8 15.9Z',
+}
+
+const socialLinks = [
+  { icon: { svg: `<svg viewBox="0 0 24 24"><path d="${social.telegram}"/></svg>` }, link: 'https://t.me/bio_nazavod', ariaLabel: 'Telegram' },
+  { icon: { svg: `<svg viewBox="0 0 24 24"><path d="${social.x}"/></svg>` }, link: 'https://x.com/nazavod777', ariaLabel: 'X' },
+]
+
+/**
+ * Local search.
+ *
+ * Must live at site level: VitePress turns local search on via a build-time
+ * global derived from this key, so it cannot be scoped per locale — moving it
+ * into the locale blocks disables search everywhere.
+ *
+ * Consequence worth knowing: VitePress builds ONE INDEX PER LOCALE and
+ * VPLocalSearchBox only loads the current locale's. The root locale holds a
+ * single page (the language picker), so a search launched from `/` can match
+ * nothing but that page. The picker therefore suppresses the search UI
+ * itself — see docs/index.md and the `:has(.docs-landing)` rule in prose.css.
+ */
+const search = {
+  provider: 'local',
+  options: {
+    // Results stay within the current locale, so a Russian query never returns
+    // the English twin of the same page.
+    locales: {
+      ru: {
+        translations: {
+          button: { buttonText: 'Поиск', buttonAriaLabel: 'Поиск по документации' },
+          modal: {
+            displayDetails: 'Показать подробнее',
+            resetButtonTitle: 'Очистить',
+            backButtonTitle: 'Закрыть',
+            noResultsText: 'Ничего не найдено',
+            footer: { selectText: 'выбрать', navigateText: 'навигация', closeText: 'закрыть' },
+          },
+        },
+      },
+    },
+  },
+} as const
+
+export default defineConfig({
+  title: 'AntiDrain Docs',
+  description: 'Documentation for AntiDrain EVM wallet rescue workflows.',
+  lang: 'en',
+  cleanUrls: true,
+  rewrites,
+
+  // Dark is the default because the product is dark-only; the toggle stays so
+  // the light theme is reachable.
+  appearance: 'dark',
+  lastUpdated: true,
+  sitemap: { hostname: SITE },
+
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: '64x64' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    ['meta', { name: 'theme-color', content: '#0a0a0f' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'AntiDrain Docs' }],
+    ['meta', { property: 'og:image', content: `${SITE}/og-image.jpg` }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:image', content: `${SITE}/og-image.jpg` }],
+  ],
+
+  // Per-page canonical, og:title and og:description. The old build stamped one
+  // og:title on all 26 pages.
+  transformPageData(pageData) {
+    const path = pageData.relativePath.replace(/((^|\/)index)?\.md$/, '$2')
+    const title = pageData.frontmatter.title ?? pageData.title
+    const description = pageData.frontmatter.description ?? pageData.description
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push(
+      ['link', { rel: 'canonical', href: `${SITE}/${path}` }],
+      ['meta', { property: 'og:title', content: title ? `${title} · AntiDrain Docs` : 'AntiDrain Docs' }],
+      ['meta', { name: 'twitter:title', content: title ? `${title} · AntiDrain Docs` : 'AntiDrain Docs' }],
+    )
+    if (description) {
+      pageData.frontmatter.head.push(
+        ['meta', { property: 'og:description', content: description }],
+        ['meta', { name: 'twitter:description', content: description }],
+      )
+    }
+
+    // The RU and EN trees are 1:1, so every localised page has a counterpart.
+    // Declaring both plus x-default stops search engines treating the two as
+    // duplicates and lets them serve the right language.
+    const locale = /^(ru|en)\//.exec(pageData.relativePath)?.[1]
+    if (locale) {
+      const counterpart = path.replace(/^(ru|en)\//, '')
+      pageData.frontmatter.head.push(
+        ['link', { rel: 'alternate', hreflang: 'ru', href: `${SITE}/ru/${counterpart}` }],
+        ['link', { rel: 'alternate', hreflang: 'en', href: `${SITE}/en/${counterpart}` }],
+        ['link', { rel: 'alternate', hreflang: 'x-default', href: `${SITE}/` }],
+      )
+    }
+  },
+
+  markdown: {
+    // The one slug implementation. Russian headings stay ASCII so the deep
+    // links that are already in circulation keep resolving.
+    anchor: { slugify },
+    theme: { light: 'github-light', dark: 'github-dark' },
+    config(md) {
+      // VitePress puts `display: block; overflow-x: auto` on the table itself,
+      // which makes it scroll but leaves the columns content-sized instead of
+      // filling the measure. We want real table layout AND horizontal
+      // scrolling, so the table gets its own scroll container. Without this a
+      // wide table pushes the whole page sideways — 6px at 390px on
+      // rescue-actions, which is exactly the bug this fixes.
+      md.renderer.rules.table_open = () => '<div class="vp-table-scroll">\n<table>\n'
+      md.renderer.rules.table_close = () => '</table>\n</div>\n'
+    },
+  },
+
+  locales: {
+    root: {
+      label: 'AntiDrain Docs',
+      lang: 'en',
+      themeConfig: { sidebar: [], nav: [] },
+    },
+    ru: {
+      label: 'Русский',
+      lang: 'ru',
+      title: 'AntiDrain Docs',
+      description: 'Документация по спасению EVM-кошельков с AntiDrain.',
+      themeConfig: {
+        sidebar: sidebar('ru'),
+        nav: [{ text: 'Открыть workspace', link: `${APP}/workspace` }],
+        outline: { level: [2, 3], label: 'На этой странице' },
+        docFooter: { prev: 'Предыдущая', next: 'Следующая' },
+        sidebarMenuLabel: 'Разделы',
+        returnToTopLabel: 'Наверх',
+        darkModeSwitchLabel: 'Тема',
+        lightModeSwitchTitle: 'Светлая тема',
+        darkModeSwitchTitle: 'Тёмная тема',
+        lastUpdatedText: 'Обновлено',
+      },
+    },
+    en: {
+      label: 'English',
+      lang: 'en',
+      title: 'AntiDrain Docs',
+      description: 'Documentation for AntiDrain EVM wallet rescue workflows.',
+      themeConfig: {
+        sidebar: sidebar('en'),
+        nav: [{ text: 'Open workspace', link: `${APP}/workspace` }],
+        outline: { level: [2, 3], label: 'On this page' },
+      },
+    },
+  },
+
+  themeConfig: {
+    search,
+    logo: '/antidrain-mark-64.png',
+    siteTitle: 'AntiDrain',
+    socialLinks,
+    externalLinkIcon: true,
+    footer: {
+      message: `<a href="${APP}">antidrain.me</a> · <a href="${APP}/workspace">workspace</a> · <a href="${APP}/affiliate">affiliate</a>`,
+      copyright: 'AntiDrain',
+    },
+  },
+})
