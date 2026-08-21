@@ -164,6 +164,7 @@ file adds:
 | `npm run preview` | Serve the built output |
 | `npm run tokens:check` | Local only: diff `tokens.css` against site2. Needs `ANTIDRAIN_SITE2` |
 | `npm run screenshots` | Regenerates the UI screenshots from a live site2. Local only; review every image before committing |
+| `npm run og-image` | Regenerates the social preview card. Reproducible; look at the result before committing |
 
 ## Verification
 
