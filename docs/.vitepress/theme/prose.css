@@ -1,0 +1,593 @@
+/*
+ * What variables cannot express: long-form typography, callout chrome, code
+ * surfaces and the card grid. Everything here composes from tokens — no colour
+ * literals, no !important. Values are ported from the site2 components named
+ * in each comment, so the two sites read as one product.
+ */
+
+/* --- measure ---------------------------------------------------------------
+ * site2 keeps prose to --workspace-panel-copy-width (640 -> 800px). Docs adds
+ * the sidebar and outline around it, so the content column carries the same
+ * intent at a width that still leaves room for both rails.
+ */
+.VPDoc .content-container {
+  max-width: 780px;
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 720px;
+}
+
+/* --- headings --------------------------------------------------------------
+ * site2's display scale: negative tracking, tight leading, weight 700.
+ */
+.vp-doc h1 {
+  font-size: clamp(1.9rem, 4vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.vp-doc h2 {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.vp-doc h3 {
+  margin-top: var(--spacing-md);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.vp-doc h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Anchor sits clear of the sticky header. One value, one place — the old
+   build repeated 88px across two stylesheets and a JS constant. */
+.vp-doc :is(h1, h2, h3, h4)[id] {
+  scroll-margin-top: calc(var(--vp-nav-height) + var(--spacing-sm));
+}
+
+/* --- body ------------------------------------------------------------------ */
+.vp-doc p,
+.vp-doc li {
+  line-height: 1.6;
+}
+
+.vp-doc p {
+  color: var(--color-text-secondary);
+}
+
+.vp-doc strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Ordered lists carry rescue steps, so the number needs to read as a step
+   marker rather than punctuation. Mirrors site2's .step-nav__num. */
+.vp-doc ol {
+  counter-reset: step;
+  list-style: none;
+  padding-left: 0;
+}
+
+.vp-doc ol > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: calc(var(--spacing-md) + var(--spacing-xs));
+}
+
+.vp-doc ol > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Nested ordered lists are sub-steps, not a second sequence of markers. */
+.vp-doc ol ol > li::before {
+  content: counter(step, lower-alpha);
+}
+
+.vp-doc ul > li::marker {
+  color: var(--color-accent);
+}
+
+/* --- links ---------------------------------------------------------------- */
+.vp-doc a {
+  font-weight: 500;
+  text-decoration-color: var(--color-accent-border);
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+.vp-doc a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+/* --- tables --------------------------------------------------------------
+ * site2 has no <table>; the reference is .sim-res__metrics-grid — mono
+ * uppercase keys, tabular values, hairline cells on a card surface.
+ */
+.vp-doc table {
+  display: table;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+.vp-doc th {
+  background: var(--color-bg-secondary);
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  vertical-align: top;
+}
+
+.vp-doc td {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.vp-doc tr:last-child td {
+  border-bottom: 0;
+}
+
+.vp-doc tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.vp-doc tbody tr:hover {
+  background: var(--color-bg-card-hover);
+}
+
+.vp-doc td:first-child {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* A table is the one block that may legitimately overflow. The wrapper is
+   emitted by a markdown-it rule (see config.ts) so the table can use real
+   table layout and still scroll inside its own box, leaving the page itself
+   free of horizontal scroll. */
+.vp-doc .vp-table-scroll {
+  margin: var(--spacing-md) 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.vp-doc .vp-table-scroll > table {
+  margin: 0;
+  /* min-width keeps narrow tables filling the measure while letting wide ones
+     grow past it and scroll. */
+  min-width: 100%;
+  width: auto;
+}
+
+/* --- code --------------------------------------------------------------- */
+.vp-doc :not(pre) > code {
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.vp-doc pre {
+  font-size: 0.8rem;
+  line-height: 1.7; /* .tx-log */
+}
+
+/* --- callouts ------------------------------------------------------------
+ * The status formula from site2's .ws-page__stage-notice: hairline in
+ * -border, fill in -dim, mono uppercase title in -text.
+ *
+ * Scoped to both .vp-doc and .docs-landing so a callout looks identical
+ * wherever it appears — the landing is a `layout: page` route and has no
+ * .vp-doc wrapper.
+ */
+:is(.vp-doc, .docs-landing) .custom-block {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--radius-lg);
+  padding: var(--plaque-padding-y) var(--plaque-padding-x);
+  line-height: 1.55;
+}
+
+/* The block's padding owns the vertical rhythm — child margins must not add to
+   it, or the bottom drifts away from the top again. */
+:is(.vp-doc, .docs-landing) .custom-block > :first-child {
+  margin-top: 0;
+}
+
+:is(.vp-doc, .docs-landing) .custom-block > :last-child {
+  margin-bottom: 0;
+}
+
+/* VitePress zeroes `p:first-child` inside a custom block with an element in the
+   selector, which outranks a class-only rule, so the title carries `p` too. */
+:is(.vp-doc, .docs-landing) .custom-block p.custom-block-title {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+:is(.vp-doc, .docs-landing) .custom-block p,
+:is(.vp-doc, .docs-landing) .custom-block li {
+  color: var(--color-text-primary);
+  font-size: 0.92rem;
+}
+
+:is(.vp-doc, .docs-landing) .custom-block a {
+  color: var(--color-accent-text);
+}
+
+/* The danger block is the one that must not be skimmed past: a 3px bar on the
+   leading edge, the same device site2 uses on .features__note. */
+:is(.vp-doc, .docs-landing) .custom-block.danger {
+  border-left-width: 3px;
+}
+
+:is(.vp-doc, .docs-landing) .custom-block.danger .custom-block-title {
+  color: var(--color-danger-text);
+}
+
+:is(.vp-doc, .docs-landing) .custom-block.warning .custom-block-title {
+  color: var(--color-warning-text);
+}
+
+:is(.vp-doc, .docs-landing) .custom-block.tip .custom-block-title {
+  color: var(--color-success-text);
+}
+
+:is(.vp-doc, .docs-landing) .custom-block.info .custom-block-title,
+:is(.vp-doc, .docs-landing) .custom-block.important .custom-block-title {
+  color: var(--color-accent-text);
+}
+
+/* --- card grid on the locale landing pages -------------------------------
+ * Ported from site2's .feature-card, including the -2px hover lift.
+ */
+.docs-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  margin: var(--spacing-md) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-cards > li {
+  padding: 0;
+}
+
+.docs-cards > li::before {
+  content: none;
+}
+
+.docs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  text-decoration: none;
+  transition:
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.docs-card:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-card-hover);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.docs-card:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.docs-card__title {
+  color: var(--color-text-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.docs-card__text {
+  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .docs-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- sidebar -------------------------------------------------------------
+ * Group headings get site2's uppercase mono label treatment, and the active
+ * item gets the 2px accent edge the old sidebar had.
+ */
+.VPSidebarItem.level-0 > .item > .text {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.VPSidebarItem.is-link > .item > .link .text {
+  transition: color var(--transition-fast);
+}
+
+.VPSidebarItem.is-active > .item > .link .text {
+  color: var(--color-accent-text);
+  font-weight: 600;
+}
+
+/* --- nav ---------------------------------------------------------------- */
+.VPNavBarTitle .title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* The brand mark is a pure-white alpha silhouette (site2 only ever shows it on
+   a near-black page), so on a light background it disappears entirely. Because
+   it is monochrome, a plain invert produces an exact black mark with the alpha
+   channel intact — no filter chain, and no second asset to keep in sync. */
+:root:not(.dark) .VPNavBarTitle .logo {
+  filter: invert(1);
+}
+
+/* The workspace link is the one action in the header, so it reads as the
+   primary CTA rather than another nav item. Formula from .hero__button.
+   VitePress gives the link `line-height: var(--vp-nav-height)`, which would
+   stretch the fill over the full 66px bar, so the height is reset here and the
+   button is centred inside the bar instead. */
+.VPNavBarMenu .VPNavBarMenuLink {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  line-height: 1;
+  margin: 0 4px;
+  padding: 0 14px;
+  border: 1px solid var(--color-accent-text);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.VPNavBarMenu .VPNavBarMenuLink:hover {
+  background: var(--color-accent-hover);
+  color: var(--color-on-accent);
+  box-shadow: 0 0 24px rgba(var(--color-accent-rgb), 0.25);
+  transform: translateY(-1px);
+}
+
+.VPNavBarMenu .VPNavBarMenuLink:active {
+  transform: translateY(0);
+}
+
+/* VitePress draws the external-link arrow as a masked pseudo-element coloured
+   --vp-c-text-3, i.e. muted grey. That is right in prose and invisible on the
+   accent fill of this button, so it takes the button's own ink instead.
+
+   Four selectors deep because VitePress's own rule is built from :is() and
+   :not(), which take the specificity of their heaviest argument — a plain
+   two-class selector loses to it. Specificity, not !important. */
+.VPNavBarMenu .VPNavBarMenuLink.vp-external-link-icon.VPLink::after {
+  color: var(--color-on-accent);
+}
+
+/* VitePress's own locale switchers are redundant: LangToggle.vue provides the
+   EN/RU control site2 uses, and it sits in the nav bar at every width.
+   Hidden rather than unconfigured, because the `locales` block is what gives
+   each language its own sidebar and lang attribute.
+   
+   The mobile one (in the hamburger screen) additionally listed the ROOT locale
+   as if it were a language — the label rendered as "AntiDrain Docs" next to
+   "Русский", because the root locale is the language picker, not a language.
+   
+   Three classes deep on purpose: VitePress's own rules are scoped styles, so
+   they carry a [data-v-hash] attribute selector and outrank a single class.
+   This is specificity, not !important. */
+.VPNav .VPNavBar .VPNavBarTranslations,
+.VPNav .VPNavScreen .VPNavScreenTranslations {
+  display: none;
+}
+
+/* .lang-toggle's own layout lives in LangToggle.vue, so it is not restated
+   here — only VitePress-owned elements are styled from this file. */
+
+/* --- outline ------------------------------------------------------------ */
+.VPDocAsideOutline .outline-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* --- touch targets ------------------------------------------------------
+ * site2's rule: 44px minimum on coarse pointers. Applied to navigation
+ * controls only — an inline prose link must not get a min-height, or it
+ * distorts the line box it sits in. Sidebar links are padded rather than
+ * min-heighted so the text stays vertically centred.
+ */
+@media (pointer: coarse) {
+  .VPNavBarMenu .VPNavBarMenuLink,
+  .VPSocialLink {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Below 960px the sidebar is a drawer, which is a touch context whatever the
+   pointer reports — and `pointer: coarse` is unreliable enough (touch laptops
+   report fine; headless browsers report fine) that the drawer should not
+   depend on it. Padding rather than min-height so the label stays centred. */
+@media (max-width: 959px) {
+  .VPSidebarItem.is-link > .item > .link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .VPSocialLink {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* The CTA pins its height to 36px so it sits inside the nav bar rather than
+     filling it. That is right on a mouse-driven desktop and wrong on a tablet,
+     where it is the primary action and still a touch target — so the height,
+     not just a min-height, has to grow here. `check:layout` caught this at
+     768px. */
+  .VPNavBarMenu .VPNavBarMenuLink {
+    height: 44px;
+  }
+}
+
+/* The language picker is the only page in the root locale, so its search
+   index holds nothing but itself and any query would report "No results".
+   Hiding the control is honest; the shortcuts are suppressed in index.md.
+   Search works on every real docs page. */
+.Layout:has(.docs-landing) .VPNavBarSearch {
+  display: none;
+}
+
+/* --- root language-picker landing ----------------------------------------
+ * A standalone page with no sidebar or outline, so it carries its own
+ * container. Bilingual by necessity: the visitor's language is unknown until
+ * they choose.
+ */
+.docs-landing {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
+}
+
+.docs-landing h1 {
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-text-primary);
+}
+
+.docs-landing__lead {
+  margin-top: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.docs-landing__urgent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-md) 0;
+  padding: var(--plaque-padding-y) var(--plaque-padding-x);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.docs-landing__urgent strong {
+  color: var(--color-text-primary);
+}
+
+.docs-landing__urgent a {
+  color: var(--color-accent-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-border);
+  text-underline-offset: 3px;
+}
+
+.docs-landing__urgent a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+.docs-landing .custom-block {
+  margin-top: var(--spacing-md);
+}
+
+/* The language cards are the primary action on this page, so they get more
+   presence than a content card. */
+.docs-cards--lang .docs-card {
+  padding: var(--spacing-md);
+}
+
+.docs-cards--lang .docs-card__title {
+  font-size: 1.15rem;
+}

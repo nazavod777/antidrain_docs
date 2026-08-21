@@ -1,60 +1,64 @@
-# Deploy Instructions
+# Deploying the docs
 
-This project is a legacy GitBook 3.2.3 site. Build it with Node 10, then publish the generated `_book` directory to the `gh-pages` branch.
+The site is built by CI and published to GitHub Pages at
+[docs.antidrain.me](https://docs.antidrain.me).
 
-## Build
+## How it works
 
-```bash
-PATH="/home/nazavod/.nvm/versions/node/v10.24.1/bin:$PATH" gitbook build
-node scripts/pretty-urls.js
-```
+`.github/workflows/deploy.yml` has two jobs:
 
-Do not build with Node 18/22. GitBook may clean `_book` without generating pages while returning exit code 0.
+1. **build** — runs on every push to `main` and on every pull request. Installs
+   with `npm ci` on the Node version in `.nvmrc`, then runs `npm run build`,
+   which is gated on four checks (below). Uploads `docs/.vitepress/dist` as an
+   artifact.
+2. **deploy** — runs only for `main`, downloads that artifact and publishes it.
 
-## Publish Source Changes
+Pull requests therefore get a verified build without deploying. Nothing needs to
+be built by hand, and there is no `gh-pages` branch in the flow any more.
 
-```bash
-git add .
-git commit -m "Update docs"
-git push origin main
-```
-
-## Publish Built Site
+## Local development
 
 ```bash
-rm -rf /tmp/opencode/antidrain-gh-pages
-git clone /home/nazavod/workWORKWORKworkWORK/antidrain_docs /tmp/opencode/antidrain-gh-pages
-
-cd /tmp/opencode/antidrain-gh-pages
-git remote set-url origin https://github.com/nazavod777/antidrain_docs.git
-git checkout --orphan gh-pages
-git rm -rf . >/dev/null
-rsync -a /home/nazavod/workWORKWORKworkWORK/antidrain_docs/_book/ ./
-printf 'docs.antidrain.me\n' > CNAME
-touch .nojekyll
-git add .
-git commit -m "Deploy GitBook site"
-git push -u origin gh-pages --force
+nvm use                 # Node 22, per .nvmrc
+npm ci
+npm run dev        # http://localhost:5173 (or the next free port)
 ```
 
-GitHub Pages is configured for:
-
-- Domain: `https://docs.antidrain.me/`
-- Source branch: `gh-pages`
-- Source path: `/`
-
-The `main` branch includes `.github/workflows/deploy.yml`, which publishes the `gh-pages` branch via GitHub Pages Actions. After pushing `gh-pages`, pushing or dispatching the workflow can refresh Pages deployment.
-
-## Verify
+To check the real output rather than the dev server:
 
 ```bash
-gh run list --repo nazavod777/antidrain_docs --workflow "Deploy Docs Site" --limit 5
-curl -I "https://docs.antidrain.me/?v=$(date +%s)"
-curl -L "https://docs.antidrain.me/?v=$(date +%s)" --max-time 20
+npm run build
+npm run preview
 ```
 
-Expected:
+Note that `vitepress preview` resolves extensionless paths differently from
+GitHub Pages. To test URL behaviour the way production sees it, serve `dist`
+with a server that tries `<path>`, then `<path>.html`, then `<path>/index.html`.
 
-- `HTTP/2 200`
-- HTML contains `GitBook 3.2.3`
-- New `last-modified` header after deployment
+## The checks
+
+`npm run build` fails rather than shipping if any of these break:
+
+| Check | What it protects |
+| --- | --- |
+| `npm run check:contrast` | Every text/surface pair in **both** themes against WCAG (4.5:1 body, 3:1 focus rings), and that no focus ring is built from a translucent colour. Reads the real values out of `tokens.css` and `light.css`. |
+| `npm run check:slugs` | All 224 heading anchors that the previous GitBook site deployed still resolve. Fixture: `docs/.vitepress/scripts/fixtures/deployed-anchors.json`. |
+| `npm run check:parity` | The RU and EN trees stay structurally 1:1 — same heading levels, same table shapes, and callouts matching in type, order **and what they wrap**, plus `title`/`description` frontmatter. Also fails any callout with no title, since an untitled one renders the English type name. Compares structure only, never wording. |
+| VitePress dead-link check | Internal links. Relative links break because pages are rewritten into directories — always link `/ru/page`, never `page.md`. |
+| `npm run check:urls` | All 51 live URLs are backed by a file, including the legacy `*.html` redirect stubs. |
+
+`npm run tokens:check` is separate and local-only: it diffs the vendored token
+block against site2. site2 is not available in CI, so point `ANTIDRAIN_SITE2` at
+your checkout and run it by hand after touching tokens.
+
+## Domain
+
+`docs/public/CNAME` holds `docs.antidrain.me` and `docs/public/.nojekyll`
+disables Jekyll processing. Both are copied verbatim into the build output.
+
+## If a URL regresses
+
+The URL and anchor contracts are the only things that can break for people
+outside the repo. `check:urls` and `check:slugs` cover them, and both run before
+the artifact is produced. If one fails, fix the content rather than the check —
+the fixture records what is actually deployed today.

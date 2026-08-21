@@ -1,0 +1,950 @@
+{
+  "ru/affiliate": [
+    {
+      "id": "partnerskaya-ssylka",
+      "text": "Партнёрская ссылка"
+    },
+    {
+      "id": "kak-sozdat-ssylku",
+      "text": "Как создать ссылку"
+    },
+    {
+      "id": "trebovaniya-k-affiliate-wallet",
+      "text": "Требования к affiliate wallet"
+    },
+    {
+      "id": "kak-eto-rabotaet",
+      "text": "Как это работает"
+    },
+    {
+      "id": "protsenty-i-revardy",
+      "text": "Проценты и реварды"
+    },
+    {
+      "id": "1-token-rescue-fee",
+      "text": "1. Token rescue fee"
+    },
+    {
+      "id": "2-native-service-fee",
+      "text": "2. Native service fee"
+    },
+    {
+      "id": "kogda-affiliate-poluchaet-vyplatu",
+      "text": "Когда affiliate получает выплату"
+    },
+    {
+      "id": "vazhno",
+      "text": "Важно"
+    },
+    {
+      "id": "chto-proveryat",
+      "text": "Что проверять"
+    }
+  ],
+  "ru/asset-manager": [
+    {
+      "id": "upravlenie-aktivami-donora",
+      "text": "Управление активами донора"
+    },
+    {
+      "id": "chto-mozhno-sdelat",
+      "text": "Что можно сделать"
+    },
+    {
+      "id": "kak-vyvesti-native-balance",
+      "text": "Как вывести native balance"
+    },
+    {
+      "id": "kak-vyvesti-erc-20",
+      "text": "Как вывести ERC-20"
+    },
+    {
+      "id": "vazhnye-proverki",
+      "text": "Важные проверки"
+    },
+    {
+      "id": "pochemu-nelzya-otpravit",
+      "text": "Почему нельзя отправить"
+    }
+  ],
+  "ru/beginner-guide": [
+    {
+      "id": "esli-vy-novichok-i-koshelek-pod-ugrozoy",
+      "text": "Если вы новичок и кошелёк под угрозой"
+    },
+    {
+      "id": "snachala-ostanovites-i-podgotovtes",
+      "text": "Сначала остановитесь и подготовьтесь"
+    },
+    {
+      "id": "ochen-prostymi-slovami",
+      "text": "Очень простыми словами"
+    },
+    {
+      "id": "kakoy-stsenariy-vybrat",
+      "text": "Какой сценарий выбрать"
+    },
+    {
+      "id": "kak-proyti-put-bez-lishnego-riska",
+      "text": "Как пройти путь без лишнего риска"
+    },
+    {
+      "id": "kogda-nelzya-prodolzhat",
+      "text": "Когда нельзя продолжать"
+    },
+    {
+      "id": "posle-rescue",
+      "text": "После rescue"
+    }
+  ],
+  "ru/donor-wallet": [
+    {
+      "id": "koshelek-donor",
+      "text": "Кошелёк-донор"
+    },
+    {
+      "id": "zachem-nuzhen-donor",
+      "text": "Зачем нужен донор"
+    },
+    {
+      "id": "kak-sozdat-donora",
+      "text": "Как создать донора"
+    },
+    {
+      "id": "kak-importirovat-donora",
+      "text": "Как импортировать донора"
+    },
+    {
+      "id": "backup",
+      "text": "Backup"
+    },
+    {
+      "id": "show--hide-private-key",
+      "text": "Show / Hide private key"
+    },
+    {
+      "id": "kogda-popolnyat-donora",
+      "text": "Когда пополнять донора"
+    }
+  ],
+  "ru/faq": [
+    {
+      "id": "faq",
+      "text": "FAQ"
+    },
+    {
+      "id": "antidrain-zablokiruet-ataku-avtomaticheski",
+      "text": "AntiDrain заблокирует атаку автоматически?"
+    },
+    {
+      "id": "ya-sovsem-novichok-s-chego-nachat",
+      "text": "Я совсем новичок. С чего начать?"
+    },
+    {
+      "id": "moi-klyuchi-uhodyat-na-server",
+      "text": "Мои ключи уходят на сервер?"
+    },
+    {
+      "id": "mozhno-li-ispolzovat-osnovnoy-koshelek-kak-donor",
+      "text": "Можно ли использовать основной кошелёк как donor?"
+    },
+    {
+      "id": "kuda-dolzhny-priyti-spasennye-sredstva",
+      "text": "Куда должны прийти спасённые средства?"
+    },
+    {
+      "id": "kogda-popolnyat-donor",
+      "text": "Когда пополнять donor?"
+    },
+    {
+      "id": "chto-delat-posle-uspeshnogo-rescue",
+      "text": "Что делать после успешного rescue?"
+    },
+    {
+      "id": "pochemu-nuzhna-simulyatsiya",
+      "text": "Почему нужна симуляция?"
+    },
+    {
+      "id": "simulyatsiya-uspeshna-eto-garantiya",
+      "text": "Симуляция успешна. Это гарантия?"
+    },
+    {
+      "id": "chto-takoe-eip-7702-delegation",
+      "text": "Что такое EIP-7702 delegation?"
+    },
+    {
+      "id": "chto-takoe-permit-rescue",
+      "text": "Что такое Permit Rescue?"
+    },
+    {
+      "id": "chto-takoe-debank-withdraw",
+      "text": "Что такое DeBank Withdraw?"
+    },
+    {
+      "id": "chto-takoe-native-token",
+      "text": "Что такое native token?"
+    },
+    {
+      "id": "chto-takoe-rpc",
+      "text": "Что такое RPC?"
+    },
+    {
+      "id": "chto-delat-esli-tx-hash-est-a-ui-pokazyvaet-oshibku",
+      "text": "Что делать, если tx hash есть, а UI показывает ошибку?"
+    },
+    {
+      "id": "chto-delat-esli-ya-ne-uveren",
+      "text": "Что делать, если я не уверен?"
+    }
+  ],
+  "ru/quick-start": [
+    {
+      "id": "bystryy-start",
+      "text": "Быстрый старт"
+    },
+    {
+      "id": "1-otkroyte-workspace",
+      "text": "1. Откройте Workspace"
+    },
+    {
+      "id": "2-sozdayte-ili-importiruyte-koshelek-donor",
+      "text": "2. Создайте или импортируйте кошелёк-донор"
+    },
+    {
+      "id": "3-vyberite-deystvie",
+      "text": "3. Выберите действие"
+    },
+    {
+      "id": "4-zapolnite-dannye",
+      "text": "4. Заполните данные"
+    },
+    {
+      "id": "5-soberite-tranzaktsiyu",
+      "text": "5. Соберите транзакцию"
+    },
+    {
+      "id": "6-zapustite-simulyatsiyu",
+      "text": "6. Запустите симуляцию"
+    },
+    {
+      "id": "7-popolnite-donor",
+      "text": "7. Пополните донор"
+    },
+    {
+      "id": "8-otpravte-tranzaktsiyu",
+      "text": "8. Отправьте транзакцию"
+    }
+  ],
+  "ru/rescue-actions": [
+    {
+      "id": "rescue-stsenarii",
+      "text": "Rescue-сценарии"
+    },
+    {
+      "id": "remove-delegation",
+      "text": "Remove Delegation"
+    },
+    {
+      "id": "custom-batch",
+      "text": "Custom Batch"
+    },
+    {
+      "id": "permit-rescue",
+      "text": "Permit Rescue"
+    },
+    {
+      "id": "debank-withdraw",
+      "text": "DeBank Withdraw"
+    },
+    {
+      "id": "kak-vybrat-stsenariy",
+      "text": "Как выбрать сценарий"
+    },
+    {
+      "id": "esli-vse-ravno-neponyatno",
+      "text": "Если всё равно непонятно"
+    }
+  ],
+  "ru/safety": [
+    {
+      "id": "glavnye-pravila-bezopasnosti",
+      "text": "Главные правила безопасности"
+    },
+    {
+      "id": "rabotayte-tolko-s-chistogo-okruzheniya",
+      "text": "Работайте только с чистого окружения"
+    },
+    {
+      "id": "nikogda-ne-vstavlyayte-lishnie-klyuchi",
+      "text": "Никогда не вставляйте лишние ключи"
+    },
+    {
+      "id": "donor-dolzhen-byt-otdelnym-koshelkom",
+      "text": "Донор должен быть отдельным кошельком"
+    },
+    {
+      "id": "proveryayte-set",
+      "text": "Проверяйте сеть"
+    },
+    {
+      "id": "proveryayte-poluchatelya",
+      "text": "Проверяйте получателя"
+    },
+    {
+      "id": "simulyatsiya-ne-ravna-garantii",
+      "text": "Симуляция не равна гарантии"
+    },
+    {
+      "id": "ne-ispolzuyte-sayt-vslepuyu",
+      "text": "Не используйте сайт вслепую"
+    },
+    {
+      "id": "proveryayte-itog-pered-send",
+      "text": "Проверяйте итог перед Send"
+    },
+    {
+      "id": "posle-zaversheniya",
+      "text": "После завершения"
+    }
+  ],
+  "ru/service-fees": [
+    {
+      "id": "komissii-servisa",
+      "text": "Комиссии сервиса"
+    },
+    {
+      "id": "1-token-rescue-fee",
+      "text": "1. Token rescue fee"
+    },
+    {
+      "id": "kogda-poyavlyaetsya-token-rescue-fee",
+      "text": "Когда появляется token rescue fee"
+    },
+    {
+      "id": "2-native-service-fee",
+      "text": "2. Native service fee"
+    },
+    {
+      "id": "kogda-poyavlyaetsya-native-service-fee",
+      "text": "Когда появляется native service fee"
+    },
+    {
+      "id": "kogda-native-service-fee-ravna-nulyu",
+      "text": "Когда native service fee равна нулю"
+    },
+    {
+      "id": "kak-sayt-schitaet-summu-v-nativnoy-monete",
+      "text": "Как сайт считает сумму в нативной монете"
+    },
+    {
+      "id": "gde-smotret-pered-otpravkoy",
+      "text": "Где смотреть перед отправкой"
+    }
+  ],
+  "ru/simulation-funding-sending": [
+    {
+      "id": "simulyatsiya-popolnenie-i-otpravka",
+      "text": "Симуляция, пополнение и отправка"
+    },
+    {
+      "id": "simulation",
+      "text": "Simulation"
+    },
+    {
+      "id": "chto-delat-esli-simulyatsiya-uspeshna",
+      "text": "Что делать, если симуляция успешна"
+    },
+    {
+      "id": "chto-delat-esli-simulyatsiya-upala",
+      "text": "Что делать, если симуляция упала"
+    },
+    {
+      "id": "fund-donor",
+      "text": "Fund Donor"
+    },
+    {
+      "id": "send",
+      "text": "Send"
+    },
+    {
+      "id": "esli-otpravka-ne-udalas",
+      "text": "Если отправка не удалась"
+    }
+  ],
+  "ru/troubleshooting": [
+    {
+      "id": "oshibki-i-resheniya",
+      "text": "Ошибки и решения"
+    },
+    {
+      "id": "knopka-nedostupna",
+      "text": "Кнопка недоступна"
+    },
+    {
+      "id": "nevernyy-private-key",
+      "text": "Неверный private key"
+    },
+    {
+      "id": "rpc-ne-rabotaet",
+      "text": "RPC не работает"
+    },
+    {
+      "id": "chain-id-ne-sovpadaet",
+      "text": "Chain ID не совпадает"
+    },
+    {
+      "id": "debank-ne-zagruzil-aktivy",
+      "text": "DeBank не загрузил активы"
+    },
+    {
+      "id": "simulyatsiya-upala",
+      "text": "Симуляция упала"
+    },
+    {
+      "id": "transaction-plan-expired",
+      "text": "Transaction plan expired"
+    },
+    {
+      "id": "tranzaktsiya-zavisla",
+      "text": "Транзакция зависла"
+    },
+    {
+      "id": "balans-ne-obnovilsya",
+      "text": "Баланс не обновился"
+    },
+    {
+      "id": "otpravka-upala-posle-broadcast",
+      "text": "Отправка упала после broadcast"
+    }
+  ],
+  "ru/workspace-flow": [
+    {
+      "id": "rabochiy-protsess",
+      "text": "Рабочий процесс"
+    },
+    {
+      "id": "1-donor-wallet",
+      "text": "1. Donor Wallet"
+    },
+    {
+      "id": "2-action-builder",
+      "text": "2. Action Builder"
+    },
+    {
+      "id": "3-build",
+      "text": "3. Build"
+    },
+    {
+      "id": "4-simulation",
+      "text": "4. Simulation"
+    },
+    {
+      "id": "5-fund-donor",
+      "text": "5. Fund Donor"
+    },
+    {
+      "id": "6-send",
+      "text": "6. Send"
+    },
+    {
+      "id": "mozhno-li-vernutsya-nazad",
+      "text": "Можно ли вернуться назад"
+    }
+  ],
+  "ru/index": [
+    {
+      "id": "chto-takoe-antidrain",
+      "text": "Что такое AntiDrain"
+    },
+    {
+      "id": "chto-delaet-sayt",
+      "text": "Что делает сайт"
+    },
+    {
+      "id": "chto-sayt-ne-delaet",
+      "text": "Что сайт не делает"
+    },
+    {
+      "id": "glavnoe-pravilo",
+      "text": "Главное правило"
+    },
+    {
+      "id": "minimalnaya-shema-spaseniya",
+      "text": "Минимальная схема спасения"
+    }
+  ],
+  "en/affiliate": [
+    {
+      "id": "affiliate-link",
+      "text": "Affiliate Link"
+    },
+    {
+      "id": "how-to-create-a-link",
+      "text": "How to Create a Link"
+    },
+    {
+      "id": "affiliate-wallet-requirements",
+      "text": "Affiliate Wallet Requirements"
+    },
+    {
+      "id": "how-it-works",
+      "text": "How It Works"
+    },
+    {
+      "id": "percentages-and-rewards",
+      "text": "Percentages and Rewards"
+    },
+    {
+      "id": "1-token-rescue-fee",
+      "text": "1. Token Rescue Fee"
+    },
+    {
+      "id": "2-native-service-fee",
+      "text": "2. Native Service Fee"
+    },
+    {
+      "id": "when-the-affiliate-gets-paid",
+      "text": "When the Affiliate Gets Paid"
+    },
+    {
+      "id": "important",
+      "text": "Important"
+    },
+    {
+      "id": "what-to-check",
+      "text": "What to Check"
+    }
+  ],
+  "en/asset-manager": [
+    {
+      "id": "donor-asset-manager",
+      "text": "Donor Asset Manager"
+    },
+    {
+      "id": "what-you-can-do",
+      "text": "What You Can Do"
+    },
+    {
+      "id": "how-to-withdraw-native-balance",
+      "text": "How to Withdraw Native Balance"
+    },
+    {
+      "id": "how-to-withdraw-erc-20",
+      "text": "How to Withdraw ERC-20"
+    },
+    {
+      "id": "important-checks",
+      "text": "Important Checks"
+    },
+    {
+      "id": "why-sending-may-be-blocked",
+      "text": "Why Sending May Be Blocked"
+    }
+  ],
+  "en/beginner-guide": [
+    {
+      "id": "if-you-are-new-and-your-wallet-is-at-risk",
+      "text": "If You Are New and Your Wallet Is at Risk"
+    },
+    {
+      "id": "stop-and-prepare-first",
+      "text": "Stop and Prepare First"
+    },
+    {
+      "id": "in-very-simple-words",
+      "text": "In Very Simple Words"
+    },
+    {
+      "id": "which-action-to-choose",
+      "text": "Which Action to Choose"
+    },
+    {
+      "id": "low-risk-order-of-actions",
+      "text": "Low-Risk Order of Actions"
+    },
+    {
+      "id": "when-you-must-not-continue",
+      "text": "When You Must Not Continue"
+    },
+    {
+      "id": "after-rescue",
+      "text": "After Rescue"
+    }
+  ],
+  "en/donor-wallet": [
+    {
+      "id": "donor-wallet",
+      "text": "Donor Wallet"
+    },
+    {
+      "id": "why-the-donor-is-needed",
+      "text": "Why the Donor Is Needed"
+    },
+    {
+      "id": "how-to-create-a-donor",
+      "text": "How to Create a Donor"
+    },
+    {
+      "id": "how-to-import-a-donor",
+      "text": "How to Import a Donor"
+    },
+    {
+      "id": "backup",
+      "text": "Backup"
+    },
+    {
+      "id": "show--hide-private-key",
+      "text": "Show / Hide Private Key"
+    },
+    {
+      "id": "when-to-fund-the-donor",
+      "text": "When to Fund the Donor"
+    }
+  ],
+  "en/faq": [
+    {
+      "id": "faq",
+      "text": "FAQ"
+    },
+    {
+      "id": "will-antidrain-block-an-attack-automatically",
+      "text": "Will AntiDrain block an attack automatically?"
+    },
+    {
+      "id": "i-am-completely-new-where-should-i-start",
+      "text": "I am completely new. Where should I start?"
+    },
+    {
+      "id": "do-my-keys-leave-the-browser",
+      "text": "Do my keys leave the browser?"
+    },
+    {
+      "id": "can-i-use-my-main-wallet-as-the-donor",
+      "text": "Can I use my main wallet as the donor?"
+    },
+    {
+      "id": "where-should-rescued-funds-go",
+      "text": "Where should rescued funds go?"
+    },
+    {
+      "id": "when-should-i-fund-the-donor",
+      "text": "When should I fund the donor?"
+    },
+    {
+      "id": "what-should-i-do-after-a-successful-rescue",
+      "text": "What should I do after a successful rescue?"
+    },
+    {
+      "id": "why-do-i-need-simulation",
+      "text": "Why do I need simulation?"
+    },
+    {
+      "id": "simulation-succeeded-is-that-a-guarantee",
+      "text": "Simulation succeeded. Is that a guarantee?"
+    },
+    {
+      "id": "what-is-eip-7702-delegation",
+      "text": "What is EIP-7702 delegation?"
+    },
+    {
+      "id": "what-is-permit-rescue",
+      "text": "What is Permit Rescue?"
+    },
+    {
+      "id": "what-is-debank-withdraw",
+      "text": "What is DeBank Withdraw?"
+    },
+    {
+      "id": "what-is-a-native-token",
+      "text": "What is a native token?"
+    },
+    {
+      "id": "what-is-rpc",
+      "text": "What is RPC?"
+    },
+    {
+      "id": "what-if-i-have-a-tx-hash-but-the-ui-shows-an-error",
+      "text": "What if I have a tx hash but the UI shows an error?"
+    },
+    {
+      "id": "what-if-i-am-not-sure",
+      "text": "What if I am not sure?"
+    }
+  ],
+  "en/quick-start": [
+    {
+      "id": "quick-start",
+      "text": "Quick Start"
+    },
+    {
+      "id": "1-open-workspace",
+      "text": "1. Open Workspace"
+    },
+    {
+      "id": "2-create-or-import-a-donor-wallet",
+      "text": "2. Create or Import a Donor Wallet"
+    },
+    {
+      "id": "3-choose-an-action",
+      "text": "3. Choose an Action"
+    },
+    {
+      "id": "4-fill-in-the-data",
+      "text": "4. Fill In the Data"
+    },
+    {
+      "id": "5-build-the-transaction",
+      "text": "5. Build the Transaction"
+    },
+    {
+      "id": "6-run-simulation",
+      "text": "6. Run Simulation"
+    },
+    {
+      "id": "7-fund-the-donor",
+      "text": "7. Fund the Donor"
+    },
+    {
+      "id": "8-send-the-transaction",
+      "text": "8. Send the Transaction"
+    }
+  ],
+  "en/rescue-actions": [
+    {
+      "id": "rescue-actions",
+      "text": "Rescue Actions"
+    },
+    {
+      "id": "remove-delegation",
+      "text": "Remove Delegation"
+    },
+    {
+      "id": "custom-batch",
+      "text": "Custom Batch"
+    },
+    {
+      "id": "permit-rescue",
+      "text": "Permit Rescue"
+    },
+    {
+      "id": "debank-withdraw",
+      "text": "DeBank Withdraw"
+    },
+    {
+      "id": "how-to-choose",
+      "text": "How to Choose"
+    },
+    {
+      "id": "if-you-still-do-not-know",
+      "text": "If You Still Do Not Know"
+    }
+  ],
+  "en/safety": [
+    {
+      "id": "core-safety-rules",
+      "text": "Core Safety Rules"
+    },
+    {
+      "id": "use-a-clean-environment",
+      "text": "Use a Clean Environment"
+    },
+    {
+      "id": "never-paste-extra-keys",
+      "text": "Never Paste Extra Keys"
+    },
+    {
+      "id": "use-a-separate-donor",
+      "text": "Use a Separate Donor"
+    },
+    {
+      "id": "check-the-network",
+      "text": "Check the Network"
+    },
+    {
+      "id": "check-the-recipient",
+      "text": "Check the Recipient"
+    },
+    {
+      "id": "simulation-is-not-a-guarantee",
+      "text": "Simulation Is Not a Guarantee"
+    },
+    {
+      "id": "do-not-use-the-site-blindly",
+      "text": "Do Not Use the Site Blindly"
+    },
+    {
+      "id": "check-the-final-send-screen",
+      "text": "Check the Final Send Screen"
+    },
+    {
+      "id": "after-finishing",
+      "text": "After Finishing"
+    }
+  ],
+  "en/service-fees": [
+    {
+      "id": "service-fees",
+      "text": "Service Fees"
+    },
+    {
+      "id": "1-token-rescue-fee",
+      "text": "1. Token Rescue Fee"
+    },
+    {
+      "id": "when-token-rescue-fee-appears",
+      "text": "When Token Rescue Fee Appears"
+    },
+    {
+      "id": "2-native-service-fee",
+      "text": "2. Native Service Fee"
+    },
+    {
+      "id": "when-native-service-fee-appears",
+      "text": "When Native Service Fee Appears"
+    },
+    {
+      "id": "when-native-service-fee-is-zero",
+      "text": "When Native Service Fee Is Zero"
+    },
+    {
+      "id": "how-the-site-calculates-the-native-amount",
+      "text": "How the Site Calculates the Native Amount"
+    },
+    {
+      "id": "what-to-check-before-sending",
+      "text": "What to Check Before Sending"
+    }
+  ],
+  "en/simulation-funding-sending": [
+    {
+      "id": "simulation-funding-and-sending",
+      "text": "Simulation, Funding, and Sending"
+    },
+    {
+      "id": "simulation",
+      "text": "Simulation"
+    },
+    {
+      "id": "if-simulation-succeeds",
+      "text": "If Simulation Succeeds"
+    },
+    {
+      "id": "if-simulation-fails",
+      "text": "If Simulation Fails"
+    },
+    {
+      "id": "fund-donor",
+      "text": "Fund Donor"
+    },
+    {
+      "id": "send",
+      "text": "Send"
+    },
+    {
+      "id": "if-sending-fails",
+      "text": "If Sending Fails"
+    }
+  ],
+  "en/troubleshooting": [
+    {
+      "id": "troubleshooting",
+      "text": "Troubleshooting"
+    },
+    {
+      "id": "button-is-disabled",
+      "text": "Button Is Disabled"
+    },
+    {
+      "id": "invalid-private-key",
+      "text": "Invalid Private Key"
+    },
+    {
+      "id": "rpc-does-not-work",
+      "text": "RPC Does Not Work"
+    },
+    {
+      "id": "chain-id-does-not-match",
+      "text": "Chain ID Does Not Match"
+    },
+    {
+      "id": "debank-did-not-load-assets",
+      "text": "DeBank Did Not Load Assets"
+    },
+    {
+      "id": "simulation-failed",
+      "text": "Simulation Failed"
+    },
+    {
+      "id": "transaction-plan-expired",
+      "text": "Transaction Plan Expired"
+    },
+    {
+      "id": "transaction-is-pending",
+      "text": "Transaction Is Pending"
+    },
+    {
+      "id": "balance-did-not-update",
+      "text": "Balance Did Not Update"
+    },
+    {
+      "id": "sending-failed-after-broadcast",
+      "text": "Sending Failed After Broadcast"
+    }
+  ],
+  "en/workspace-flow": [
+    {
+      "id": "workspace-flow",
+      "text": "Workspace Flow"
+    },
+    {
+      "id": "1-donor-wallet",
+      "text": "1. Donor Wallet"
+    },
+    {
+      "id": "2-action-builder",
+      "text": "2. Action Builder"
+    },
+    {
+      "id": "3-build",
+      "text": "3. Build"
+    },
+    {
+      "id": "4-simulation",
+      "text": "4. Simulation"
+    },
+    {
+      "id": "5-fund-donor",
+      "text": "5. Fund Donor"
+    },
+    {
+      "id": "6-send",
+      "text": "6. Send"
+    },
+    {
+      "id": "can-you-go-back",
+      "text": "Can You Go Back?"
+    }
+  ],
+  "en/index": [
+    {
+      "id": "what-antidrain-is",
+      "text": "What AntiDrain Is"
+    },
+    {
+      "id": "what-the-site-does",
+      "text": "What the Site Does"
+    },
+    {
+      "id": "what-the-site-does-not-do",
+      "text": "What the Site Does Not Do"
+    },
+    {
+      "id": "the-main-rule",
+      "text": "The Main Rule"
+    },
+    {
+      "id": "minimal-rescue-shape",
+      "text": "Minimal Rescue Shape"
+    }
+  ]
+}

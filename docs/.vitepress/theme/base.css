@@ -1,0 +1,88 @@
+/*
+ * Base layer — ported from antidrain_site2/src/index.css.
+ *
+ * Only the parts that apply to a documentation site are carried over: the
+ * root font-size technique, focus-visible, selection, scrollbars and the
+ * reduced-motion blanket. The reset, form-control normalisation and #root
+ * rules are VitePress's job or irrelevant here.
+ */
+
+html {
+  /* site2's fluid root, kept verbatim for mobile. */
+  font-size: clamp(16px, 0.15vw + 15.4px, 17px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+ * DELIBERATE DEVIATION: site2 jumps to 21px here. It has one content column;
+ * docs has three (sidebar + prose + outline), and 21px pushes the prose measure
+ * past a comfortable line length while squeezing the rails. 19px keeps site2's
+ * generous desktop feel at a width that still reads. See DESIGN_SYSTEM.md.
+ */
+@media (min-width: 1024px) {
+  html {
+    font-size: 19px;
+  }
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/*
+ * Reduced motion. The old GitBook stylesheet declared `transition: none`
+ * WITHOUT !important against transitions that had it, so the sidebar, header
+ * and prev/next carried on animating for anyone who asked them not to.
+ *
+ * The !important below is the only one in this theme and it is deliberate: an
+ * accessibility override has to beat every author rule, including VitePress's
+ * own component transitions. Same blanket site2 ships. Everywhere else,
+ * specificity is enough.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

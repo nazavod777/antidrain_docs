@@ -1,0 +1,262 @@
+/*
+ * AntiDrain design tokens.
+ *
+ * SOURCE OF TRUTH: antidrain_site2/src/styles/tokens.css
+ * This file is a verbatim copy. Do NOT edit values here — change them in site2
+ * and port the change across, otherwise the two sites drift apart.
+ * Run `npm run tokens:check` to see the diff against site2.
+ *
+ * Deliberate deviations from the source are listed at the bottom of this file
+ * and explained in DESIGN_SYSTEM.md. Keep them there, not inline, so the block
+ * above stays diffable against site2.
+ */
+
+:root {
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #101018;
+  --color-bg-card: #14141e;
+  --color-bg-card-hover: #1a1a28;
+
+  --color-text-primary: #eeeef2;
+  --color-text-secondary: #b0b0c8;
+  --color-text-muted: #8f8faa;
+
+  /* Status families. The channel triplet is the token that matters: one hue per meaning.
+     Alpha stays free-form via rgba(var(--…-rgb), α) because surfaces legitimately need many
+     steps, and a wrong alpha is a shade — a wrong hue is a different status.
+
+     `-text` is a lightened step, not decoration: the base danger red only reaches 4.4:1 on
+     bg-card-hover, so body copy needs the lighter value to clear WCAG AA on dark surfaces.
+     `-text-hover` sits one lightness stop (+7 L*) above `-text`, the same interval that
+     separates --color-accent from --color-accent-hover.
+
+     These steps are literals, so nothing recomputes them: change a family's base hue and the
+     matching `-text` and `-text-hover` must be re-derived by hand — take the base into CIE Lab,
+     raise L* until it clears 4.5:1 on --color-bg-card-hover, keep a* and b* untouched so the
+     hue survives, then add +7 L* for the hover step. */
+  --color-accent-rgb: 0, 212, 170;
+  --color-accent: #00d4aa;
+  --color-accent-hover: #00eabb;
+  --color-accent-dim: rgba(var(--color-accent-rgb), 0.08);
+  --color-accent-border: rgba(var(--color-accent-rgb), 0.2);
+
+  --color-danger-rgb: 229, 72, 77;
+  --color-danger: #e5484d;
+  --color-danger-dim: rgba(var(--color-danger-rgb), 0.08);
+  --color-danger-border: rgba(var(--color-danger-rgb), 0.28);
+  --color-danger-text: #ff8a8a;
+  --color-danger-text-hover: #ff9d9d;
+
+  --color-warning-rgb: 245, 158, 11;
+  --color-warning: #f59e0b;
+  --color-warning-dim: rgba(var(--color-warning-rgb), 0.08);
+  --color-warning-border: rgba(var(--color-warning-rgb), 0.28);
+  --color-warning-text: #ffbf33;
+  --color-warning-text-hover: #ffd348;
+
+  --color-success-rgb: 52, 211, 153;
+  --color-success: #34d399;
+  --color-success-dim: rgba(var(--color-success-rgb), 0.08);
+  --color-success-border: rgba(var(--color-success-rgb), 0.28);
+  --color-success-text: #6ee7b7;
+
+  --color-border: #222234;
+  --color-border-hover: #2e2e44;
+
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 100px;
+
+  --control-height-compact: 28px;
+  --control-height-sm: 44px;
+  --control-height-md: 44px;
+  --control-height-lg: 44px;
+  --control-height-xl: 44px;
+  --control-height-hero: 48px;
+
+  --icon-size-xs: 8px;
+  --icon-size-sm: 10px;
+  --icon-size-md: 14px;
+  --icon-size-lg: 16px;
+  --icon-size-xl: 20px;
+
+  --icon-button-size-sm: 44px;
+  --icon-button-size-md: 44px;
+  --icon-button-size-lg: 44px;
+
+  --panel-loader-height: 240px;
+  --panel-list-max-height: 320px;
+  --panel-list-max-height-lg: 360px;
+  --builder-inline-form-height: 44px;
+  --builder-inline-action-size: 44px;
+
+  --max-width: 1240px;
+  --workspace-width: 1240px;
+  --workspace-panel-width: 760px;
+  --workspace-step-panel-width: 1120px;
+  --workspace-panel-copy-width: 640px;
+  --hero-title-width: 760px;
+  --hero-copy-width: 580px;
+
+  /* One definition of the focus affordance; components reference it instead of
+     re-deciding what a focused control looks like. */
+  --focus-ring: 2px solid var(--color-accent);
+  --focus-ring-offset: 2px;
+
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+
+  --z-header: 100;
+  --z-dropdown: 200;
+  --z-modal: 300;
+  --z-tooltip: 400;
+  --z-skip-link: 500;
+
+  --duration-fade-in: 220ms;
+  --duration-fade-in-delay: 80ms;
+  --fade-in-up-distance: 8px;
+  --stagger-1: 0ms;
+  --stagger-2: 40ms;
+  --stagger-3: 80ms;
+  --stagger-4: 120ms;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --radius-sm: 3px;
+    --radius-md: 5px;
+    --radius-lg: 8px;
+
+    --spacing-xs: 10px;
+    --spacing-sm: 20px;
+    --spacing-md: 30px;
+    --spacing-lg: 50px;
+    --spacing-xl: 80px;
+    --spacing-2xl: 125px;
+
+    --control-height-compact: 35px;
+    --control-height-sm: 40px;
+    --control-height-md: 45px;
+    --control-height-lg: 50px;
+    --control-height-xl: 56px;
+    --control-height-hero: 60px;
+
+    --icon-size-xs: 10px;
+    --icon-size-sm: 13px;
+    --icon-size-md: 18px;
+    --icon-size-lg: 20px;
+    --icon-size-xl: 24px;
+
+    --icon-button-size-sm: 35px;
+    --icon-button-size-md: 40px;
+    --icon-button-size-lg: 45px;
+
+    --panel-loader-height: 300px;
+    --panel-list-max-height: 400px;
+    --panel-list-max-height-lg: 450px;
+    --builder-inline-form-height: 55px;
+    --builder-inline-action-size: 45px;
+
+    --max-width: 1550px;
+    --workspace-width: 1550px;
+    --workspace-panel-width: 950px;
+    --workspace-step-panel-width: 1120px;
+    --workspace-panel-copy-width: 800px;
+    --hero-title-width: 950px;
+    --hero-copy-width: 725px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--fade-in-up-distance, 20px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 14px currentColor;
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+@keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * DOCS-ONLY ADDITIONS — deviations from site2. See DESIGN_SYSTEM.md.
+ * ------------------------------------------------------------------------- */
+:root {
+  /* site2 references --shadow-lg in .pending-nav-dialog but never defines it,
+     so that modal renders with no shadow. Value taken from .net-sel__dropdown,
+     which is the same elevation level. Reported upstream. */
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  /* Accent as a TEXT colour. In dark mode it is the accent itself; the light
+     theme overrides it, because #00d4aa on white measures 1.9:1 and cannot
+     carry body text. Components must use this token for text/links and
+     --color-accent for fills, borders and active states. */
+  --color-accent-text: var(--color-accent);
+
+  /* Code/terminal surface. site2 uses a literal #08080c for .tx-log — a shade
+     below the page background, so a code block reads as a sunken panel rather
+     than another card. Promoted to a token here because docs is full of them. */
+  --color-code-surface: #08080c;
+
+  /* Scrim behind the mobile sidebar and the search dialog. site2 composes this
+     ad hoc per component; docs needs one value. */
+  --color-scrim: rgba(10, 10, 15, 0.72);
+
+  /* Padding for tinted "plaque" blocks — callouts and the landing's urgent
+     bar. Deliberately tighter vertically than horizontally: a uniform
+     --spacing-sm left the text floating, because the block's padding stacked
+     with the paragraph's own bottom margin. Blocks using this must also zero
+     their first/last child block margins so this is the ONLY vertical space,
+     which is what keeps them symmetric. */
+  --plaque-padding-y: calc(var(--spacing-xs) + 4px);
+  --plaque-padding-x: var(--spacing-sm);
+}
