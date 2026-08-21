@@ -377,9 +377,33 @@
   transition: color var(--transition-fast);
 }
 
+/* "You are here". VitePress paints its 2px indicator only from level-2 down,
+   and every page in this sidebar is level-1, so out of the box the current page
+   was marked by nothing but a colour shift on one line out of sixteen.
+
+   The marker is a tinted plate, and deliberately only that: a detached 2px bar
+   sitting beside a rounded plate reads as two unrelated shapes. One shape, plus
+   the accent colour and weight on the label.
+
+   It is a ::before so turning it on cannot move the label sideways, and it
+   bleeds past the text box on both sides for breathing room. */
 .VPSidebarItem.is-active > .item > .link .text {
   color: var(--color-accent-text);
   font-weight: 600;
+}
+
+.VPSidebarItem.level-1.is-active > .item::before {
+  content: '';
+  position: absolute;
+  inset: 0 -12px 0 -12px;
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-dim);
+}
+
+/* The plate is positioned, so the label has to be positioned too — otherwise
+   an absolutely positioned sibling paints over static in-flow content. */
+.VPSidebarItem.level-1.is-active > .item > .link {
+  position: relative;
 }
 
 /* --- nav ---------------------------------------------------------------- */
