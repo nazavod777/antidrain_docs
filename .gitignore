@@ -6,3 +6,8 @@ docs/.vitepress/cache/
 *.tmp
 .idea/
 .DS_Store
+
+# `.claude/settings.json` and `.claude/commands/` are tracked on purpose: the commands invoke this
+# repository's declared gate, and a gate a fresh checkout cannot run is not a gate. Only the
+# machine-local overlay stays out.
+.claude/settings.local.json

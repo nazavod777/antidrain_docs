@@ -9,7 +9,9 @@ in `AGENTS.md`, not here.
 - **Talk to the user in Russian.** Code, identifiers, comments, commit messages
   and this repository's own documentation stay in English.
 - `npm run lint` is the fast loop — about a second, no build. Use it while
-  editing. Run `npm run build` before reporting anything as done.
+  editing. Run `npm run build` before reporting anything as done. `/gate` runs
+  this repository's declared gate; `/parity` is the RU/EN read that
+  `check:parity` cannot do.
 - `npm run build` needs a Chromium for `check:layout`. If Playwright's own
   browser is missing, point `PLAYWRIGHT_CHROMIUM_PATH` at a system one.
 - Verify visual changes in a real browser at the widths `AGENTS.md` lists, in

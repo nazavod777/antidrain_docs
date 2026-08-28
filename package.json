@@ -5,7 +5,7 @@
   "description": "Documentation for AntiDrain EVM wallet rescue workflows",
   "type": "module",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.12.0 <23"
   },
   "scripts": {
     "dev": "vitepress dev docs",

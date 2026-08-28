@@ -27,9 +27,10 @@ documentation is outstanding work, not a gap in the site's coverage.
 
 The map of the three repositories, and the procedure for a change that touches
 more than one of them, live in **`../AGENTS.md`** in the parent directory. That
-is a separate repository, not part of this checkout. What this repository must keep in step
-with the product: the fee figures quoted to users, the action names, the six
-workflow step names, and the vendored `tokens.css`. The gate is
+is a separate repository, not part of this checkout; if it is missing, you
+have the repository but not its siblings. What this repository must keep in
+step with the product: the fee figures quoted to users, the action names, the
+six workflow step names, and the vendored `tokens.css`. The gate is
 `node ../scripts/check-ecosystem.mjs`.
 
 ## Read these first, and do not duplicate them
@@ -94,8 +95,8 @@ an action: "Donor Asset Withdrawal" / "Вывод активов с донора
 These break silently — nothing tells you until a shared link 404s or the two
 languages have quietly diverged. Several of them already have.
 
-- **A heading is a URL.** `check:slugs` holds 224 anchors that the previous
-  GitBook site already deployed. Adding headings is fine; changing existing
+- **A heading is a URL.** `check:slugs` holds every anchor the previous GitBook
+  site already deployed. Adding headings is fine; changing existing
   heading text is not. If it must be reworded, pin the old anchor:
   `## New text {#old-anchor}`.
 - **Frontmatter is exactly `title` and `description`.** Nothing else. The only

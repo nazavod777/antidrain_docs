@@ -36,8 +36,8 @@ docs/
   `quick-start.md`. Pages are rewritten into directories, so relative links
   break; the build fails on them.
 - **Do not change existing heading text.** Heading text is the URL anchor, and
-  `npm run check:slugs` asserts that all 224 anchors the site has already
-  deployed still resolve. Adding headings is fine. If a heading must be
+  `npm run check:slugs` asserts that every anchor the site has already deployed
+  still resolves. Adding headings is fine. If a heading must be
   reworded, pin the old anchor: `## New text {#old-anchor}`.
 - RU and EN are maintained as a pair.
 
