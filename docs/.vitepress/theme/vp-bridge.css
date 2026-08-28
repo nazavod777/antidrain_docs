@@ -45,7 +45,7 @@
   /* --- status families ------------------------------------------------
      VitePress splits these into note/tip/warning/danger/caution/important.
      Mapped onto our four families so a callout can never introduce a fifth
-     hue: meaning is carried by the hue, per site2's token comment. */
+     hue: meaning is carried by the hue, per the site's token comment. */
   --vp-c-tip-1: var(--color-success-text);
   --vp-c-tip-2: var(--color-success);
   --vp-c-tip-3: var(--color-success);
@@ -131,7 +131,7 @@
   --vp-shadow-5: var(--shadow-lg);
 
   /* --- z-index ---------------------------------------------------------
-     Deliberately NOT mapped onto site2's --z-* scale. The two scales describe
+     Deliberately NOT mapped onto the site's --z-* scale. The two scales describe
      different component sets, and VitePress's ordering is load-bearing:
      --vp-z-index-sidebar is 60 on mobile (the drawer must cover the nav) but
      drops to 25 at >=960px (below the nav's 30) so the nav title paints above
@@ -139,7 +139,7 @@
      wordmark behind the sidebar. Left to VitePress. */
 
   /* --- code ----------------------------------------------------------
-     The terminal surface from site2's .tx-log: a shade below the page in
+     The terminal surface from the site's .tx-log: a shade below the page in
      dark mode, an inset panel in light mode. */
   --vp-code-block-bg: var(--color-code-surface);
   --vp-code-block-color: var(--color-text-secondary);
@@ -221,7 +221,7 @@
 
 /*
  * Callout blocks. VitePress derives these from its own soft/1 pairs; pointing
- * them at our families gives the exact formula site2 uses for a status
+ * them at our families gives the exact formulthe site uses for a status
  * surface: 1px border in -border, background in -dim, title in -text.
  */
 :root {

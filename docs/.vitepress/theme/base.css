@@ -1,5 +1,5 @@
 /*
- * Base layer — ported from antidrain_site2/src/index.css.
+ * Base layer — ported from antidrain_site/src/index.css.
  *
  * Only the parts that apply to a documentation site are carried over: the
  * root font-size technique, focus-visible, selection, scrollbars and the
@@ -8,7 +8,7 @@
  */
 
 html {
-  /* site2's fluid root, kept verbatim for mobile. */
+  /* The site's fluid root, kept verbatim for mobile. */
   font-size: clamp(16px, 0.15vw + 15.4px, 17px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -16,9 +16,9 @@ html {
 }
 
 /*
- * DELIBERATE DEVIATION: site2 jumps to 21px here. It has one content column;
+ * DELIBERATE DEVIATION: the site jumps to 21px here. It has one content column;
  * docs has three (sidebar + prose + outline), and 21px pushes the prose measure
- * past a comfortable line length while squeezing the rails. 19px keeps site2's
+ * past a comfortable line length while squeezing the rails. 19px keeps the site's
  * generous desktop feel at a width that still reads. See DESIGN_SYSTEM.md.
  */
 @media (min-width: 1024px) {
@@ -72,7 +72,7 @@ html {
  *
  * The !important below is the only one in this theme and it is deliberate: an
  * accessibility override has to beat every author rule, including VitePress's
- * own component transitions. Same blanket site2 ships. Everywhere else,
+ * own component transitions. Same blanket the site ships. Everywhere else,
  * specificity is enough.
  */
 @media (prefers-reduced-motion: reduce) {

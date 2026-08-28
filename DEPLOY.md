@@ -66,7 +66,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
 | `npm run check:layout` | Drives a real browser over `dist/` at six widths in both themes: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, and `prefers-reduced-motion` actually suppressing transitions. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
 
 `npm run tokens:check` is separate and local-only: it diffs the vendored token
-block against site2. site2 is not available in CI, so point `ANTIDRAIN_SITE2` at
+block against the site. The site is not available in CI, so point `ANTIDRAIN_SITE` at
 your checkout and run it by hand after touching tokens.
 
 ## Domain

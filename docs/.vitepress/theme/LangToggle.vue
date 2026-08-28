@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
- * EN / RU switch, ported from site2's LanguageToggle.
+ * EN / RU switch, ported from the site's LanguageToggle.
  *
- * Like site2's, the WHOLE control is one target: clicking anywhere on it
+ * Like the site's, the WHOLE control is one target: clicking anywhere on it
  * switches to the other language. It shows both codes with the current one
  * highlighted, which is the standard reading of a two-state segmented control.
  *
- * Unlike site2 — which stores a preference and re-renders in place — the docs
+ * Unlike the site — which stores a preference and re-renders in place — the docs
  * are two separate page trees, so this is a real link to the counterpart page.
  * That keeps middle-click, open-in-new-tab and "copy link" working, which a
  * button could not do. The RU and EN trees are kept 1:1 by `npm run
@@ -78,7 +78,7 @@ const label = computed(() =>
  * Sits among VitePress's borderless nav controls (theme switch, social icons),
  * so an always-on bordered box read as heavy and bolted on. The chrome appears
  * on hover instead, the way the neighbouring icon buttons behave. Type and
- * colour semantics stay site2's: mono, 600, accent marks the current choice.
+ * colour semantics stay the site's: mono, 600, accent marks the current choice.
  */
 .lang-toggle-wrap {
   display: flex;

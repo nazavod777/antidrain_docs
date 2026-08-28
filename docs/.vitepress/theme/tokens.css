@@ -1,14 +1,14 @@
 /*
  * AntiDrain design tokens.
  *
- * SOURCE OF TRUTH: antidrain_site2/src/styles/tokens.css
- * This file is a verbatim copy. Do NOT edit values here — change them in site2
+ * SOURCE OF TRUTH: antidrain_site/src/styles/tokens.css
+ * This file is a verbatim copy. Do NOT edit values here — change them in the site
  * and port the change across, otherwise the two sites drift apart.
- * Run `npm run tokens:check` to see the diff against site2.
+ * Run `npm run tokens:check` to see the diff against the site.
  *
  * Deliberate deviations from the source are listed at the bottom of this file
  * and explained in DESIGN_SYSTEM.md. Keep them there, not inline, so the block
- * above stays diffable against site2.
+ * above stays diffable against the site.
  */
 
 :root {
@@ -20,6 +20,15 @@
   --color-text-primary: #eeeef2;
   --color-text-secondary: #b0b0c8;
   --color-text-muted: #8f8faa;
+  /* The muted hue as channels, for the alpha steps disabled controls need. Without it every such
+     surface invented its own grey-blue and stopped following this token. */
+  --color-text-muted-rgb: 143, 143, 170;
+
+  /* The transaction log is a terminal: it deliberately sits darker than any app surface and prints
+     in its own near-white. Named here so it is a decision with an owner rather than two literals
+     inside a component. */
+  --color-terminal-bg: #08080c;
+  --color-terminal-text: #c8c8d8;
 
   /* Status families. The channel triplet is the token that matters: one hue per meaning.
      Alpha stays free-form via rgba(var(--…-rgb), α) because surfaces legitimately need many
@@ -63,6 +72,21 @@
   --color-border: #222234;
   --color-border-hover: #2e2e44;
 
+  /* Type steps for small text. Each is a clamp, so a phone gets a readable floor while the desktop
+     size stays where the surfaces were designed: at a 16px root the old raw values landed between
+     9.0px and 11.8px, which is where error messages and token labels lived. The px ceiling keeps the
+     21px desktop root from inflating them.
+
+     --font-size-2xs replaces the 0.56–0.66rem band (mobile 9.0–10.6px → 11px)
+     --font-size-xs  replaces 0.68–0.70rem      (mobile 10.9–11.2px → 12px)
+     --font-size-sm  replaces 0.72–0.74rem      (mobile 11.5–11.8px → 12px)
+
+     Nothing below --font-size-2xs exists on purpose: 11px is the floor this product accepts for text
+     a user has to read to make a decision about their own money. */
+  --font-size-2xs: clamp(11px, 0.62rem, 13px);
+  --font-size-xs: clamp(12px, 0.7rem, 14.5px);
+  --font-size-sm: clamp(12px, 0.73rem, 15.5px);
+
   --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
 
@@ -87,15 +111,36 @@
   --control-height-xl: 44px;
   --control-height-hero: 48px;
 
+  /* Complete rungs on purpose. `--icon-size-xs`, `-sm`, `-md`, `-xl`, `--control-height-compact`
+     and `--icon-button-size-lg` have no reader today, and they stay because a scale with holes in it
+     is worse than a scale with spare rungs: each one is also redefined at the 1024px tier, and the
+     next control that needs a step would otherwise reintroduce it as a literal. Tokens that are not
+     part of a live scale — a whole stagger group, a panel width nothing measured against — were
+     deleted instead. */
   --icon-size-xs: 8px;
   --icon-size-sm: 10px;
   --icon-size-md: 14px;
   --icon-size-lg: 16px;
   --icon-size-xl: 20px;
 
+  /* Three roles that used to be one token, and that is why the desktop tier could not be fixed
+     without inflating avatars. `--icon-button-size-*` is the **hit target** and nothing else: it
+     stays 44px at every width and every pointer type, because a control that cannot be hit is not
+     denser, it is broken. `--icon-button-plate-*` is the **painted square** — background, border,
+     radius — and it is deliberately smaller than the target: a 16-20px glyph centred in a 44px box
+     reads as dead space, and the hover tint used to appear as a 44×44 rectangle with nothing in the
+     resting state to predict it. `--media-thumb-sm` is a **decorative square** (token and pool
+     logos), which has no target to meet and keeps its old density. */
   --icon-button-size-sm: 44px;
   --icon-button-size-md: 44px;
   --icon-button-size-lg: 44px;
+
+  /* One value per plate, no tier override: the glyph grows at 1024 instead, which takes the fill
+     from 44% to 56% without moving the target. */
+  --icon-button-plate-sm: 36px;
+  --icon-button-plate-md: 40px;
+
+  --media-thumb-sm: 44px;
 
   --panel-loader-height: 240px;
   --panel-list-max-height: 320px;
@@ -105,7 +150,6 @@
 
   --max-width: 1240px;
   --workspace-width: 1240px;
-  --workspace-panel-width: 760px;
   --workspace-step-panel-width: 1120px;
   --workspace-panel-copy-width: 640px;
   --hero-title-width: 760px;
@@ -128,26 +172,103 @@
   --duration-fade-in: 220ms;
   --duration-fade-in-delay: 80ms;
   --fade-in-up-distance: 8px;
-  --stagger-1: 0ms;
-  --stagger-2: 40ms;
-  --stagger-3: 80ms;
-  --stagger-4: 120ms;
 }
 
+/* `prefers-contrast: more` is the other half of the contrast story: the user asks for more contrast
+   without giving up the site palette, so the muted steps collapse upward instead of disappearing.
+   Measured against --color-bg-primary (#0a0a0f): muted text 6.28:1 → 11.51:1, secondary 9.30:1 →
+   17.07:1, and the border that marks a panel edge 1.27:1 → 3.07:1, which is the 3:1 floor WCAG 1.4.11
+   asks of a non-text boundary. The border keeps its hue — same channel ratio, higher lightness — so
+   only the contrast changes, not the palette. Nothing moves on the accent: it already clears AA, and
+   shifting a status hue would change meaning rather than legibility. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-text-secondary: #eeeef2;
+    --color-text-muted: #c4c4d8;
+
+    --color-border: #5a5a8a;
+    --color-border-hover: #6e6ea9;
+
+    --color-danger-text: #ffb3b3;
+    --color-warning-text: #ffd27a;
+    --color-success-text: #a5f3d0;
+  }
+}
+
+/* Windows High Contrast and any other forced-colours mode replaces the page palette, and the axe
+   sweep under `forced-colors: active` measured what that costs here: the browser forced surfaces to
+   the system canvas while these author text colours survived, leaving #eeeef2 on #ffffff — 1.15:1.
+   Mapping the palette onto system colours is the fix the mode is designed for: one block, and every
+   component that speaks in tokens follows. Status keeps its meaning because severity is carried by
+   words in this app, never by hue alone. */
+@media (forced-colors: active) {
+  :root {
+    --color-bg-primary: Canvas;
+    --color-bg-secondary: Canvas;
+    --color-bg-card: Canvas;
+    --color-bg-card-hover: Canvas;
+
+    --color-text-primary: CanvasText;
+    --color-text-secondary: CanvasText;
+    --color-text-muted: GrayText;
+
+    --color-terminal-bg: Canvas;
+    --color-terminal-text: CanvasText;
+
+    --color-accent: CanvasText;
+    --color-accent-hover: CanvasText;
+    --color-accent-dim: Canvas;
+    --color-accent-border: CanvasText;
+
+    --color-danger: CanvasText;
+    --color-danger-dim: Canvas;
+    --color-danger-border: CanvasText;
+    --color-danger-text: CanvasText;
+    --color-danger-text-hover: CanvasText;
+
+    --color-warning: CanvasText;
+    --color-warning-dim: Canvas;
+    --color-warning-border: CanvasText;
+    --color-warning-text: CanvasText;
+    --color-warning-text-hover: CanvasText;
+
+    --color-success: CanvasText;
+    --color-success-dim: Canvas;
+    --color-success-border: CanvasText;
+    --color-success-text: CanvasText;
+
+    --color-border: CanvasText;
+    --color-border-hover: CanvasText;
+
+    --focus-ring: 2px solid Highlight;
+    --shadow-card: none;
+  }
+}
+
+/* Laptop tier (1024–1439). The desktop values below were built for a 1550px container, and until
+   now they switched on at 1024 — so a 1280×800 laptop got 21px type, 125px section gaps and a
+   container it cannot show. This tier keeps the desktop density (radii, control and icon sizes) and
+   scales back only what depends on how much room there actually is: spacing, container widths and
+   the scrollable list heights. */
 @media (min-width: 1024px) {
   :root {
     --radius-sm: 3px;
     --radius-md: 5px;
     --radius-lg: 8px;
 
-    --spacing-xs: 10px;
-    --spacing-sm: 20px;
-    --spacing-md: 30px;
-    --spacing-lg: 50px;
-    --spacing-xl: 80px;
-    --spacing-2xl: 125px;
+    --spacing-xs: 9px;
+    --spacing-sm: 18px;
+    --spacing-md: 28px;
+    --spacing-lg: 44px;
+    --spacing-xl: 72px;
+    --spacing-2xl: 110px;
 
     --control-height-compact: 35px;
+    /* Stays below 44px, and that is safe rather than accepted: all three readers
+       (`DecimalsPicker`, `CustomWalletTypePicker`, `CustomTxEntry`) pin `min-height: 44px` in the
+       same rule, so this only ever sets the visual height. Raising it to 44 would also erase the
+       compact rung, since `-md` is 45px here. A reader that forgets the pin is caught by
+       `e2e/hit-targets.spec.ts`, not by this value. */
     --control-height-sm: 40px;
     --control-height-md: 45px;
     --control-height-lg: 50px;
@@ -160,20 +281,48 @@
     --icon-size-lg: 20px;
     --icon-size-xl: 24px;
 
-    --icon-button-size-sm: 35px;
-    --icon-button-size-md: 40px;
+    /* The hit target does not shrink here any more. This block used to take `-sm` to 35px and `-md`
+       to 40px on width alone, so a touch laptop and a large tablet got the mouse-sized target too —
+       the accepted risk that `docs/security-audit-tradeoffs.md` carried until the plates above
+       replaced it. `-lg` still grows, and nothing reads it yet. */
     --icon-button-size-lg: 45px;
+
+    --media-thumb-sm: 35px;
+
+    --panel-loader-height: 270px;
+    --panel-list-max-height: 360px;
+    --panel-list-max-height-lg: 400px;
+    --builder-inline-form-height: 50px;
+    --builder-inline-action-size: 45px;
+
+    --max-width: 1360px;
+    --workspace-width: 1360px;
+    --workspace-step-panel-width: 1120px;
+    --workspace-panel-copy-width: 720px;
+    --hero-title-width: 860px;
+    --hero-copy-width: 660px;
+  }
+}
+
+/* Wide tier (≥1440). Only what differs from the laptop tier: this is the first width where the
+   1550px container fits, so containers, section spacing and list heights grow to the values the
+   layout was designed around. Radii, control and icon sizes are already at their desktop values
+   from 1024 up, so they are not repeated here. */
+@media (min-width: 1440px) {
+  :root {
+    --spacing-xs: 10px;
+    --spacing-sm: 20px;
+    --spacing-md: 30px;
+    --spacing-lg: 50px;
+    --spacing-xl: 80px;
+    --spacing-2xl: 125px;
 
     --panel-loader-height: 300px;
     --panel-list-max-height: 400px;
     --panel-list-max-height-lg: 450px;
     --builder-inline-form-height: 55px;
-    --builder-inline-action-size: 45px;
-
     --max-width: 1550px;
     --workspace-width: 1550px;
-    --workspace-panel-width: 950px;
-    --workspace-step-panel-width: 1120px;
     --workspace-panel-copy-width: 800px;
     --hero-title-width: 950px;
     --hero-copy-width: 725px;
@@ -228,10 +377,10 @@
 }
 
 /* ---------------------------------------------------------------------------
- * DOCS-ONLY ADDITIONS — deviations from site2. See DESIGN_SYSTEM.md.
+ * DOCS-ONLY ADDITIONS — deviations from the site. See DESIGN_SYSTEM.md.
  * ------------------------------------------------------------------------- */
 :root {
-  /* site2 references --shadow-lg in .pending-nav-dialog but never defines it,
+  /* The site references --shadow-lg in .pending-nav-dialog but never defines it,
      so that modal renders with no shadow. Value taken from .net-sel__dropdown,
      which is the same elevation level. Reported upstream. */
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -242,12 +391,15 @@
      --color-accent for fills, borders and active states. */
   --color-accent-text: var(--color-accent);
 
-  /* Code/terminal surface. site2 uses a literal #08080c for .tx-log — a shade
-     below the page background, so a code block reads as a sunken panel rather
-     than another card. Promoted to a token here because docs is full of them. */
-  --color-code-surface: #08080c;
+  /* Code/terminal surface — the site's terminal shade, a step below the page
+     background, so a code block reads as a sunken panel rather than another
+     card. Renamed rather than re-valued: docs is full of code blocks and none
+     of them is a transaction log, but the colour decision stays the site's. The
+     light theme overrides it, because on white there is nothing below the page
+     background to go to. */
+  --color-code-surface: var(--color-terminal-bg);
 
-  /* Scrim behind the mobile sidebar and the search dialog. site2 composes this
+  /* Scrim behind the mobile sidebar and the search dialog. The site composes this
      ad hoc per component; docs needs one value. */
   --color-scrim: rgba(10, 10, 15, 0.72);
 

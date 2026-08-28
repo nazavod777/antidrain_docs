@@ -51,11 +51,11 @@ AntiDrain — рабочая среда для ручного спасения E
 <ul class="docs-cards docs-cards--lang">
 <li><a class="docs-card" href="/ru/" hreflang="ru" lang="ru">
   <span class="docs-card__title">Русская документация</span>
-  <span class="docs-card__text">13 страниц: быстрый старт, правила безопасности, rescue-сценарии, комиссии, ошибки и решения.</span>
+  <span class="docs-card__text">Быстрый старт, правила безопасности, rescue-сценарии, комиссии, ошибки и решения.</span>
 </a></li>
 <li><a class="docs-card" href="/en/" hreflang="en" lang="en">
   <span class="docs-card__title">English documentation</span>
-  <span class="docs-card__text">13 pages: quick start, safety rules, rescue actions, service fees, troubleshooting.</span>
+  <span class="docs-card__text">Quick start, safety rules, rescue actions, service fees, troubleshooting.</span>
 </a></li>
 </ul>
 

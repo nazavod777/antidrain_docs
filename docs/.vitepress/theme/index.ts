@@ -17,7 +17,7 @@ export default {
   extends: DefaultTheme,
   Layout: () =>
     h(DefaultTheme.Layout, null, {
-      // site2 puts the EN/RU switch in the header next to the other controls,
+      // the site puts the EN/RU switch in the header next to the other controls,
       // so docs does too — rather than VitePress's "Languages" dropdown.
       'nav-bar-content-after': () => h(LangToggle),
     }),

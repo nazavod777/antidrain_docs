@@ -47,7 +47,7 @@ const PAGES = [
   { url: '/ru/donor-wallet/', label: 'RU screenshot in a section' },
 ]
 
-/** From AGENTS.md: the site2 scale plus the two VitePress breakpoints. */
+/** From AGENTS.md: the site scale plus the two VitePress breakpoints. */
 const WIDTHS = [390, 480, 768, 1024, 1280, 1440]
 /** axe is slow, so it runs at the extremes rather than every width. */
 const AXE_WIDTHS = new Set([390, 1440])

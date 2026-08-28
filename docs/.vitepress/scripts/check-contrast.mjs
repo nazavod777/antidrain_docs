@@ -3,7 +3,7 @@
  *
  * Colours are parsed out of theme/tokens.css and theme/light.css rather than
  * duplicated here, so editing a token and forgetting to re-check is a failing
- * build rather than a silent regression. Mirrors the intent of site2's
+ * build rather than a silent regression. Mirrors the intent of the site's
  * scripts/checkInteractionAffordances.mjs.
  */
 import { readFileSync } from 'node:fs'
@@ -92,7 +92,7 @@ for (const [themeName, t] of [['dark', dark], ['light', { ...dark, ...light }]])
   }
 }
 
-// site2's rule, enforced: a focus ring must never be built from a translucent
+// the site's rule, enforced: a focus ring must never be built from a translucent
 // colour. Catching it here is cheaper than measuring 1.4:1 rings in a browser.
 for (const [file, sel] of [['tokens.css', ':root {'], ['light.css', ':root:not(.dark) {']]) {
   const css = readFileSync(resolve(THEME, file), 'utf8')

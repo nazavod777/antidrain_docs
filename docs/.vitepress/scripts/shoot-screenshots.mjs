@@ -3,7 +3,7 @@
  *
  * The docs name interface elements constantly ("press Build Transaction",
  * "check the summary"), so a reader needs to see the screen. Hand-taken
- * screenshots go stale silently, which is why this is a script: after a site2
+ * screenshots go stale silently, which is why this is a script: after a site
  * redesign, `npm run screenshots` is the whole update.
  *
  * NOT BYTE-REPRODUCIBLE. Every frame contains the live block number and gas
@@ -18,9 +18,12 @@
  * absence of exposure rather than a defence, so every field that can hold a
  * secret is also blurred here before the shutter. Both layers, deliberately.
  *
- * Requires a site2 checkout with dependencies installed. Point ANTIDRAIN_SITE2
- * at it, or keep it next to this repo. If a site2 dev server is already
- * running, pass SITE2_URL and this reuses it instead of starting another.
+ * Requires a site checkout with dependencies installed. Point ANTIDRAIN_SITE
+ * at it, or keep it next to this repo. If a site dev server is already
+ * running, pass SITE_URL and this reuses it instead of starting another.
+ *
+ * ANTIDRAIN_SITE2 and SITE2_URL are still honoured as the former names of these
+ * variables, from when the site checkout had a different directory name.
  */
 import { existsSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs'
 import { spawn } from 'node:child_process'
@@ -29,7 +32,10 @@ import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT_ROOT = resolve(HERE, '../../public/screenshots')
-const SITE2 = process.env.ANTIDRAIN_SITE2 ?? resolve(HERE, '../../../../antidrain_site2')
+const SITE = process.env.ANTIDRAIN_SITE
+  ?? process.env.ANTIDRAIN_SITE2
+  ?? resolve(HERE, '../../../../antidrain_site')
+const SITE_URL = process.env.SITE_URL ?? process.env.SITE2_URL
 
 /** Per-file and total budgets. Screenshots are committed, so this matters. */
 const MAX_FILE_KB = 120
@@ -75,26 +81,26 @@ const TX_TYPES = ['erc20', 'erc721', 'erc1155', 'custom']
 const throwawayKey = () =>
   '0x' + Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('')
 
-if (!process.env.SITE2_URL && !existsSync(join(SITE2, 'package.json'))) {
-  console.error(`site2 not found at ${SITE2}.`)
-  console.error('Set ANTIDRAIN_SITE2, or set SITE2_URL to a running dev server.')
+if (!SITE_URL && !existsSync(join(SITE, 'package.json'))) {
+  console.error(`site not found at ${SITE}.`)
+  console.error('Set ANTIDRAIN_SITE, or set SITE_URL to a running dev server.')
   process.exit(2)
 }
 
 const { chromium } = await import('playwright')
 
-/** Boots site2's dev server and resolves with its URL. */
-const startSite2 = () =>
+/** Boots the site's dev server and resolves with its URL. */
+const startSite = () =>
   new Promise((ready, fail) => {
     // detached so the whole npm -> vite process group can be killed by group
     // id later. Without it, killing `npm` leaves vite running and the signal
     // lands on this process instead.
     const proc = spawn('npm', ['run', 'dev'], {
-      cwd: SITE2,
+      cwd: SITE,
       stdio: ['ignore', 'pipe', 'pipe'],
       detached: true,
     })
-    const timer = setTimeout(() => fail(new Error('site2 dev server did not start in 60s')), 60_000)
+    const timer = setTimeout(() => fail(new Error('site dev server did not start in 60s')), 60_000)
     proc.stdout.on('data', (chunk) => {
       const match = /http:\/\/localhost:(\d+)\//.exec(String(chunk))
       if (match) {
@@ -102,7 +108,7 @@ const startSite2 = () =>
         ready({ proc, url: match[0] })
       }
     })
-    proc.on('exit', (code) => fail(new Error(`site2 dev server exited with ${code}`)))
+    proc.on('exit', (code) => fail(new Error(`site dev server exited with ${code}`)))
   })
 
 const blurSecrets = (page) =>
@@ -115,14 +121,14 @@ const blurSecrets = (page) =>
   }, SECRET_SELECTORS)
 
 let proc = null
-let url = process.env.SITE2_URL
+let url = SITE_URL
 if (url) {
   if (!url.endsWith('/')) url += '/'
-  console.log(`reusing the site2 dev server at ${url}`)
+  console.log(`reusing the site dev server at ${url}`)
 } else {
-  console.log('starting site2 dev server…')
-  ;({ proc, url } = await startSite2())
-  console.log(`site2 at ${url}`)
+  console.log('starting site dev server…')
+  ;({ proc, url } = await startSite())
+  console.log(`site at ${url}`)
 }
 
 const browser = await chromium.launch(

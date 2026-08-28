@@ -1,14 +1,14 @@
 /*
- * Light theme — a docs-only artefact. site2 is dark-only by deliberate choice
+ * Light theme — a docs-only artefact. The site is dark-only by deliberate choice
  * (see its DESIGN_SYSTEM.md "Known gaps"), so there was no light palette to
  * copy and this one was derived here.
  *
- * METHOD — the same operation site2 documents for its -text steps, run in the
+ * METHOD — the same operation the site documents for its -text steps, run in the
  * opposite direction: take the base colour into CIE Lab, move L* until it
  * clears 4.5:1 on --color-bg-card-hover (the worst light surface), keep a* and
  * b* untouched so the hue survives.
  *
- * Two asymmetries against site2 that are easy to get wrong:
+ * Two asymmetries against the site that are easy to get wrong:
  *
  *  1. -text-hover moves DARKER (-7 L*), not lighter. On a dark background a
  *     lighter step moves away from the surface and gains contrast; on a light
@@ -68,7 +68,7 @@
   --color-success-text: #007e4c;
 
   /* Ring is built from the text-weight accent, never the fill and never a
-     translucent colour — site2's rule, and it is the reason this is opaque. */
+     translucent colour — the site's rule, and it is the reason this is opaque. */
   --focus-ring: 2px solid var(--color-accent-text);
 
   /* Shadows on white need to be far softer than on near-black, or cards look

@@ -20,7 +20,7 @@ npm run dev      # http://localhost:5173 (or the next free port)
 ```
 docs/
   index.md              language-picker landing
-  ru/*.md  en/*.md      13 pages each, kept 1:1
+  ru/*.md  en/*.md      every page in both, kept 1:1 by check:parity
   .vitepress/
     config.ts           navigation, locales, SEO, URL rewrites
     slugify.ts          the one heading-slug implementation
@@ -46,7 +46,7 @@ docs/
 ```bash
 npm run lint     # contrast, anchor contract, RU/EN parity, anchor links
 npm run build    # the above, plus dead links, redirect stubs, URL and layout contracts
-npm run tokens:check  # local only: diff tokens.css against antidrain_site2
+npm run tokens:check  # local only: diff tokens.css against antidrain_site
 ```
 
 See [DEPLOY.md](DEPLOY.md) for what each check protects and how deployment

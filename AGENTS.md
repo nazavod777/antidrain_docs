@@ -4,7 +4,9 @@
 
 Source for [docs.antidrain.me](https://docs.antidrain.me) — the documentation
 for AntiDrain, a browser-based EVM wallet rescue workspace. VitePress, Russian
-and English, 13 pages per language kept as a matched pair.
+and English, kept as a matched pair: every page exists in both languages, and
+`check:parity` enforces it. The page count is deliberately not written down
+here — it changed three times without this line noticing.
 
 **Audience: people with no blockchain knowledge at all**, frequently reading
 this mid-incident because their wallet is already compromised. A change is done
@@ -12,16 +14,30 @@ when such a reader can act on it — not when it is technically correct. Treat
 that as an acceptance criterion, not a preference. If a change makes the text
 accurate but leaves a newcomer unable to take the next step, it is not finished.
 
-The product is a separate repository: `../antidrain_site2`. It is the source of
+The product is a separate repository: `../antidrain_site`. It is the source of
 truth for behaviour and for vocabulary. Never invent a name for something the
 product already names.
+
+There is a third repository, `../antidrain_extension` — a rescue-first browser
+wallet built on the same rescue logic. **These docs do not cover it yet.** Every
+page here describes the site. The word "extension" appears in these pages only
+as a threat — a malicious browser extension — so do not let the two senses blur,
+and do not describe wallet-extension behaviour from memory. Writing that
+documentation is outstanding work, not a gap in the site's coverage.
+
+The map of the three repositories, and the procedure for a change that touches
+more than one of them, live in **`../AGENTS.md`** in the parent directory. That
+is a separate repository, not part of this checkout. What this repository must keep in step
+with the product: the fee figures quoted to users, the action names, the six
+workflow step names, and the vendored `tokens.css`. The gate is
+`node ../scripts/check-ecosystem.mjs`.
 
 ## Read these first, and do not duplicate them
 
 | File | Owns |
 | --- | --- |
 | `README.md` | Repo layout, quick start, and the one-line version of the editing rules |
-| `DESIGN_SYSTEM.md` | Tokens, the two themes, every deliberate deviation from site2, callout anatomy, why search is scoped per locale |
+| `DESIGN_SYSTEM.md` | Tokens, the two themes, every deliberate deviation from the site, callout anatomy, why search is scoped per locale |
 | `DEPLOY.md` | CI, GitHub Pages, what each check protects, the `vitepress preview` URL-resolution trap |
 
 If a rule already lives in one of those, link to it instead of restating it — a
@@ -37,7 +53,7 @@ what is specific to Claude Code.
 ## Product vocabulary — copy it, do not invent it
 
 Take strings from the TypeScript catalogs in
-`../antidrain_site2/src/constants/translations/*.ts`. Do **not** read
+`../antidrain_site/src/constants/translations/*.ts`. Do **not** read
 `public/translations/workspace.json` — it is generated from `workspace.ts`.
 
 The six workflow steps, in order (`src/types/workflow/primitives.ts`,
@@ -129,7 +145,7 @@ languages have quietly diverged. Several of them already have.
 ## Accessibility
 
 The focus, outline, touch-target and reduced-motion rules live in
-`DESIGN_SYSTEM.md` under "Accessibility rules carried over from site2", and the
+`DESIGN_SYSTEM.md` under "Accessibility rules carried over from the site", and the
 contrast thresholds are enforced by `check:contrast`. Read them there. What this
 file adds:
 
@@ -144,12 +160,12 @@ file adds:
 ## UI/UX
 
 - Transitions 150ms (state changes) and 250ms (entrances), `ease-out` — the
-  site2 tokens `--transition-fast` and `--transition-base`. Nothing else.
+  site tokens `--transition-fast` and `--transition-base`. Nothing else.
 - Max 3 clicks from any entry point to any page. The sidebar is grouped for
   exactly this reason; a page nobody can reach in three is filed wrong.
 - Every interactive element has a visible hover, active, focus and disabled
   state. A disabled control explains why it is disabled — the product treats
-  that as a hard rule (`site2/docs/DISABLED_BUTTON_TOOLTIPS.md`).
+  that as a hard rule (`antidrain_site/docs/DISABLED_BUTTON_TOOLTIPS.md`).
 - Both themes are mandatory and both get checked. Dark is the default.
 - **Do not offer a control that cannot work.** The root page hides search
   because its locale index holds one page — see `DESIGN_SYSTEM.md`.
@@ -162,8 +178,8 @@ file adds:
 | `npm run lint` | Fast loop: contrast + anchors + RU/EN parity. ~1s, no build |
 | `npm run build` | Everything: `lint`, the VitePress build with its dead-link check, redirect stubs, `check:urls`, `check:layout` |
 | `npm run preview` | Serve the built output |
-| `npm run tokens:check` | Local only: diff `tokens.css` against site2. Needs `ANTIDRAIN_SITE2` |
-| `npm run screenshots` | Regenerates the UI screenshots from a live site2. Local only; review every image before committing |
+| `npm run tokens:check` | Local only: diff `tokens.css` against the site. Needs `ANTIDRAIN_SITE` |
+| `npm run screenshots` | Regenerates the UI screenshots from a live site. Local only; review every image before committing |
 | `npm run og-image` | Regenerates the social preview card. Reproducible; look at the result before committing |
 
 ## Verification
@@ -171,7 +187,7 @@ file adds:
 - Run `npm run lint` while editing, `npm run build` before reporting anything
   as done. "Done" means the build passed, not that the edit looked right.
 - For any visual change, look at it in a browser at the widths above, in both
-  themes. Screenshot against the equivalent site2 page when the change is about
+  themes. Screenshot against the equivalent site page when the change is about
   matching the product.
 - After touching tokens, run `npm run tokens:check`.
 - When you add a check, prove it fails: break the thing on purpose, confirm the

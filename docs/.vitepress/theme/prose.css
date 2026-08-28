@@ -1,12 +1,12 @@
 /*
  * What variables cannot express: long-form typography, callout chrome, code
  * surfaces and the card grid. Everything here composes from tokens — no colour
- * literals, no !important. Values are ported from the site2 components named
+ * literals, no !important. Values are ported from the site components named
  * in each comment, so the two sites read as one product.
  */
 
 /* --- measure ---------------------------------------------------------------
- * site2 keeps prose to --workspace-panel-copy-width (640 -> 800px). Docs adds
+ * The site keeps prose to --workspace-panel-copy-width (640 -> 800px). Docs adds
  * the sidebar and outline around it, so the content column carries the same
  * intent at a width that still leaves room for both rails.
  */
@@ -19,7 +19,7 @@
 }
 
 /* --- headings --------------------------------------------------------------
- * site2's display scale: negative tracking, tight leading, weight 700.
+ * The site's display scale: negative tracking, tight leading, weight 700.
  */
 .vp-doc h1 {
   font-size: clamp(1.9rem, 4vw, 2.35rem);
@@ -75,7 +75,7 @@
 }
 
 /* Ordered lists carry rescue steps, so the number needs to read as a step
-   marker rather than punctuation. Mirrors site2's .step-nav__num. */
+   marker rather than punctuation. Mirrors the site's .step-nav__num. */
 .vp-doc ol {
   counter-reset: step;
   list-style: none;
@@ -130,7 +130,7 @@
 }
 
 /* --- tables --------------------------------------------------------------
- * site2 has no <table>; the reference is .sim-res__metrics-grid — mono
+ * The site has no <table>; the reference is .sim-res__metrics-grid — mono
  * uppercase keys, tabular values, hairline cells on a card surface.
  */
 .vp-doc table {
@@ -221,7 +221,7 @@
 }
 
 /* --- callouts ------------------------------------------------------------
- * The status formula from site2's .ws-page__stage-notice: hairline in
+ * The status formula from the site's .ws-page__stage-notice: hairline in
  * -border, fill in -dim, mono uppercase title in -text.
  *
  * Scoped to both .vp-doc and .docs-landing so a callout looks identical
@@ -270,7 +270,7 @@
 }
 
 /* The danger block is the one that must not be skimmed past: a 3px bar on the
-   leading edge, the same device site2 uses on .features__note. */
+   leading edge, the same device the site uses on .features__note. */
 :is(.vp-doc, .docs-landing) .custom-block.danger {
   border-left-width: 3px;
 }
@@ -293,7 +293,7 @@
 }
 
 /* --- card grid on the locale landing pages -------------------------------
- * Ported from site2's .feature-card, including the -2px hover lift.
+ * Ported from the site's .feature-card, including the -2px hover lift.
  */
 .docs-cards {
   display: grid;
@@ -361,7 +361,7 @@
 }
 
 /* --- sidebar -------------------------------------------------------------
- * Group headings get site2's uppercase mono label treatment, and the active
+ * Group headings get the site's uppercase mono label treatment, and the active
  * item gets the 2px accent edge the old sidebar had.
  */
 .VPSidebarItem.level-0 > .item > .text {
@@ -412,7 +412,7 @@
   letter-spacing: -0.02em;
 }
 
-/* The brand mark is a pure-white alpha silhouette (site2 only ever shows it on
+/* The brand mark is a pure-white alpha silhouette (the site only ever shows it on
    a near-black page), so on a light background it disappears entirely. Because
    it is monochrome, a plain invert produces an exact black mark with the alpha
    channel intact — no filter chain, and no second asset to keep in sync. */
@@ -467,7 +467,7 @@
 }
 
 /* VitePress's own locale switchers are redundant: LangToggle.vue provides the
-   EN/RU control site2 uses, and it sits in the nav bar at every width.
+   EN/RU control the site uses, and it sits in the nav bar at every width.
    Hidden rather than unconfigured, because the `locales` block is what gives
    each language its own sidebar and lang attribute.
    
@@ -497,7 +497,7 @@
 }
 
 /* --- touch targets ------------------------------------------------------
- * site2's rule: 44px minimum on coarse pointers. Applied to navigation
+ * The site's rule: 44px minimum on coarse pointers. Applied to navigation
  * controls only — an inline prose link must not get a min-height, or it
  * distorts the line box it sits in. Sidebar links are padded rather than
  * min-heighted so the text stays vertically centred.

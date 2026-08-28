@@ -12,8 +12,8 @@
  * of them legible at a third of full size, and nothing depicting UI.
  *
  * The palette is READ FROM tokens.css rather than repeated here, because
- * check:tokens keeps that file byte-identical to site2 and a hardcoded hex
- * would drift away from the brand the moment site2 moves.
+ * check:tokens keeps that file byte-identical to the site and a hardcoded hex
+ * would drift away from the brand the moment the site moves.
  *
  * The typeface is the same Inter that VitePress serves to the docs themselves,
  * loaded from node_modules and inlined as a data URI — the render must not
