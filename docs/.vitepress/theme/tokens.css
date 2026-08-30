@@ -96,6 +96,16 @@
 
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+  /* Modal tier. Two layers on purpose: a tight contact edge that draws the panel's own boundary,
+     and a wide offset fall that puts it above the page. One blur cannot do both — it reads as a
+     halo. Added because `PendingNavigationDialog.css` asked for a `--shadow-lg` that was never
+     defined here, so the confirm dialog rendered flat against the scrim. */
+  --shadow-modal:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 14px 36px -10px rgba(0, 0, 0, 0.6);
+
+  /* The scrim behind a modal, so two dialogs cannot dim the same page by different amounts. */
+  --color-overlay-scrim: rgba(0, 0, 0, 0.65);
 
   --spacing-xs: 8px;
   --spacing-sm: 16px;
@@ -242,6 +252,10 @@
 
     --focus-ring: 2px solid Highlight;
     --shadow-card: none;
+    --shadow-modal: none;
+    /* An alpha scrim is invisible in forced colours, and a modal that does not separate from the
+       page behind it is the one case where that matters. The opaque canvas does the separating. */
+    --color-overlay-scrim: Canvas;
   }
 }
 
