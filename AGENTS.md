@@ -82,7 +82,12 @@ union (`removeDelegation | customBatch | permitRescue | debankWithdraw`):
 Note the collision and keep it straight: **step 3 is "TX Builder", the action
 is "Custom TX Builder"**. They are different things — step 3 hosts whichever
 panel matches the chosen action. Donor asset sweeping is a fifth flow but not
-an action: "Donor Asset Withdrawal" / "Вывод активов с донора".
+an action: "Donor Asset Withdrawal" / "Вывод активов с донора". Retiring the donor
+is a sixth flow and likewise not an action: "Erase donor wallet" / "Стереть
+кошелёк донора" — the same button on two surfaces, the donor step and the send
+controls, opening a confirmation whose second point differs by surface and whose
+third depends on whether the browser keeps pasted keys; everything else about it
+is shared.
 
 - One concept, one name, everywhere, in both languages. If you find two names
   for one thing, that is a defect — fix it or report it, do not add a third.
