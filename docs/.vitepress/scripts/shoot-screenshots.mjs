@@ -199,11 +199,33 @@ try {
     }
     await page.waitForTimeout(800)
 
+    // Downloading is no longer the whole gate: the site asks the user to confirm
+    // the file actually landed, and step two stays locked until that box is
+    // ticked (`donor.exportConfirmHint`). Targeted by id rather than by label so
+    // this does not need a fourth per-language string, and forced because the
+    // native input sits behind a styled one.
+    const exportAck = page.locator('#donor-export-confirm')
+    if (await exportAck.count()) {
+      await exportAck.check({ force: true }).catch(() => {})
+      await page.waitForTimeout(600)
+    } else {
+      console.warn(`  ${lang}: export confirmation not found; step 2 may stay locked`)
+    }
+
     const step2 = page.locator('.step-nav__btn', { hasText: labels[lang].step2 }).first()
     if (await step2.count()) {
       await step2.click({ timeout: 5000 }).catch(() => {})
       await page.waitForTimeout(1800)
-      await shoot('03-select-action', page.locator('.action-selector__panel').first())
+      // Guard the panel, not the nav button: the button exists whether or not
+      // the step unlocked, so waiting on it hid a locked step behind a 30s
+      // timeout that killed the whole run — and each locale directory is wiped
+      // before its first shot, so that failure left the repo with no images.
+      const panel = page.locator('.action-selector__panel').first()
+      if (await panel.count()) {
+        await shoot('03-select-action', panel)
+      } else {
+        console.warn(`  ${lang}: step 2 did not unlock; skipping 03-select-action`)
+      }
     }
 
     // 4. The header on its own: network selector, block, gas price, and the
