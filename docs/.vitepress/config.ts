@@ -1,79 +1,16 @@
 import { defineConfig } from 'vitepress'
 import { slugify } from './slugify'
+import { GROUPS, LABELS, LOCALES, type Locale } from './pages'
 
 const SITE = 'https://docs.antidrain.me'
 const APP = 'https://antidrain.me'
 
-/** Page slugs in reading order, grouped the way the sidebar presents them. */
-const GROUPS = [
-  { key: 'start', pages: ['', 'wallet-compromised', 'beginner-guide', 'prepare', 'quick-start'] },
-  { key: 'safety', pages: ['safety', 'donor-wallet'] },
-  { key: 'workflow', pages: ['workspace-flow', 'rescue-actions', 'simulation-funding-sending', 'asset-manager'] },
-  { key: 'reference', pages: ['service-fees', 'affiliate'] },
-  { key: 'help', pages: ['troubleshooting', 'faq', 'glossary'] },
-] as const
+// GROUPS and LABELS live in ./pages.ts, which check-urls.mjs, check-layout.mjs
+// and check-slugs.mjs also read. Importing it here is what makes those three
+// agree with the sidebar; the module asserts on load that every page carries a
+// label in both locales, because nothing typechecks this file.
 
-/** Sidebar group headings and per-page labels, per locale. */
-const LABELS = {
-  ru: {
-    groups: {
-      start: 'Начало',
-      safety: 'Безопасность',
-      workflow: 'Рабочий процесс',
-      reference: 'Справочник',
-      help: 'Помощь',
-    },
-    pages: {
-      '': 'Что такое AntiDrain',
-      'wallet-compromised': 'Как ваш кошелёк взломали',
-      'beginner-guide': 'Если вы новичок и кошелёк под угрозой',
-      prepare: 'Подготовка',
-      'quick-start': 'Быстрый старт',
-      safety: 'Главные правила безопасности',
-      'donor-wallet': 'Кошелёк-донор',
-      'workspace-flow': 'Рабочий процесс',
-      'rescue-actions': 'Rescue-сценарии',
-      'simulation-funding-sending': 'Симуляция, пополнение и отправка',
-      'asset-manager': 'Управление активами донора',
-      'service-fees': 'Комиссии сервиса',
-      affiliate: 'Партнёрская ссылка',
-      troubleshooting: 'Ошибки и решения',
-      faq: 'FAQ',
-      glossary: 'Словарь',
-    },
-  },
-  en: {
-    groups: {
-      start: 'Getting started',
-      safety: 'Safety',
-      workflow: 'Workflow',
-      reference: 'Reference',
-      help: 'Help',
-    },
-    pages: {
-      '': 'What AntiDrain Is',
-      'wallet-compromised': 'How Your Wallet Was Compromised',
-      'beginner-guide': 'If You Are New and Your Wallet Is at Risk',
-      prepare: 'Before You Start',
-      'quick-start': 'Quick Start',
-      safety: 'Core Safety Rules',
-      'donor-wallet': 'Donor Wallet',
-      'workspace-flow': 'Workspace Flow',
-      'rescue-actions': 'Rescue Actions',
-      'simulation-funding-sending': 'Simulation, Funding, and Sending',
-      'asset-manager': 'Donor Asset Manager',
-      'service-fees': 'Service Fees',
-      affiliate: 'Affiliate Link',
-      troubleshooting: 'Troubleshooting',
-      faq: 'FAQ',
-      glossary: 'Glossary',
-    },
-  },
-} as const
-
-type Lang = keyof typeof LABELS
-
-const sidebar = (lang: Lang) =>
+const sidebar = (lang: Locale) =>
   GROUPS.map(({ key, pages }) => ({
     text: LABELS[lang].groups[key],
     // `collapsed` is deliberately absent. Setting it (even to false) makes
@@ -99,7 +36,7 @@ const sidebar = (lang: Lang) =>
  * scripts/check-urls.mjs against the deployed URL list.
  */
 const rewrites = Object.fromEntries(
-  (['ru', 'en'] as const).flatMap((lang) =>
+  LOCALES.flatMap((lang) =>
     GROUPS.flatMap(({ pages }) =>
       pages
         .filter((page) => page !== '')

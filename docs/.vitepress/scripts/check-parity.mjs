@@ -14,11 +14,12 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+const SELF_TEST_FLAG = '--self-test'
+
 const DOCS = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 /** Structural fingerprint of a page: everything except the prose itself. */
-const structure = (file) => {
-  const raw = readFileSync(file, 'utf8')
+export const structure = (raw) => {
   const fm = /^---\n([\s\S]*?)\n---\n/.exec(raw)
   const body = fm ? raw.slice(fm[0].length) : raw
 
@@ -93,48 +94,157 @@ const structure = (file) => {
   }
 }
 
-const ruFiles = readdirSync(resolve(DOCS, 'ru')).filter((f) => f.endsWith('.md')).sort()
-const enFiles = readdirSync(resolve(DOCS, 'en')).filter((f) => f.endsWith('.md')).sort()
+/**
+ * The whole check, as a pure function of injected content.
+ *
+ * `trees` is `{ ru: { 'faq.md': source }, en: { … } }`. Returns the number of
+ * page pairs proved; throws naming every asymmetry.
+ */
+export const assertParity = (trees) => {
+  const ruFiles = Object.keys(trees.ru).sort()
+  const enFiles = Object.keys(trees.en).sort()
+  const failures = []
 
-const failures = []
+  if (ruFiles.join() !== enFiles.join()) {
+    failures.push(`the two trees hold different files:\n    ru only: ${ruFiles.filter((f) => !enFiles.includes(f)).join(', ') || '—'}\n    en only: ${enFiles.filter((f) => !ruFiles.includes(f)).join(', ') || '—'}`)
+  }
 
-if (ruFiles.join() !== enFiles.join()) {
-  failures.push(`the two trees hold different files:\n    ru only: ${ruFiles.filter((f) => !enFiles.includes(f)).join(', ') || '—'}\n    en only: ${enFiles.filter((f) => !ruFiles.includes(f)).join(', ') || '—'}`)
-}
+  const shared = ruFiles.filter((f) => enFiles.includes(f))
+  for (const name of shared) {
+    const ru = structure(trees.ru[name])
+    const en = structure(trees.en[name])
 
-for (const name of ruFiles.filter((f) => enFiles.includes(f))) {
-  const ru = structure(resolve(DOCS, 'ru', name))
-  const en = structure(resolve(DOCS, 'en', name))
-
-  for (const [lang, s] of [['ru', ru], ['en', en]]) {
-    if (!s.hasTitle) failures.push(`${lang}/${name}: frontmatter has no title`)
-    if (!s.hasDescription) failures.push(`${lang}/${name}: frontmatter has no description`)
-    if (s.images.includes('MISSING-ALT')) {
-      failures.push(`${lang}/${name}: an image has no alt text, which AGENTS.md requires`)
-    }
-    s.callouts.forEach((c, i) => {
-      if (!c.titled) {
-        failures.push(`${lang}/${name}: callout #${i + 1} (::: ${c.type}) has no title, so it renders as the English word "${c.type.toUpperCase()}"`)
+    for (const [lang, s] of [['ru', ru], ['en', en]]) {
+      if (!s.hasTitle) failures.push(`${lang}/${name}: frontmatter has no title`)
+      if (!s.hasDescription) failures.push(`${lang}/${name}: frontmatter has no description`)
+      if (s.images.includes('MISSING-ALT')) {
+        failures.push(`${lang}/${name}: an image has no alt text, which AGENTS.md requires`)
       }
-    })
-  }
-
-  const cmp = (label, a, b) => {
-    if (a.join('|') !== b.join('|')) {
-      failures.push(`${name}: ${label} differ between languages\n    ru: ${a.join(', ') || '—'}\n    en: ${b.join(', ') || '—'}`)
+      s.callouts.forEach((c, i) => {
+        if (!c.titled) {
+          failures.push(`${lang}/${name}: callout #${i + 1} (::: ${c.type}) has no title, so it renders as the English word "${c.type.toUpperCase()}"`)
+        }
+      })
     }
+
+    const cmp = (label, a, b) => {
+      if (a.join('|') !== b.join('|')) {
+        failures.push(`${name}: ${label} differ between languages\n    ru: ${a.join(', ') || '—'}\n    en: ${b.join(', ') || '—'}`)
+      }
+    }
+    cmp('heading levels', ru.headings, en.headings)
+    const shape = (c) => `${c.type}(${c.items} items, ${c.paras} paras)`
+    cmp('callout types/order', ru.callouts.map(shape), en.callouts.map(shape))
+    cmp('tables (cols x rows)', ru.tables, en.tables)
+    cmp('images', ru.images, en.images)
   }
-  cmp('heading levels', ru.headings, en.headings)
-  const shape = (c) => `${c.type}(${c.items} items, ${c.paras} paras)`
-  cmp('callout types/order', ru.callouts.map(shape), en.callouts.map(shape))
-  cmp('tables (cols x rows)', ru.tables, en.tables)
-  cmp('images', ru.images, en.images)
+
+  if (failures.length) {
+    throw new Error(
+      ['RU/EN parity BROKEN — the two trees are translations and must match structurally:', '']
+        .concat(failures.map((f) => `  ${f}\n`))
+        .concat(`${failures.length} problem(s).`)
+        .join('\n'),
+    )
+  }
+
+  return shared.length
 }
 
-if (failures.length) {
-  console.error('RU/EN parity BROKEN — the two trees are translations and must match structurally:\n')
-  for (const f of failures) console.error(`  ${f}\n`)
-  console.error(`${failures.length} problem(s).`)
-  process.exit(1)
+function expectFailure(handler, expectedFragment, description) {
+  try {
+    handler()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+
+    if (!message.includes(expectedFragment)) {
+      throw new Error(
+        `RU/EN parity self-test failed: ${description} reported ${JSON.stringify(message)}`,
+      )
+    }
+
+    return
+  }
+
+  throw new Error(`RU/EN parity self-test failed: ${description} was accepted`)
 }
-console.log(`RU/EN parity holds across ${ruFiles.length} page pairs.`)
+
+function runSelfTest() {
+  const head = '---\ntitle: t\ndescription: d\n---\n'
+  const page = (extra = '') =>
+    `${head}# One\n\n## Two\n\n| a | b |\n| --- | --- |\n| 1 | 2 |\n\n::: warning Осторожно\n- item\n:::\n\n![alt](/ru/img.png)\n${extra}`
+  const trees = { ru: { 'faq.md': page() }, en: { 'faq.md': page().replace('/ru/', '/en/') } }
+
+  if (assertParity(trees) !== 1) {
+    throw new Error('RU/EN parity self-test failed: expected one page pair')
+  }
+
+  // The image path is normalised per locale, so the same picture in two trees
+  // must NOT read as drift. Guard case: without it the check is vacuous.
+  const s = structure(page())
+  if (s.images.join() !== '/<lang>/img.png' || s.tables.join() !== '2x1' || s.headings.join() !== '1,2') {
+    throw new Error(`RU/EN parity self-test failed: fingerprint was ${JSON.stringify(s)}`)
+  }
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { 'faq.md': page().replace('/ru/', '/en/').replace('\n## Two\n', '\n### Two\n') } }),
+    'faq.md: heading levels differ between languages',
+    'a heading demoted in one language only',
+  )
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { 'faq.md': page().replace('/ru/', '/en/').replace('| 1 | 2 |\n', '') } }),
+    'faq.md: tables (cols x rows) differ between languages',
+    'a table row present in one language only',
+  )
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { 'faq.md': page().replace('/ru/', '/en/').replace('::: warning Осторожно', '::: warning') } }),
+    'renders as the English word "WARNING"',
+    'an untitled callout',
+  )
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { 'faq.md': page().replace('/ru/', '/en/').replace('![alt]', '![]') } }),
+    'an image has no alt text',
+    'an image with no alt text',
+  )
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { ...trees.en, 'extra.md': page() } }),
+    'the two trees hold different files',
+    'a page that exists in one language only',
+  )
+
+  expectFailure(
+    () => assertParity({ ...trees, en: { 'faq.md': page().replace('/ru/', '/en/').replace('description: d\n', '') } }),
+    'en/faq.md: frontmatter has no description',
+    'a page missing its description',
+  )
+
+  console.log('RU/EN parity self-test passed')
+}
+
+const readTree = (lang) =>
+  Object.fromEntries(
+    readdirSync(resolve(DOCS, lang))
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => [f, readFileSync(resolve(DOCS, lang, f), 'utf8')]),
+  )
+
+function main() {
+  if (process.argv.includes(SELF_TEST_FLAG)) {
+    runSelfTest()
+    return
+  }
+
+  const pairs = assertParity({ ru: readTree('ru'), en: readTree('en') })
+  console.log(`RU/EN parity holds across ${pairs} page pairs.`)
+}
+
+try {
+  main()
+} catch (error) {
+  console.error(error instanceof Error ? error.message : String(error))
+  process.exitCode = 1
+}

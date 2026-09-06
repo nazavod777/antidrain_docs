@@ -9,6 +9,11 @@ Subject: **$ARGUMENTS** — a page, a directory, or a term. Empty means the whol
 Run `npm run check:parity` first. It is structural: it proves the two language trees have the same
 pages and the same headings. **It cannot read.** Everything below is the part a script cannot do.
 
+`npm run test:for` names this pass as two of its manual checks — `bilingual-read` for the first
+question below and `product-vocabulary` for the second — and their trigger is the diff, not a
+judgement: any change under `docs/ru/` or `docs/en/` requires both. `TESTING.md` § Manual checks is
+where that list lives.
+
 ## The two questions
 
 **1. Do RU and EN say the same thing?** Not word for word — the same claim, the same order of

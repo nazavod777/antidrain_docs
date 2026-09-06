@@ -23,6 +23,17 @@ report a change as done.
 `PLAYWRIGHT_CHROMIUM_PATH` at a system one rather than skipping the step — a build that never
 rendered the site has not checked the layout.
 
+## While iterating
+
+`npm run test:for` answers which checks can see what you just changed, and prints what it is
+leaving out. `TESTING.md` is the tier table behind that answer; do not reconstruct it from memory.
+Nothing it prints replaces the gate above — only `npm run build` renders the site.
+
+If it exits `2`, a path exists that the map does not claim — fix `scripts/testMap.mjs` before
+trusting any narrow run, because until then the plan is a guess. The audit runs inside
+`npm run lint`, so a stale map goes red in the fast loop rather than answering confidently and
+wrongly.
+
 ## What this gate cannot see
 
 It proves the site builds, that no already-deployed anchor stopped resolving, that the RU and EN

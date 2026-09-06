@@ -1,0 +1,406 @@
+{
+  "ru/wallet-compromised": [
+    {
+      "id": "kak-vash-koshelek-vzlomali",
+      "text": "Как ваш кошелёк взломали"
+    },
+    {
+      "id": "chto-takoe-dreyner",
+      "text": "Что такое дрейнер"
+    },
+    {
+      "id": "kak-u-vas-zabrali-dostup",
+      "text": "Как у вас забрали доступ"
+    },
+    {
+      "id": "chto-proishodit-pryamo-seychas",
+      "text": "Что происходит прямо сейчас"
+    },
+    {
+      "id": "nikogda-ne-popolnyayte-vzlomannyy-koshelek",
+      "text": "Никогда не пополняйте взломанный кошелёк"
+    },
+    {
+      "id": "pochemu-staryy-koshelek-bolshe-nelzya-ispolzovat",
+      "text": "Почему старый кошелёк больше нельзя использовать"
+    },
+    {
+      "id": "esli-atakuyuschiy-uspel-pervym",
+      "text": "Если атакующий успел первым"
+    },
+    {
+      "id": "dalshe",
+      "text": "Дальше"
+    }
+  ],
+  "ru/prepare": [
+    {
+      "id": "podgotovka",
+      "text": "Подготовка"
+    },
+    {
+      "id": "chto-ponadobitsya",
+      "text": "Что понадобится"
+    },
+    {
+      "id": "novyy-koshelek-poluchatel",
+      "text": "Новый кошелёк-получатель"
+    },
+    {
+      "id": "kak-uznat-v-kakoy-seti-aktivy",
+      "text": "Как узнать, в какой сети активы"
+    },
+    {
+      "id": "otkuda-vzyat-monetu-na-gaz",
+      "text": "Откуда взять монету на газ"
+    },
+    {
+      "id": "proverte-chto-otkryli-nastoyaschiy-sayt",
+      "text": "Проверьте, что открыли настоящий сайт"
+    },
+    {
+      "id": "skolko-eto-stoit",
+      "text": "Сколько это стоит"
+    },
+    {
+      "id": "dalshe",
+      "text": "Дальше"
+    }
+  ],
+  "ru/glossary": [
+    {
+      "id": "slovar",
+      "text": "Словарь"
+    },
+    {
+      "id": "koshelki-i-dostup",
+      "text": "Кошельки и доступ"
+    },
+    {
+      "id": "privatnyy-klyuch-private-key",
+      "text": "Приватный ключ (private key)"
+    },
+    {
+      "id": "seed-fraza-seed-phrase-mnemonic",
+      "text": "Seed-фраза (seed phrase, mnemonic)"
+    },
+    {
+      "id": "skomprometirovannyy-koshelek",
+      "text": "Скомпрометированный кошелёк"
+    },
+    {
+      "id": "dreyner-drainer",
+      "text": "Дрейнер (drainer)"
+    },
+    {
+      "id": "poluchatel-recipient",
+      "text": "Получатель (recipient)"
+    },
+    {
+      "id": "koshelek-donor-donor",
+      "text": "Кошелёк-донор (donor)"
+    },
+    {
+      "id": "set-i-tranzaktsii",
+      "text": "Сеть и транзакции"
+    },
+    {
+      "id": "set-network",
+      "text": "Сеть (network)"
+    },
+    {
+      "id": "chain-id",
+      "text": "chain ID"
+    },
+    {
+      "id": "rpc",
+      "text": "RPC"
+    },
+    {
+      "id": "gaz-gas",
+      "text": "Газ (gas)"
+    },
+    {
+      "id": "nativnaya-moneta-native-token",
+      "text": "Нативная монета (native token)"
+    },
+    {
+      "id": "nonce",
+      "text": "nonce"
+    },
+    {
+      "id": "simulyatsiya-simulation",
+      "text": "Симуляция (simulation)"
+    },
+    {
+      "id": "plan-tranzaktsii-transaction-plan",
+      "text": "План транзакции (transaction plan)"
+    },
+    {
+      "id": "broadcast",
+      "text": "broadcast"
+    },
+    {
+      "id": "tx-hash",
+      "text": "tx hash"
+    },
+    {
+      "id": "eksplorer-explorer",
+      "text": "Эксплорер (explorer)"
+    },
+    {
+      "id": "tokeny-i-razresheniya",
+      "text": "Токены и разрешения"
+    },
+    {
+      "id": "erc-20",
+      "text": "ERC-20"
+    },
+    {
+      "id": "erc-721-i-erc-1155",
+      "text": "ERC-721 и ERC-1155"
+    },
+    {
+      "id": "approve-i-allowance",
+      "text": "approve и allowance"
+    },
+    {
+      "id": "permit",
+      "text": "permit"
+    },
+    {
+      "id": "delegirovanie-eip-7702",
+      "text": "Делегирование EIP-7702"
+    },
+    {
+      "id": "terminy-antidrain",
+      "text": "Термины AntiDrain"
+    },
+    {
+      "id": "bundler",
+      "text": "Bundler"
+    },
+    {
+      "id": "vyhod-iz-pula-pool-exit",
+      "text": "Выход из пула (pool exit)"
+    },
+    {
+      "id": "calldata",
+      "text": "calldata"
+    },
+    {
+      "id": "edinitsa-komissii-fee-unit",
+      "text": "Единица комиссии (fee unit)"
+    },
+    {
+      "id": "balans-na-moment-ispolneniya",
+      "text": "Баланс на момент исполнения"
+    },
+    {
+      "id": "dalshe",
+      "text": "Дальше"
+    }
+  ],
+  "en/wallet-compromised": [
+    {
+      "id": "how-your-wallet-was-compromised",
+      "text": "How Your Wallet Was Compromised"
+    },
+    {
+      "id": "what-a-drainer-is",
+      "text": "What a Drainer Is"
+    },
+    {
+      "id": "how-access-was-taken",
+      "text": "How Access Was Taken"
+    },
+    {
+      "id": "what-is-happening-right-now",
+      "text": "What Is Happening Right Now"
+    },
+    {
+      "id": "never-top-up-the-compromised-wallet",
+      "text": "Never Top Up the Compromised Wallet"
+    },
+    {
+      "id": "why-the-old-wallet-can-never-be-used-again",
+      "text": "Why the Old Wallet Can Never Be Used Again"
+    },
+    {
+      "id": "if-the-attacker-got-there-first",
+      "text": "If the Attacker Got There First"
+    },
+    {
+      "id": "next",
+      "text": "Next"
+    }
+  ],
+  "en/prepare": [
+    {
+      "id": "before-you-start",
+      "text": "Before You Start"
+    },
+    {
+      "id": "what-you-will-need",
+      "text": "What You Will Need"
+    },
+    {
+      "id": "the-new-recipient-wallet",
+      "text": "The New Recipient Wallet"
+    },
+    {
+      "id": "how-to-find-which-network-holds-your-assets",
+      "text": "How to Find Which Network Holds Your Assets"
+    },
+    {
+      "id": "where-the-gas-coin-comes-from",
+      "text": "Where the Gas Coin Comes From"
+    },
+    {
+      "id": "check-you-opened-the-real-site",
+      "text": "Check You Opened the Real Site"
+    },
+    {
+      "id": "what-it-costs",
+      "text": "What It Costs"
+    },
+    {
+      "id": "next",
+      "text": "Next"
+    }
+  ],
+  "en/glossary": [
+    {
+      "id": "glossary",
+      "text": "Glossary"
+    },
+    {
+      "id": "wallets-and-access",
+      "text": "Wallets and Access"
+    },
+    {
+      "id": "private-key",
+      "text": "Private key"
+    },
+    {
+      "id": "seed-phrase-mnemonic",
+      "text": "Seed phrase (mnemonic)"
+    },
+    {
+      "id": "compromised-wallet",
+      "text": "Compromised wallet"
+    },
+    {
+      "id": "drainer",
+      "text": "Drainer"
+    },
+    {
+      "id": "recipient",
+      "text": "Recipient"
+    },
+    {
+      "id": "donor-wallet",
+      "text": "Donor wallet"
+    },
+    {
+      "id": "networks-and-transactions",
+      "text": "Networks and Transactions"
+    },
+    {
+      "id": "network",
+      "text": "Network"
+    },
+    {
+      "id": "chain-id",
+      "text": "chain ID"
+    },
+    {
+      "id": "rpc",
+      "text": "RPC"
+    },
+    {
+      "id": "gas",
+      "text": "Gas"
+    },
+    {
+      "id": "native-token",
+      "text": "Native token"
+    },
+    {
+      "id": "nonce",
+      "text": "Nonce"
+    },
+    {
+      "id": "simulation",
+      "text": "Simulation"
+    },
+    {
+      "id": "transaction-plan",
+      "text": "Transaction plan"
+    },
+    {
+      "id": "broadcast",
+      "text": "Broadcast"
+    },
+    {
+      "id": "tx-hash",
+      "text": "Tx hash"
+    },
+    {
+      "id": "explorer",
+      "text": "Explorer"
+    },
+    {
+      "id": "tokens-and-permissions",
+      "text": "Tokens and Permissions"
+    },
+    {
+      "id": "erc-20",
+      "text": "ERC-20"
+    },
+    {
+      "id": "erc-721-and-erc-1155",
+      "text": "ERC-721 and ERC-1155"
+    },
+    {
+      "id": "approve-and-allowance",
+      "text": "Approve and allowance"
+    },
+    {
+      "id": "permit",
+      "text": "Permit"
+    },
+    {
+      "id": "eip-7702-delegation",
+      "text": "EIP-7702 delegation"
+    },
+    {
+      "id": "antidrain-terms",
+      "text": "AntiDrain Terms"
+    },
+    {
+      "id": "bundler",
+      "text": "Bundler"
+    },
+    {
+      "id": "pool-exit",
+      "text": "Pool exit"
+    },
+    {
+      "id": "calldata",
+      "text": "Calldata"
+    },
+    {
+      "id": "fee-unit",
+      "text": "Fee unit"
+    },
+    {
+      "id": "balance-at-execution",
+      "text": "Balance at execution"
+    },
+    {
+      "id": "next",
+      "text": "Next"
+    }
+  ]
+}

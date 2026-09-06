@@ -46,10 +46,10 @@ jobs:
       # libraries a headless Chromium needs on a clean runner.
       - run: npx playwright install --with-deps chromium
 
-      # `build` runs `lint` first (contrast, anchors, RU/EN parity), then the
-      # VitePress build with its dead-link check, then the legacy redirect
-      # stubs, check:urls and check:layout. Any of them failing stops the
-      # deploy.
+      # `build` runs `lint` first, then the VitePress build with its dead-link
+      # check, then the legacy redirect stubs, check:urls and check:layout. Any
+      # of them failing stops the deploy. What `lint` itself contains is written
+      # down in package.json and nowhere else, so it cannot go stale here.
       - run: npm run build
 
       - uses: actions/upload-artifact@v4

@@ -40,6 +40,7 @@ six workflow step names, and the vendored `tokens.css`. The gate is
 | `README.md` | Repo layout, quick start, and the one-line version of the editing rules |
 | `DESIGN_SYSTEM.md` | Tokens, the two themes, every deliberate deviation from the site, callout anatomy, why search is scoped per locale |
 | `DEPLOY.md` | CI, GitHub Pages, what each check protects, the `vitepress preview` URL-resolution trap |
+| `TESTING.md` | The tier table, the trigger for every check and every manual pass, and the twelve ways the map can be wrong |
 
 If a rule already lives in one of those, link to it instead of restating it — a
 second copy is a second thing to drift. The one deliberate exception is the
@@ -119,15 +120,42 @@ languages have quietly diverged. Several of them already have.
   they wrap**. It also fails any callout without a title (an untitled
   `::: danger` renders the English word "DANGER" on a Russian page) and any
   image without alt text.
-- **Adding a page is three edits in `docs/.vitepress/config.ts`**: `GROUPS`,
-  `LABELS.ru.pages`, `LABELS.en.pages`. Miss a label and it renders
-  `undefined` and no rewrite is generated for the page.
+- **Adding a page is three edits in `docs/.vitepress/pages.ts`**: `GROUPS`,
+  `LABELS.ru.pages`, `LABELS.en.pages`. A missing label used to render
+  `undefined` and generate no rewrite, silently; the module now asserts both
+  locales on import, so the build fails and names the key. `pages.ts` is the
+  one page list — `config.ts`, `check:urls`, `check:layout` and `check:slugs`
+  all read it, and none of them keeps a second copy.
+- **A new page also needs an anchor contract.** It has no GitBook past, so
+  `check:slugs` fails until it is declared in that script's
+  `POST_MIGRATION_PAGES` with a reason and recorded with
+  `npm run check:slugs -- --record`. That is the point: a page nobody declared
+  cannot slip through uncovered.
 - **No colour literal outside `theme/tokens.css` and `theme/light.css`.**
   `!important` appears in exactly one place in the theme — the reduced-motion
   blanket in `base.css`, where an accessibility override has to beat every
   author rule. Anywhere else, use specificity.
-- `check:slugs` needs `--experimental-strip-types` — it imports `slugify.ts`.
+- `check:slugs`, `check:anchors`, `check:urls` and `check:layout` need
+  `--experimental-strip-types` — they import `slugify.ts` and `pages.ts`.
 - `check:urls` and `check:layout` read `dist/`, so they only run after a build.
+- **Every check ships a `--self-test` and runs it immediately before the real
+  check, inside the same npm script name.** So each script is a pure core plus
+  a thin `main()`, and none of them calls `process.exit` — they set
+  `process.exitCode`. A self-test that would need a build, the network or a
+  browser does not belong in the fast loop, which is why `check:layout`'s is
+  pure by construction. When you add a rule, add the `expectFailure` case for
+  it in the same edit. The test map audits this pairing as `self-test-drift`,
+  so a check that quietly lost its self-test fails the fast loop.
+- **A new path needs a rule before it needs anything else.** Every path this
+  repository owns is claimed by a rule in `scripts/testMap.mjs` or by a
+  `NO_TESTS` entry with a reason, and `npm run lint` fails on any that is
+  neither. Adding a check means an entry in `SCRIPTS` and a rule pointing at its
+  own source, or the audit reports `unreachable-check`: the fast loop cannot be
+  the answer for a check the fast loop does not contain.
+- `check:layout` takes `--page <url>` and `--changed <path>` to narrow the run
+  to the pages a change could have touched. It narrows the set of **pages**,
+  never the set of checks per page, and prints what it did not do. It is not
+  the gate — see `DEPLOY.md` under "Named gaps".
 - `docs/.vitepress/dist` and `cache` are gitignored. Never commit them.
 
 ## Cross-platform
@@ -181,17 +209,46 @@ file adds:
 | Command | Use |
 | --- | --- |
 | `npm run dev` | Dev server, hot reload |
-| `npm run lint` | Fast loop: contrast + anchors + RU/EN parity. ~1s, no build |
+| `npm run lint` | Fast loop: contrast + anchor contract + RU/EN parity + anchor links + the test-map audit. ~0.6s, no build |
+| `npm run test:for` | Which checks can see the change you just made, and what it leaves out. Runs nothing |
 | `npm run build` | Everything: `lint`, the VitePress build with its dead-link check, redirect stubs, `check:urls`, `check:layout` |
 | `npm run preview` | Serve the built output |
 | `npm run tokens:check` | Local only: diff `tokens.css` against the site. Needs `ANTIDRAIN_SITE` |
 | `npm run screenshots` | Regenerates the UI screenshots from a live site. Local only; review every image before committing |
 | `npm run og-image` | Regenerates the social preview card. Reproducible; look at the result before committing |
 
+## Which check sees what — ask, do not remember
+
+```bash
+npm run test:for                          # the working tree against HEAD
+npm run test:for -- docs/ru/glossary.md   # these paths instead
+npm run test:for -- --why <path>          # which rules claim one path, and why
+```
+
+**[`TESTING.md`](TESTING.md) is the tier table, the triggers and the manual
+checks.** `scripts/testMap.mjs` is the data behind it, one stated reason per
+rule, and its audit runs inside `npm run lint` — a map that stopped being true
+goes red instead of confidently sending you to the wrong check. The tables are
+deliberately not repeated here; a second copy is a copy that rots.
+
+The value is not speed — `npm run lint` is already under a second. It is
+escalation and radius: that `theme/tokens.css` also feeds `og-image`, and that
+`docs/index.md` is read by no structural check at all, because `check:parity`,
+`check:slugs` and `check:anchors` each scan `docs/ru/` and `docs/en/` and
+nothing else. If it exits `2`, a path exists that no rule claims — add the rule
+or a `NO_TESTS` entry with a reason before trusting any narrow run.
+
+The command is `test:for` in all three repositories even though this one says
+`check:`. One command has to work in any of the three checkouts; a local synonym
+would be a second name for one thing. The output speaks the local language.
+`TESTING.md` carries the same seven headings in all three — `INV-13`.
+
 ## Verification
 
 - Run `npm run lint` while editing, `npm run build` before reporting anything
   as done. "Done" means the build passed, not that the edit looked right.
+- `npm run test:for` tells you which checks the change reaches and prints what
+  it is skipping. Report that list; do not reconstruct it from memory.
 - For any visual change, look at it in a browser at the widths above, in both
   themes. Screenshot against the equivalent site page when the change is about
   matching the product.

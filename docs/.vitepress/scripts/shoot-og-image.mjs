@@ -25,7 +25,11 @@
 import { readFileSync, writeFileSync, statSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+
+// playwright is imported inside main(), not here, so `--self-test` stays a pure
+// function of strings: it proves the template and the budget without a browser.
+
+const SELF_TEST_FLAG = '--self-test'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = resolve(HERE, '../../public')
@@ -51,8 +55,7 @@ const NEEDED = [
   'color-border',
 ]
 
-function readTokens() {
-  const css = readFileSync(TOKENS, 'utf8')
+export function readTokens(css) {
   const out = {}
   for (const name of NEEDED) {
     const match = new RegExp(`--${name}:\\s*([^;]+);`).exec(css)
@@ -61,6 +64,10 @@ function readTokens() {
   }
   return out
 }
+
+/** The committed weight budget, as its own decision rather than an inline `if`. */
+export const budgetVerdict = (file, kb) =>
+  kb > MAX_KB ? `${file} is ${kb.toFixed(0)} KB, over the ${MAX_KB} KB budget.` : null
 
 const dataUri = (path, mime) =>
   `data:${mime};base64,${readFileSync(path).toString('base64')}`
@@ -81,7 +88,7 @@ const COPY = {
   },
 }
 
-function html(copy, tokens, assets) {
+export function html(copy, tokens, assets) {
   const t = (name) => tokens[name]
   return `<!doctype html>
 <html lang="${copy.lang}"><head><meta charset="utf-8"><style>
@@ -229,55 +236,137 @@ function html(copy, tokens, assets) {
 </body></html>`
 }
 
-const tokens = readTokens()
-const assets = {
-  mark: dataUri(resolve(PUBLIC, 'antidrain-mark.png'), 'image/png'),
-  interLatin: dataUri(resolve(FONTS, 'inter-roman-latin.woff2'), 'font/woff2'),
+function expectFailure(handler, expectedFragment, description) {
+  try {
+    handler()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+
+    if (!message.includes(expectedFragment)) {
+      throw new Error(
+        `OG image self-test failed: ${description} reported ${JSON.stringify(message)}`,
+      )
+    }
+
+    return
+  }
+
+  throw new Error(`OG image self-test failed: ${description} was accepted`)
 }
 
-const browser = await chromium.launch()
-const page = await browser.newPage({
-  viewport: { width: WIDTH, height: HEIGHT },
-  deviceScaleFactor: SCALE,
-})
+function runSelfTest() {
+  const css = NEEDED.map((name, i) => `  --${name}: #00000${i};`).join('\n')
+  const tokens = readTokens(`:root {\n${css}\n}`)
+  if (Object.keys(tokens).length !== NEEDED.length) {
+    throw new Error(`OG image self-test failed: read ${Object.keys(tokens).length} of ${NEEDED.length} tokens`)
+  }
 
-/**
- * Chromium occasionally answers Page.captureScreenshot with "Unable to capture
- * screenshot" on a 2400x1260 surface. Observed once in five runs here, and it
- * succeeds immediately on a second attempt, so it is retried rather than
- * papered over with a smaller canvas.
- */
-async function shoot(copy) {
-  for (let attempt = 1; ; attempt++) {
-    try {
-      return await page.screenshot({ type: 'jpeg', quality: 92 })
-    } catch (error) {
-      if (attempt === 3) throw error
-      console.warn(`  ${copy.file}: capture failed, retrying (${error.message})`)
-      await page.waitForTimeout(500)
+  // The whole reason the palette is read rather than hardcoded: a token the
+  // site removed must stop the render, not silently paint `undefined`.
+  expectFailure(
+    () => readTokens(':root { --color-accent: #10b981; }'),
+    'tokens.css no longer defines --color-bg-primary',
+    'a palette that lost a token the card needs',
+  )
+
+  const markup = html(COPY.en, tokens, { mark: 'data:image/png;base64,AA', interLatin: 'data:font/woff2;base64,BB' })
+  for (const fragment of [
+    `<html lang="en">`,
+    COPY.en.headline,
+    COPY.en.sub,
+    'docs.antidrain.me',
+    `width: ${WIDTH}px`,
+    `height: ${HEIGHT}px`,
+  ]) {
+    if (!markup.includes(fragment)) {
+      throw new Error(`OG image self-test failed: the card does not carry ${JSON.stringify(fragment)}`)
     }
   }
-}
-
-const written = []
-for (const copy of Object.values(COPY)) {
-  await page.setContent(html(copy, tokens, assets), { waitUntil: 'load' })
-  await page.evaluate(() => document.fonts.ready)
-  writeFileSync(resolve(PUBLIC, copy.file), await shoot(copy))
-  written.push(copy.file)
-}
-
-await browser.close()
-
-let total = 0
-for (const file of written) {
-  const kb = statSync(resolve(PUBLIC, file)).size / 1024
-  total += kb
-  const flag = kb > MAX_KB ? ' TOO BIG' : ''
-  console.log(`  ${file}  ${kb.toFixed(0)} KB  ${WIDTH * SCALE}x${HEIGHT * SCALE}${flag}`)
-  if (kb > MAX_KB) {
-    console.error(`${file} is ${kb.toFixed(0)} KB, over the ${MAX_KB} KB budget.`)
-    process.exit(1)
+  if (markup.includes('undefined')) {
+    throw new Error('OG image self-test failed: the card rendered an undefined token')
   }
+
+  if (budgetVerdict('og-image.jpg', MAX_KB - 1) !== null) {
+    throw new Error('OG image self-test failed: a file inside the budget was rejected')
+  }
+  const over = budgetVerdict('og-image.jpg', MAX_KB + 1)
+  if (over === null || !over.includes(`over the ${MAX_KB} KB budget`)) {
+    throw new Error(`OG image self-test failed: an oversized file reported ${JSON.stringify(over)}`)
+  }
+
+  console.log('OG image self-test passed')
 }
-console.log(`og-image: wrote ${written.length} file(s), ${total.toFixed(0)} KB total`)
+
+async function main() {
+  if (process.argv.includes(SELF_TEST_FLAG)) {
+    runSelfTest()
+    return
+  }
+
+  const { chromium } = await import('playwright')
+
+  const tokens = readTokens(readFileSync(TOKENS, 'utf8'))
+  const assets = {
+    mark: dataUri(resolve(PUBLIC, 'antidrain-mark.png'), 'image/png'),
+    interLatin: dataUri(resolve(FONTS, 'inter-roman-latin.woff2'), 'font/woff2'),
+  }
+
+  const browser = await chromium.launch()
+  const page = await browser.newPage({
+    viewport: { width: WIDTH, height: HEIGHT },
+    deviceScaleFactor: SCALE,
+  })
+
+  /**
+   * Chromium occasionally answers Page.captureScreenshot with "Unable to
+   * capture screenshot" on a 2400x1260 surface. Observed once in five runs
+   * here, and it succeeds immediately on a second attempt, so it is retried
+   * rather than papered over with a smaller canvas.
+   */
+  const shoot = async (copy) => {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await page.screenshot({ type: 'jpeg', quality: 92 })
+      } catch (error) {
+        if (attempt === 3) throw error
+        console.warn(`  ${copy.file}: capture failed, retrying (${error.message})`)
+        await page.waitForTimeout(500)
+      }
+    }
+  }
+
+  const written = []
+  try {
+    for (const copy of Object.values(COPY)) {
+      await page.setContent(html(copy, tokens, assets), { waitUntil: 'load' })
+      await page.evaluate(() => document.fonts.ready)
+      writeFileSync(resolve(PUBLIC, copy.file), await shoot(copy))
+      written.push(copy.file)
+    }
+  } finally {
+    await browser.close()
+  }
+
+  let total = 0
+  const oversized = []
+  for (const file of written) {
+    const kb = statSync(resolve(PUBLIC, file)).size / 1024
+    total += kb
+    const verdict = budgetVerdict(file, kb)
+    console.log(`  ${file}  ${kb.toFixed(0)} KB  ${WIDTH * SCALE}x${HEIGHT * SCALE}${verdict ? ' TOO BIG' : ''}`)
+    if (verdict) oversized.push(verdict)
+  }
+
+  if (oversized.length) {
+    for (const verdict of oversized) console.error(verdict)
+    process.exitCode = 1
+    return
+  }
+
+  console.log(`og-image: wrote ${written.length} file(s), ${total.toFixed(0)} KB total`)
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error))
+  process.exitCode = 1
+})

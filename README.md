@@ -23,9 +23,11 @@ docs/
   ru/*.md  en/*.md      every page in both, kept 1:1 by check:parity
   .vitepress/
     config.ts           navigation, locales, SEO, URL rewrites
+    pages.ts            the one page list — config and three checks read it
     slugify.ts          the one heading-slug implementation
     theme/              tokens, light theme, VitePress bridge, prose styles
     scripts/            build-time checks and the postbuild redirect stubs
+scripts/                testMap.mjs and testFor.mjs — which check sees which path
 ```
 
 ## Editing content
@@ -44,10 +46,17 @@ docs/
 ## Checks
 
 ```bash
-npm run lint     # contrast, anchor contract, RU/EN parity, anchor links
+npm run lint     # contrast, anchor contract, RU/EN parity, anchor links, test-map audit
 npm run build    # the above, plus dead links, redirect stubs, URL and layout contracts
 npm run tokens:check  # local only: diff tokens.css against antidrain_site
+npm run test:for      # which checks can see the change you just made
 ```
+
+`npm run test:for` runs nothing: it prints the checks a change reaches, and what
+it is leaving out. [`TESTING.md`](TESTING.md) is the tier table behind that
+answer and `scripts/testMap.mjs` is the data, one stated reason per rule. The
+audit runs inside `npm run lint`, so a map that stopped being true goes red
+rather than confidently sending you to the wrong check.
 
 See [DEPLOY.md](DEPLOY.md) for what each check protects and how deployment
 works, and [AGENTS.md](AGENTS.md) for the repository's invariants and the
