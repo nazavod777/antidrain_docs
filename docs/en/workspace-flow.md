@@ -13,22 +13,24 @@ Create or import the donor wallet.
 
 Until the donor is ready, other steps may be unavailable.
 
-## 2. Action Builder
+## 2. Select Action {#2-action-builder}
 
 Choose what you want to do:
 
-- Remove EIP-7702 delegation
-- Build a transaction in Custom TX Builder
-- Use Permit Rescue
-- Prepare DeBank Withdraw
+- Remove Delegation, to clear an EIP-7702 delegation
+- Custom TX Builder, to build the transfers by hand
+- Permit Rescue
+- DeBank Withdraw
 
-## 3. Build
+## 3. TX Builder {#3-build}
 
 The site builds the transaction payload.
 
 If required data is missing, the build button will be disabled. Usually the UI explains what needs to be added.
 
-## 4. Simulation
+Keep two similar names apart. **TX Builder** is this step, the third one: it hosts whichever panel the action you picked at step 2 needs, whichever action that is. **Custom TX Builder** is one of the four actions you pick at step 2, and this step can host its panel too. The names are close, but a step and an action are different things.
+
+## 4. TX Simulator {#4-simulation}
 
 Simulation checks the transaction before sending.
 
@@ -42,7 +44,7 @@ The site shows how much funding the donor needs.
 
 Fund the donor and refresh the balance.
 
-## 6. Send
+## 6. TX Sender {#6-send}
 
 This is the final step. The site sends the transaction.
 

@@ -154,7 +154,7 @@ export const SCRIPTS = [
     selfTests: true,
     inBuild: true,
     implements: "docs/.vitepress/scripts/check-layout.mjs",
-    covers: "a real browser over dist/ at six widths in both themes: sideways scroll, touch targets, axe, console errors, reduced motion",
+    covers: "a real browser over dist/ at six widths in both themes: sideways scroll, touch targets, axe, console errors, reduced motion, and forced colours read as decoded pixels",
     cost: "~105 s, once dist exists — almost the whole build",
   },
   {
@@ -208,7 +208,6 @@ const CHECK_SCRIPT_RULES = [
   ["check-layout.mjs", "check:layout"],
   ["check-tokens.mjs", "tokens:check"],
   ["shoot-screenshots.mjs", "screenshots"],
-  ["shoot-og-image.mjs", "og-image"],
   ["html-stubs.mjs", "build"],
 ].map(([file, script]) => {
   // A check that reads dist/ is meaningless against a stale one, so its own rule has to reach the
@@ -283,6 +282,11 @@ export const RULES = [
     prefix: "docs/.vitepress/scripts/fixtures/",
     scripts: ["check:slugs"],
     why: "The recorded anchor contracts. They exist to be compared against, so editing one by hand is exactly what the check is there to object to — re-record with `npm run check:slugs -- --record` instead.",
+  },
+  {
+    prefix: "docs/.vitepress/scripts/shoot-og-image.mjs",
+    scripts: ["og-image", "check:layout", "build"],
+    why: "The one script here the generated rules above cannot describe, because their premise — run by one npm script and by nothing else — stopped being true of it. It owns `launchCandidates`, the rule about which Chromium a run is allowed to use, and `check-layout.mjs` imports that rather than keeping a second answer to the same question. So a change here can decide what the layout gate measures on, and check:layout reads dist/, which brings the build with it.",
   },
   {
     prefix: "docs/.vitepress/scripts/optimise-screenshots.py",

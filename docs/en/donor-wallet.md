@@ -27,6 +27,8 @@ The donor:
 4. Copy the donor address.
 5. Fund it only when the site shows the required amount.
 
+If this browser is already holding a donor wallet, **Generate Wallet** does not add a second one — it writes the new wallet over the stored one. A dialog opens first, and if a rescue has already been sent from this tab the site can hold that dialog back. Read [How to Replace the Donor Wallet](#how-to-replace-the-donor-wallet) before you press it.
+
 ## How to Import a Donor
 
 If you already have a donor:
@@ -35,6 +37,30 @@ If you already have a donor:
 2. Paste the private key or another supported format.
 3. Check the address.
 4. Press **Export Backup** if this donor is new to you.
+
+**Import Wallet** replaces in exactly the same way: importing into a browser that already holds a donor destroys the one that was there. The same dialog opens — see [How to Replace the Donor Wallet](#how-to-replace-the-donor-wallet).
+
+## How to Replace the Donor Wallet
+
+This browser holds one donor wallet at a time. **Generate Wallet** and **Import Wallet** never add a second one: the new wallet is written over the stored one, and the previous recovery phrase and private key stop existing here. Writing over a key destroys it exactly as [erasing](#how-to-erase-the-donor-wallet) it does, so both buttons are treated as the irreversible step they are rather than as a fresh start.
+
+Your first donor is not a replacement, and nothing asks about it: on a browser holding nothing, the wallet you generate or import is installed straight away, with no dialog and no check. The dialog opens when a donor **may** be there — either one is stored, or the site could not read its own storage to find out and will not assume the browser is empty. So meeting it on a browser you believe holds no donor does not mean something is broken: it means the site could not confirm the browser is empty, and it would rather ask than overwrite a key it cannot see. The reverse does not follow, though — a browser that blocks the site from reading its own storage can install the new wallet without asking, so silence is not proof that nothing was there. Export the backup of a donor you might still want before you replace it.
+
+When it opens, the dialog is titled **Replace the donor wallet?** and has two buttons: **Keep the current wallet** and **Replace the donor wallet**. Nothing is overwritten until you choose **Replace the donor wallet**.
+
+It says what you are agreeing to: *This browser is already holding a donor wallet. Continuing writes the new one over it, so its recovery phrase and private key are gone from here — only your exported backup file can bring them back.*
+
+Then it lists three consequences. The first and the last are the ones the erase dialog also shows: whatever is left at the old donor address stays stranded there, and the attacker can delegate the compromised wallet again. The one between them belongs to replacing: *The rescue starts over at step one: the action you picked and the step you had reached are cleared along with the old wallet, so a rescue already under way has to be set up again. Transactions already sent stay sent, and nothing on the blockchain changes.*
+
+Unlike the erase, replacing does not reload the page — it does not need to. The action you picked and the progress you had are cleared on the spot, the later steps lock again, and the site forgets that a backup was ever exported, so **Export Backup** applies to the new wallet from the start exactly as it did to the first one.
+
+::: warning The Old Donor Keeps Whatever Is Sitting on It
+
+Replacing does not empty the old donor address. Gas and tokens left there stay there, and without that donor's backup file nothing in this browser can reach them again. Nothing checks whether you ever exported one, either — the dialog will overwrite a donor you have no backup of. Withdraw the leftovers first through **Donor Asset Withdrawal**, the panel on the donor step right below these buttons — see [how to use it](/en/asset-manager).
+
+:::
+
+Like the erase, this dialog can be refused. If a rescue transaction was sent in this tab, the site checks that the transaction is permanent before it lets the stored donor be overwritten, and the notice it adds begins: *The donor wallet cannot be replaced until the transaction is permanent — the one this browser is already holding is the only key that could run the rescue again if the network undoes it, and generating or importing another one writes over it.* The rule behind that is the same one for both buttons and for the erase: [Why an Irreversible Step Can Be Withheld](#why-an-irreversible-step-can-be-withheld).
 
 ## Backup
 
@@ -63,7 +89,7 @@ Each place has its own single reason for the button to be unavailable, and the t
 - **On the donor step** the button is live as soon as a donor wallet exists — before you choose an action, before any transaction is built or sent. It is disabled only while this browser is holding no donor wallet: *Nothing to erase yet: this browser is holding no donor wallet. Generate or import one first.*
 - **In the send controls** the button is disabled until the rescue transaction is confirmed: *Available once the transaction is confirmed. The donor wallet signs and pays for the rescue, so it has to stay until then.*
 
-Pressing it never erases anything straight away. A dialog opens first, titled **Erase the donor wallet?**, with two buttons: **Keep the donor wallet** and **Erase and reload**. Nothing is deleted until you choose **Erase and reload**.
+Pressing it never erases anything straight away. A dialog opens first, titled **Erase the donor wallet?**, with two buttons: **Keep the donor wallet** and **Erase and reload**. Nothing is deleted until you choose **Erase and reload** — and if you sent a rescue transaction in this tab, not even then until the site has proved that transaction is permanent. See [Why an Irreversible Step Can Be Withheld](#why-an-irreversible-step-can-be-withheld) below.
 
 The dialog lists four consequences. The first and the last are the same wherever you pressed the button; the second depends on which of the two places you pressed it from, and the third depends on what this browser does with pasted keys. Everything else about the dialog is shared. Read the dialog you actually get before you accept it.
 
@@ -71,7 +97,7 @@ Erasing deletes the donor wallet from this browser: its recovery phrase, its pri
 
 ::: warning Withdraw the Leftovers First
 
-Whatever is still sitting at the donor address stays there, and without the backup file nothing in this browser can reach it again. Withdraw the leftover gas and tokens through **Finish — Manage Donor Assets** before you erase — see [Donor Asset Manager](/en/asset-manager).
+Whatever is still sitting at the donor address stays there, and without the backup file nothing in this browser can reach it again. Withdraw the leftover gas and tokens through **Donor Asset Withdrawal**, the panel on the donor step, before you erase — see [how to use it](/en/asset-manager).
 
 :::
 
@@ -110,6 +136,33 @@ If the message says only part of it was erased, do not walk away treating the do
 
 :::
 
+## Why an Irreversible Step Can Be Withheld
+
+Three things can leave the donor's private key unrecoverable, and one check guards all three: [replacing](#how-to-replace-the-donor-wallet) the donor wallet, [erasing](#how-to-erase-the-donor-wallet) it from either of the two places that button sits, and [erasing the whole rescue session](/en/simulation-funding-sending#erasing-the-keys-from-this-browser) from the send step. None of them always goes through. If a rescue transaction was sent in this tab, the site asks the network — right then, not when the dialog opened — whether that transaction is still part of the blockchain. Only a clear yes lets the step through.
+
+Each dialog says why. The erase dialog: *The donor wallet cannot be erased until the transaction is permanent — it is the only key that could run the rescue again if the network undoes it.* The replacement dialog: *The donor wallet cannot be replaced until the transaction is permanent — the one this browser is already holding is the only key that could run the rescue again if the network undoes it, and generating or importing another one writes over it.*
+
+That is the whole reason, and it does not depend on which of them you pressed. Losing the donor's private key is a one-way door: the donor is the wallet that pays for and signs the rescue, so if the network reshuffles your transaction away after that key is gone, nothing in this browser can send the rescue again, and the gas sitting on that address is out of reach as well. Only the backup file can bring that donor back, and only if you exported one. Writing a new wallet over the old one destroys it just as finally as deleting it does, which is why the question the site asks is not whether a button deletes the donor but whether the donor's key can stop being recoverable after it.
+
+While the check runs, the confirm button stops reading **Erase and reload** or **Replace the donor wallet** and reads **Checking that the transaction is permanent…** instead, and cannot be pressed. Then one of two things happens:
+
+- **The transaction is permanent.** The step goes ahead: the erase erases and the page reloads, the replacement writes the new donor over the old one.
+- **It is not permanent, or the site could not tell.** Nothing is erased and nothing is overwritten. The dialog stays open and adds a notice: the sentence above, followed by which of the six it was — not permanent yet, sent but not in a block yet, sent and not in a block yet with the place in the queue still free for it, sent on a network this page is no longer set to, the network did not answer, or the network reorganised and the transaction is gone. All six, and what to do about each, are in [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
+
+The confirm button is not greyed out while that notice is on screen. It stays pressable on purpose: the notice is there to be read, and the decision is yours. Nothing is lost while the step is withheld. Close the dialog with whichever keep button it has — **Keep the donor wallet**, **Keep the current wallet** or **Keep them for now** — or wait a moment and press confirm again; every press asks the network again.
+
+Waiting is not always all that is left, so read which of the six the notice names. Two of them have a control behind them. If it says the transaction went to a network this page is no longer set to, the network selector is the fix. If it says the transaction is not in a block yet **and that the place in the queue it was signed for is still free for it**, the send step can replace that transaction instead of waiting it out — no dialog carries that button, so close this one, go back to the line under the send controls and read [Sent, Not in a Block Yet, and Replaceable](/en/simulation-funding-sending#sent-not-in-a-block-yet-and-replaceable). For three of the remaining four, pressing confirm again after a moment is the whole of what this dialog can do. The fourth — the network reorganised and the transaction is gone — is not a waiting problem at all: the rescue has to be sent again, and the send step is where you do that.
+
+::: warning "Could Not Tell" Is Not "Yes"
+
+An unanswered check withholds the step exactly as a refuted one does, and that is on purpose: a network that will not answer says nothing about your rescue, so it must not be allowed to authorise something irreversible. If it keeps happening, select a different RPC and press the button again — unless the notice says the transaction was sent on a network this page is no longer set to, which is the one case the RPC cannot fix and the network selector can. On some networks it can go on refusing for as long as you keep asking — [When the Check Keeps Refusing](/en/simulation-funding-sending#when-the-check-keeps-refusing) says which ones, and what to do about a pasted private key you wanted off a computer that is not yours.
+
+:::
+
+If nothing was sent from this tab, there is nothing for the check to look at and the step goes ahead as it always did — a donor you generated and then decided not to use is erased, or replaced, immediately. There is one exception: a browser that will not let the site read its own session data cannot show the check that nothing was sent either, so it answers that it could not tell. That is the same browser condition as the erase failures above.
+
+The reverse also holds longer than people expect: the check keeps applying on the donor step after you have pressed **Finish — Manage Donor Assets** and moved on, because it is still the same rescue in the same tab.
+
 ## When to Fund the Donor
 
 ::: tip Wait for Fund Donor Calculation
@@ -121,5 +174,5 @@ You do not need to fund the donor with a large amount in advance. Wait for the F
 ## Next
 
 - [Workspace Flow](/en/workspace-flow) — the steps the workspace is made of.
-- [Donor Asset Manager](/en/asset-manager) — how to withdraw leftovers after a rescue.
+- [Donor Asset Withdrawal](/en/asset-manager) — how to withdraw leftovers after a rescue.
 - [Service Fees](/en/service-fees) — what makes up the final amount.

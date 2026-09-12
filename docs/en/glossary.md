@@ -57,7 +57,7 @@ The network's main coin, used to pay gas: ETH, BNB, POL and similar. Tokens like
 
 ### Nonce
 
-A per-address transaction counter. Each transaction has to follow in order, which is why sending another one on top of a stuck transaction and hoping for the best does not work.
+A per-address transaction counter, and in plain words the place in the queue a transaction is signed for. Transactions from one address take effect in that order, so a second one sent while the first is still waiting does not overtake it — it queues up behind it, and you pay for both. That is why replacing a transaction that has not made it into a block means signing the replacement for the *same* place in the queue rather than the next one, and why the site offers to build one that way while that place is still free — see [Sent, Not in a Block Yet, and Replaceable](/en/simulation-funding-sending#sent-not-in-a-block-yet-and-replaceable).
 
 ### Simulation
 
@@ -69,7 +69,11 @@ The assembled set of data to be sent. It is valid for five minutes: gas prices a
 
 ### Broadcast
 
-The moment a signed transaction goes out to the network. After broadcast it cannot be cancelled, only awaited.
+The moment a signed transaction goes out to the network. After broadcast it cannot be called back. It can be waited for, and while it is not in a block and the place in the queue it was signed for is still free for it, it can be replaced by another transaction signed for that same place — but the one thing nobody can do is un-send it.
+
+### Permanent transaction
+
+A transaction the network can no longer take back. Being confirmed is not the same thing: for a few minutes a network can still reshuffle its most recent blocks, and a transaction reshuffled away stops having happened. The site checks this before it lets the donor wallet be replaced or erased, or the whole rescue session erased — see [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
 
 ### Tx hash
 

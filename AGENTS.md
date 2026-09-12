@@ -55,8 +55,14 @@ what is specific to Claude Code.
 ## Product vocabulary — copy it, do not invent it
 
 Take strings from the TypeScript catalogs in
-`../antidrain_site/src/constants/translations/*.ts`. Do **not** read
-`public/translations/workspace.json` — it is generated from `workspace.ts`.
+`../antidrain_site/src/constants/translations/*.ts`. Do **not** read anything
+under `../antidrain_site/public/translations/` — everything there is build
+output, written from those catalogs by the site's
+`scripts/writeWorkspaceTranslations.mjs`, which its build runs before Vite.
+**The rule is the directory and the generator, not a file name**, because the
+file names have already changed once: a single combined `workspace.json` became
+one file per locale, and the old path stopped existing. Quote the `.ts` source
+and the next reshuffle costs you nothing.
 
 The six workflow steps, in order (`src/types/workflow/primitives.ts`,
 `src/components/StepNav/StepNav.tsx`):
@@ -88,7 +94,14 @@ is a sixth flow and likewise not an action: "Erase donor wallet" / "Стерет
 кошелёк донора" — the same button on two surfaces, the donor step and the send
 controls, opening a confirmation whose second point differs by surface and whose
 third depends on whether the browser keeps pasted keys; everything else about it
-is shared.
+is shared. Replacing the donor is a seventh flow, also not an action: "Replace
+the donor wallet" / "Заменить кошелёк донора" — the confirmation that **Generate
+Wallet** and **Import Wallet** open when this browser may already be holding a
+donor. **It is not an erase, and these pages must never call it one.** The site's
+own test for what the finality gate guards is not "does this control delete the
+donor" but "can the donor key stop being recoverable after it", and writing a new
+wallet over the stored one answers yes. Four controls are guarded, not two: the
+erase on either surface, the session wipe on the send step, and this pair.
 
 - One concept, one name, everywhere, in both languages. If you find two names
   for one thing, that is a defect — fix it or report it, do not add a third.

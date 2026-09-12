@@ -46,7 +46,7 @@ The affiliate link does not increase the user's total fee. It only changes how a
 
 There are two payout types.
 
-### 1. Token Rescue Fee
+### 1. Token Service Fee {#1-token-rescue-fee}
 
 This is a fee in the token being rescued.
 

@@ -20,11 +20,18 @@
  * depend on which fonts happen to be installed on the machine.
  *
  * REPRODUCIBLE, unlike shoot-screenshots.mjs: no live data, no dev server. Two
- * runs of this script produce byte-identical files.
+ * runs of this script produce byte-identical files — ON THE SAME BROWSER BINARY.
+ * That qualifier is not pedantry: the render resolves a Chromium from several
+ * candidates (see `launchCandidates`), and text rasterisation is not guaranteed
+ * to match across Chromium builds, so a card shot against a system Chromium may
+ * differ by some bytes from one shot against Playwright's pinned build without
+ * either being wrong. Playwright's own browser is therefore the reproducibility
+ * baseline and is preferred over the system list; when a regenerated card has to
+ * be byte-identical to the committed one, shoot it against that.
  */
-import { readFileSync, writeFileSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, statSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 // playwright is imported inside main(), not here, so `--self-test` stays a pure
 // function of strings: it proves the template and the budget without a browser.
@@ -68,6 +75,66 @@ export function readTokens(css) {
 /** The committed weight budget, as its own decision rather than an inline `if`. */
 export const budgetVerdict = (file, kb) =>
   kb > MAX_KB ? `${file} is ${kb.toFixed(0)} KB, over the ${MAX_KB} KB budget.` : null
+
+/**
+ * Same list `check-layout.mjs` used to carry a copy of, and now imports from here.
+ *
+ * CI installs Playwright's browser; a dev box often already has a system one, and there is no
+ * reason to make that a manual step.
+ */
+const SYSTEM_CHROMIUM = [
+  '/usr/bin/chromium-browser',
+  '/usr/bin/chromium',
+  '/usr/bin/google-chrome',
+  '/snap/bin/chromium',
+]
+
+/**
+ * The launch options to try, in order: an explicit override, then Playwright's
+ * own pinned browser, then whatever Chromium the machine has. Pure so the
+ * self-test can prove the one rule that matters here.
+ *
+ * That rule: an override that does not exist is a HARD ERROR, not a fall-through,
+ * and an override that does exist is the only candidate returned — so a launch
+ * that then fails is reported instead of quietly becoming a different browser.
+ * Silently shooting the committed card with a different binary than the operator
+ * named is precisely how the byte-identical promise above stops being true, and
+ * it would do it quietly.
+ *
+ * **`check-layout.mjs` imports this rather than keeping its own answer, and that
+ * is a correction rather than tidying.** It used to shrug and try the next
+ * candidate, on the argument that a pass/fail check only has to find *some*
+ * browser. The argument was wrong twice over, and the fall-through fired for
+ * real: Playwright's pinned revision was missing from the local cache, so the
+ * whole six-width and forced-colours pass ran against a system Chromium two
+ * major versions from the pinned one, silently, while reporting a pass. The case
+ * it defended is not "there is no browser anywhere" — that still fails loudly and
+ * needs no override to do it — but "the operator named a binary and got a
+ * different one". And a layout check does not merely find a browser, it
+ * **measures**: geometry at six widths, and a count of distinct painted colours
+ * that decides whether a label is legible at all. Glyph rasterisation differs
+ * between builds, so a number means nothing without the binary beside it.
+ *
+ * The import direction is the odd-looking part and is deliberate: a gate importing
+ * a generator. The reverse cannot work — `check-layout.mjs` reaches `pages.ts` and
+ * so needs `--experimental-strip-types`, which `og-image` does not run with — and
+ * a second copy of this decision in the repository that owns the byte-identical
+ * promise is worse than an unusual arrow. Nothing here runs on import: playwright
+ * is loaded inside `main()`, and `main()` is guarded.
+ */
+export function launchCandidates(override, exists = existsSync) {
+  if (override) {
+    if (!exists(override)) {
+      throw new Error(
+        `PLAYWRIGHT_CHROMIUM_PATH points at ${override}, which does not exist. ` +
+          'Fix it or unset it; refusing to fall back to a browser you did not ask for.',
+      )
+    }
+    return [{ executablePath: override }]
+  }
+
+  return [{}, ...SYSTEM_CHROMIUM.filter(exists).map((executablePath) => ({ executablePath }))]
+}
 
 const dataUri = (path, mime) =>
   `data:${mime};base64,${readFileSync(path).toString('base64')}`
@@ -286,6 +353,37 @@ function runSelfTest() {
     throw new Error('OG image self-test failed: the card rendered an undefined token')
   }
 
+  // Browser resolution. The override must win outright when it exists, and must
+  // stop the run when it does not — a renderer that quietly picks a different
+  // binary breaks the byte-identical promise in this file's header.
+  const overridden = launchCandidates('/opt/my-chromium', () => true)
+  if (overridden.length !== 1 || overridden[0].executablePath !== '/opt/my-chromium') {
+    throw new Error(
+      `OG image self-test failed: an existing override resolved to ${JSON.stringify(overridden)}`,
+    )
+  }
+
+  expectFailure(
+    () => launchCandidates('/opt/gone', () => false),
+    'PLAYWRIGHT_CHROMIUM_PATH points at /opt/gone, which does not exist',
+    'an override naming a binary that is not there',
+  )
+
+  const fallbacks = launchCandidates(undefined, (path) => path === '/usr/bin/chromium')
+  if (Object.keys(fallbacks[0] ?? {}).length !== 0) {
+    throw new Error(
+      "OG image self-test failed: Playwright's own browser is no longer tried first",
+    )
+  }
+  if (fallbacks.length !== 2 || fallbacks[1].executablePath !== '/usr/bin/chromium') {
+    throw new Error(
+      `OG image self-test failed: system fallbacks resolved to ${JSON.stringify(fallbacks)}`,
+    )
+  }
+  if (launchCandidates(undefined, () => false).length !== 1) {
+    throw new Error('OG image self-test failed: a machine with no system Chromium offered extra candidates')
+  }
+
   if (budgetVerdict('og-image.jpg', MAX_KB - 1) !== null) {
     throw new Error('OG image self-test failed: a file inside the budget was rejected')
   }
@@ -311,7 +409,40 @@ async function main() {
     interLatin: dataUri(resolve(FONTS, 'inter-roman-latin.woff2'), 'font/woff2'),
   }
 
-  const browser = await chromium.launch()
+  let browser
+  let chosen
+  let lastError
+  for (const options of launchCandidates(process.env.PLAYWRIGHT_CHROMIUM_PATH)) {
+    try {
+      browser = await chromium.launch(options)
+      chosen = options
+      break
+    } catch (error) {
+      lastError = error
+    }
+  }
+
+  if (!browser) {
+    throw new Error(
+      `Could not launch Chromium to shoot the card: ${String(lastError).split('\n')[0]}\n` +
+        '  Install it with `npx playwright install chromium`, or set ' +
+        'PLAYWRIGHT_CHROMIUM_PATH to a Chromium binary.',
+    )
+  }
+
+  /*
+    Which binary drew the card, printed rather than inferred. The header's promise is now
+    conditional — byte-identical on the same browser — and a caveat the operator cannot check is
+    not worth having: a card shot against a system Chromium differs from the committed one by a
+    few hundred bytes of glyph rasterisation, which looks exactly like a real change in a diff.
+    This line is how the next person tells "I used a different browser" from "the card changed".
+  */
+  console.log(
+    `og-image: rendering with ${
+      chosen.executablePath ?? "Playwright's pinned Chromium (the reproducibility baseline)"
+    }`,
+  )
+
   const page = await browser.newPage({
     viewport: { width: WIDTH, height: HEIGHT },
     deviceScaleFactor: SCALE,
@@ -366,7 +497,14 @@ async function main() {
   console.log(`og-image: wrote ${written.length} file(s), ${total.toFixed(0)} KB total`)
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error))
-  process.exitCode = 1
-})
+/**
+ * Only run when invoked as a command. Without this guard, importing the pure
+ * core — `readTokens`, `budgetVerdict`, `launchCandidates` — launches a browser
+ * and overwrites the committed card as a side effect of the import.
+ */
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error))
+    process.exitCode = 1
+  })
+}

@@ -105,7 +105,7 @@ The site shows how much funding the donor needs.
 
 Fund only the amount needed for this flow. Do not keep large balances on the donor without a reason.
 
-The native coin for gas depends on the network: ETH on Ethereum/Base/Arbitrum, BNB on BNB Chain, MATIC on Polygon, and so on.
+The native coin for gas depends on the network: ETH on Ethereum/Base/Arbitrum, BNB on BNB Chain, POL on Polygon, and so on.
 
 ## 8. Send the Transaction
 

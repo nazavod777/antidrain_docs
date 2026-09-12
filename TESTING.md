@@ -65,7 +65,7 @@ Needs a built dist/, and for the layout check a real Chromium. Minutes, not seco
 | Script | What it covers | Cost |
 | --- | --- | --- |
 | `check:urls` | every live URL, including the legacy .html redirect stubs, is backed by a file in dist/ | ~0.15 s, once dist exists |
-| `check:layout` | a real browser over dist/ at six widths in both themes: sideways scroll, touch targets, axe, console errors, reduced motion | ~105 s, once dist exists — almost the whole build |
+| `check:layout` | a real browser over dist/ at six widths in both themes: sideways scroll, touch targets, axe, console errors, reduced motion, and forced colours read as decoded pixels | ~105 s, once dist exists — almost the whole build |
 | `build` | lint, the VitePress build with its dead-link check, the redirect stubs, check:urls and check:layout — the gate | ~110 s |
 
 #### Local only

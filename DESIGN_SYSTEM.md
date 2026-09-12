@@ -116,6 +116,62 @@ value above the viewport makes the first term negative and silently shrinks the
 sidebar — 1680px cost 120px of sidebar at exactly 1440px wide. VitePress's
 1440px default keeps that term at zero or above.
 
+### 8. One forced-colours rule of our own
+
+The vendored block already carries the site's forced-colours work: it remaps the palette onto
+system colours, and it repairs the "primary button loses its label" collision for a list of site
+component classes. That second fix **cannot** reach this repository. Its selector list is
+`.wa__btn--primary`, `.ac__withdraw` and friends, none of which exist here; and both halves of the
+collision here are docs-only tokens (`--color-accent-text`, `--color-on-accent`) that the site has
+never declared. So `tokens.css` carries one docs-only rule below the deviation marker, for the one
+control in this theme that reproduces the pattern.
+
+The control is the header CTA, `.VPNavBarMenu .VPNavBarMenuLink` in `prose.css` — the workspace
+link — built as `background: var(--color-accent); color: var(--color-on-accent)`. In the **dark**
+theme the remap sends the fill to `CanvasText` and `--color-on-accent` resolves through
+`--color-bg-primary` to `Canvas`. `Canvas` is also the colour Chromium paints its backplate behind
+every glyph, so the label is painted onto a plate of its own colour and vanishes, leaving a blank
+pill. `getComputedStyle` reports `background: CanvasText; color: Canvas` throughout — 21:1 on
+paper — so **only decoded pixels can see this**. Measured as distinct colours in the label's own
+text-node crop: **3 (RU) and 2 (EN) while lost, 241 and 221 after the rule**, against 248–408 for
+labels on the same page that were never filled.
+
+Two places this deliberately differs from the site's version of the same fix, both because this
+control is a bordered `<a href>` rather than a borderless `<button>`:
+
+- **`LinkText`, not `CanvasText`.** The control is a link, and `LinkText` is what tells a
+  forced-colours user so. It also leaves the light theme's rendering byte-identical.
+- **No inset ring.** The site adds `outline: 2px solid CanvasText; outline-offset: -3px` because
+  removing the fill leaves its buttons with no boundary at all. This control already carries
+  `border: 1px solid var(--color-accent-text)`, which resolves to `CanvasText`, so the boundary
+  survives on its own — and an `outline` here would outrank `:focus-visible`'s `Highlight` ring at
+  the moment it is the only thing telling a keyboard user where they are.
+
+Focus is **not** excluded from the rule, unlike the vendored ARIA-state rule above it: what the
+rule sets is the colour pair that makes the label readable at all, and a focused control with no
+label is the same defect. Since it sets no `outline`, the focus ring is untouched either way.
+`:not([inert]):not([hidden])` is specificity padding and nothing else — the component's own
+`:hover` rule is (0,3,0) and `tokens.css` loads *before* `prose.css`, so matching that specificity
+would lose the tie on source order. Dropping the padding was verified to reproduce the defect.
+
+Two measured facts worth not re-discovering:
+
+- **The light theme never sees the remap at all.** It lives on `:root` (0,1,0) and `light.css`
+  overrides the same tokens on `:root:not(.dark)` (0,2,0), so in the light theme `--color-accent`
+  stays `#00a982` and `--color-on-accent` stays `#04110e`. Those are author colours, which is
+  exactly what Chromium's own `forced-color-adjust` is for, and it maps them to a legible pair
+  without help — every candidate measured clean. **This is not a bug to fix casually:** repairing
+  the specificity would move the light theme onto the same system-colour pairs as the dark one and
+  therefore into the same collision, so it needs its own measurement pass, not a one-line edit.
+- **Masked icons disappear in this mode, and no `color` rule can save them.** VitePress draws the
+  external-link arrow as `background-color: currentColor` plus a `mask-image`, and forced colours
+  rewrites every author `background-color` to `Canvas` regardless of what `currentColor` resolves
+  to. Measured flat both with and without a `color` declaration aimed at it, so `tokens.css`
+  carries none. Every masked icon in the theme is affected the same way; that is a separate defect
+  class from this one and wants its own sweep.
+
+`check:layout` protects the rule with a forced-colours pass — see `TESTING.md`.
+
 ## Callouts
 
 Callouts use the site's status-surface formula: 1px hairline in `-border`, fill in

@@ -205,12 +205,48 @@
   }
 }
 
-/* Windows High Contrast and any other forced-colours mode replaces the page palette, and the axe
-   sweep under `forced-colors: active` measured what that costs here: the browser forced surfaces to
-   the system canvas while these author text colours survived, leaving #eeeef2 on #ffffff — 1.15:1.
-   Mapping the palette onto system colours is the fix the mode is designed for: one block, and every
-   component that speaks in tokens follows. Status keeps its meaning because severity is carried by
-   words in this app, never by hue alone. */
+/* Windows High Contrast and any other forced-colours mode replaces the page palette, and this block
+   is where the whole palette lands on system colours: one block, and every component that speaks in
+   tokens follows. Status keeps its meaning because severity is carried by words in this app, never
+   by hue alone.
+
+   **It exists for WebKit.** `e2e/support/forcedColours.ts` holds the per-engine measurement: WebKit
+   matches the media query and adjusts **no** author colour at all, so on `webkit` and
+   `mobile-webkit` the palette in this mode comes only from here. Delete this block and those two
+   engines paint the ordinary dark theme at a visitor who asked the system for the opposite.
+
+   **It does not exist for contrast on Blink, and the note that used to stand here said it did.**
+   That note read "the axe sweep measured #eeeef2 on #ffffff — 1.15:1", and that pair is an artefact
+   of how axe reads a colour rather than anything Chromium painted. Blink force-adjusts `color`; it
+   does not force-adjust `-webkit-text-fill-color`, which keeps the author value it resolved from
+   `currentColor`. Measured on `.header__logo` with this block switched to `not all` at runtime,
+   light system polarity: `color` came back `rgb(0, 0, 159)` — the UA's own `LinkText` — while
+   `-webkit-text-fill-color` came back `rgb(238, 238, 242)`, the author `#eeeef2`, unadjusted, over a
+   UA-forced white canvas. `getTextColor()` in `axe-core` reads `-webkit-text-fill-color` first and
+   falls back to `color`, so axe paired an unadjusted foreground against an adjusted background and
+   printed 1.15 for 15 nodes on `/` and 25 on `/workspace`. What Chromium actually painted in that
+   same state, by pixel decode, was `255,255,255` with `0,0,0` ink; the worst real composited ratio
+   anywhere on the page was 13.99:1 in the light polarity and 19.56:1 in the dark, and every string
+   was legible. With this block shipped the two reads coincide — both `rgb(0, 0, 0)` in the light
+   polarity, both `rgb(255, 255, 255)` in the dark — and axe reports nothing. **The remap made axe's
+   two reads agree; it did not fix a contrast problem on Blink.** Do not shrink this block on the
+   strength of an axe contrast number, in either direction: the rule cannot see this mode at all, and
+   `e2e/support/forcedColours.ts` says why.
+
+   Two mappings here do measurable work on Blink as well, and they are the parts that would have to
+   survive any future shrink. `--color-text-muted: GrayText` is the only thing left holding the
+   de-emphasised distinction on controls kept at `opacity: 1` — without it "Экспортировать резервную
+   копию" and "Стереть кошелёк донора" render identically to the live primary action beside them. And
+   `--color-overlay-scrim: Canvas` is what makes the scrim opaque: the UA rewrites the author
+   `rgba(0, 0, 0, 0.65)` to `rgba(Canvas, 0.65)`, so without it the page ghosts through at 35% —
+   1 distinct colour under the scrim with this block, 2 219 without.
+
+   And the cost, which is the whole reason the repair rules below this palette exist: writing system
+   keywords into the tokens is exactly what creates Chromium's and Gecko's backplate collision, where
+   a control's own text colour equals the resolved `Canvas` the UA paints behind every glyph. A
+   page-wide detector for that equality returned 0 with this block shipped, **2** with the palette
+   kept and the repair rules below deleted, and 0 with the whole block gone. The palette and its
+   repairs are one change, not two — never keep one half without the other. */
 @media (forced-colors: active) {
   :root {
     --color-bg-primary: Canvas;
@@ -256,6 +292,178 @@
     /* An alpha scrim is invisible in forced colours, and a modal that does not separate from the
        page behind it is the one case where that matters. The opaque canvas does the separating. */
     --color-overlay-scrim: Canvas;
+  }
+
+  /* The remap above is complete for text and borders and silently lossy for one thing: every accent
+     hue lands on `CanvasText` or `Canvas`, so a control whose only mark of being chosen was that hue
+     renders exactly like the control next to it. Measured on the step rail — the active step and a
+     locked step both came out `Canvas` background, `CanvasText` text, same 1px `CanvasText` border,
+     and the palette assertions plus the axe sweep were both green while the rail said nothing.
+
+     An inset ring, and deliberately not the `Highlight`/`HighlightText` fill this mode nominally
+     reserves for a chosen thing. That fill was written first and measured worse on two counts, both
+     in Chromium with `forced-colors: active`:
+
+     - **Chromium paints a backplate behind text in this mode**, a `Canvas`-coloured rectangle that
+       guarantees text is legible over whatever is under it. It is drawn under the *glyphs*, over the
+       element's own background, so a fill cannot reach it: the active step's label came out
+       `HighlightText` (white) on a white plate and the words disappeared entirely, leaving a blank
+       block where "Donor Wallet" had been. Computed colours say the opposite — white text over a
+       `Highlight` background is 8:1 — so the paint assertions in `e2e/a11y.spec.ts` and the axe
+       sweep both passed on it. Only a screenshot shows it.
+     - **`Highlight` is already this mode's focus colour** (`--focus-ring`, above). A focused
+       selected control drew a `Highlight` ring around a `Highlight` fill, so the focus indicator
+       vanished at exactly the moment it is the only thing telling a keyboard user where they are.
+
+     `CanvasText` at a negative offset avoids both: the text keeps the palette map it already had —
+     `CanvasText` on `Canvas`, which is what the backplate is designed around — and the state is
+     carried by geometry the mode preserves rather than by a colour it has spoken for. The offset is
+     inward, so the ring sits inside the control's own border instead of where the focus ring goes,
+     and `outline` takes no space, so nothing reflows. Same answer, and for the same reason, as the
+     selected wallet row in the extension's `dropdowns.css`.
+
+     `:focus-visible` is excluded because both marks want the one `outline` property, and focus is
+     the more urgent of the two: while a selected control is focused the `Highlight` ring wins, and
+     the state ring comes back when focus leaves. Keyed on the ARIA state and never on a class name —
+     the state is a DOM contract each of these controls already publishes, so this survives a
+     component being restyled, and a class-name selector would tie the palette sheet to component
+     internals. No `!important` is needed: the `:not()` chain is already specificity (0,4,0), which
+     out-ranks the component rules in the lazy chunks appended after this sheet.
+
+     Disabled is excluded on purpose. "Locked" is the other thing the accent hue was carrying, and a
+     locked control ringed as chosen is worse than one that is merely dim. */
+  [aria-current='step']:not([aria-disabled='true']):not(:disabled):not(:focus-visible),
+  [aria-pressed='true']:not([aria-disabled='true']):not(:disabled):not(:focus-visible),
+  [aria-selected='true']:not([aria-disabled='true']):not(:disabled):not(:focus-visible),
+  [aria-checked='true']:not([aria-disabled='true']):not(:disabled):not(:focus-visible) {
+    outline: 2px solid CanvasText;
+    outline-offset: -3px;
+  }
+
+  /* The same collision, on a different shape of control: not a state a control enters
+     (`aria-current`, `aria-pressed`, …) but a "primary" button's unconditional look — the pattern
+     `background: var(--color-accent); color: var(--color-bg-primary)`, which this mode's remap above
+     resolves to `background: CanvasText; color: Canvas`. `Canvas` is also the exact colour Chromium
+     paints the backplate behind every glyph, so the label vanishes no matter what the button's own
+     background is — found on `WalletActions`' "Generate Wallet" button, and confirmed by grepping
+     every `background: var(--color-accent)` rule in the component tree and checking each candidate's
+     computed colour against the resolved `Canvas` value under `forced-colors: active`. Some of these
+     are broken at rest, some only on `:hover` where a lighter accent still maps to the same
+     `CanvasText`/`Canvas` pair — each selector below matches only the state that is actually broken,
+     so a control whose resting look is already fine (`GrayText`/`Canvas` disabled states, or a
+     `:hover` that never collides) keeps it.
+
+     Same remedy as the ARIA-state rule above, for the same reason: an inset `CanvasText` ring and
+     `CanvasText`-on-`Canvas` text instead of a fill, so the control still reads as a button without
+     repainting a colour this mode has already spoken for. `:not([inert]):not([hidden])` is padding,
+     not a meaningful guard — every listed selector's own broken rule tops out at specificity (0,4,0)
+     (a `:hover:not(:disabled):not([aria-disabled='true'])` chain), and this file loads before the
+     component chunks that set it, so matching that specificity would lose the tie on source order.
+     Padding past it wins on specificity instead, the same technique the rule above already uses.
+
+     `:disabled`/`[aria-disabled='true']` is excluded for the selectors whose own disabled rule
+     already repaints `background`/`color` (checked per file, not assumed) — those are already fine
+     and this must not fight that rule's own, deliberately different, disabled look. `.ac__withdraw`
+     and `.step-nav__num` are the two exceptions: their disabled state only dims `opacity`, which
+     scales a foreground and background that are already identical by the same factor and so keeps
+     them identical — the label stays invisible, dimmer. That combination is reachable
+     (`WorkspacePage` can lock the very step it is currently on), so those two are fixed
+     unconditionally rather than left for the "disabled excluded on purpose" reasoning above, which is
+     about not marking a locked control as chosen — a reason that has nothing to do with whether its
+     label can be read.
+
+     **The backplate claim above is measured, and the measurement also settles what it is not.**
+     `.app__chunk-error-action` was rendered in a forced-colours Chromium and a forced-colours Gecko
+     with the real palette, and the pixels of its label were decoded the way
+     `e2e/support/glyphVisibility.ts` decodes them — distinct colours inside the text node's own crop:
+
+       variant                                        Blink   Gecko
+       background: CanvasText; color: Canvas             7      207
+       background: CanvasText; color: <hex literal>    324        1
+       background: Canvas;     color: CanvasText       318      208
+
+     So the pattern really does lose its label, and only in Blink: the `Canvas` backplate sits behind
+     the glyphs and a `Canvas` foreground disappears into it, while Gecko paints no backplate and the
+     same pair reads as white on black. The repair is the only variant legible in both engines, which
+     is why it is the repair and not a Blink workaround.
+
+     The middle row is the trap, and it is why `.app__chunk-error-action` needed this list rather than
+     the migration it got. Blink force-adjusts a hex literal onto `CanvasText`, so the literal was
+     legible in Blink over the backplate and invisible in Gecko against its own `CanvasText`
+     background; moving it onto `--color-bg-primary` fixed Gecko and broke Blink. A comment in
+     `src/App.css` claimed that migration fixed an invisible label — it swapped which engine loses it.
+     Neither ink is a fix on its own; the pair has to change, which is what this rule does.
+
+     `scripts/checkDesignTokens.mjs` now finds this pattern instead of a reviewer having to: it
+     resolves each rule's `background` and `color` through the `:root` block above and fails on a
+     `CanvasText`/`Canvas` pair that no `forced-colors` rule — here or in the rule's own file —
+     repairs. A new accent-filled control therefore joins this list at `npm run lint`, not at the
+     next audit. */
+  .wa__btn--primary:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .hero__button--primary:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .app__chunk-error-action:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  /* Both of these are `InternalLink`s, so the two disabled exclusions can never match and are here
+     only as the specificity padding this list already uses elsewhere. */
+  .referral__cta:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .not-found__button--primary:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  /* No `:disabled` exclusion here (see above), so this needs to outrank `.ac__withdraw:hover`'s
+     (0,4,0) too, not just the (0,2,0) base rule — the repeated class is specificity padding, the
+     same purpose `:not([inert]):not([hidden])` serves elsewhere in this list. */
+  .ac__withdraw.ac__withdraw.ac__withdraw:not([inert]):not([hidden]),
+  .sim-cfg__run:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .modal__submit:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .step-nav__btn--active .step-nav__num:not([inert]):not([hidden]),
+  /* All of the sender's buttons, not one: `--send` was fixed alone and its siblings carry the same
+     `:hover` pattern with `--color-success` and `--color-warning` in place of the accent, both of
+     which this palette also sends to `CanvasText`.
+
+     `__replace` is the fourth, and it arrived (11.09.2026) the way the last sentence of the block
+     above promises one will: `scripts/checkDesignTokens.mjs` failed on it, naming the selector and
+     the resolved pair, rather than an audit finding it later. It is a different element from the
+     three `__btn--` ones — the replace-bid control in `SendFinalityNotice`, which is mounted only
+     for `unknownCause === 'replaceable-send'` and takes no `disabled` prop — so its two disabled
+     exclusions can never match and are here as the specificity padding this list already uses,
+     nothing more. Its own broken rule is a bare `:hover` at (0,2,0), lower than the siblings'
+     (0,4,0), so the padding clears it with room to spare. */
+  .send-ctrls__btn--send:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .send-ctrls__btn--finish:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .send-ctrls__btn--retry:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .send-ctrls__replace:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .cxp__add-confirm:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .cxp__network-review-btn:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .permit-wallet-card__add-confirm:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .dwp__add-confirm:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .rdp__add-confirm:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .prp__add-confirm:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]),
+  .action-btn:hover:not(:disabled):not([aria-disabled='true']):not([inert]):not([hidden]) {
+    background: Canvas;
+    color: CanvasText;
+    outline: 2px solid CanvasText;
+    outline-offset: -3px;
+  }
+
+  /* Focus takes the `outline` back from the repair above, and this rule exists because the repair
+     had silently kept it. The ARIA-state rule higher up excludes `:focus-visible` for exactly this
+     reason — two marks, one property, and focus is the more urgent — but the paint repair could not
+     borrow that exclusion: suspending *it* while focused would restore the `CanvasText`/`Canvas`
+     pair, so the label a keyboard user just arrived at would be the one that disappears. The paint
+     therefore stays unconditional and only the ring yields.
+
+     Measured before it was written, on `.referral__cta` in a forced-colours Chromium: the focused
+     element's screenshot was byte-identical to its resting one, and the computed outline was
+     `rgb(0, 0, 0) solid 2px offset=-3px` in both states — `Highlight` never reached the element,
+     because the repair's `:not()` padding outranks `:focus-visible`'s (0,1,0). Seventeen controls,
+     twelve of them repaired before this pass, had no focus indicator in this mode at all.
+
+     Six repetitions of the pseudo-class, because the widest selector in the list above is
+     `.send-ctrls__btn--send:hover:not(…)×4` at (0,6,0) and a tie loses on source order to the
+     component chunks. `:focus-visible` is idempotent, so repeating it changes nothing but the
+     specificity — the same technique, and the same reason, as the padding in the list itself.
+     `Highlight` on the repaired `Canvas` fill is a real contrast, which is what made the ARIA rule's
+     own warning (a `Highlight` ring around a `Highlight` fill) not apply here. */
+  :focus-visible:focus-visible:focus-visible:focus-visible:focus-visible:focus-visible:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
@@ -425,4 +633,40 @@
      which is what keeps them symmetric. */
   --plaque-padding-y: calc(var(--spacing-xs) + 4px);
   --plaque-padding-x: var(--spacing-sm);
+}
+
+/* The site's forced-colours fix above (the `background: Canvas; color: CanvasText` block near
+   `.wa__btn--primary`) covers the same collision this does, and structurally cannot reach this
+   control: its selector list is site component classes, and both halves of the pair here are
+   docs-only tokens the site has never declared. So this is the second half of that fix, written
+   for the one control in this theme that reproduces the pattern.
+   `.VPNavBarMenu .VPNavBarMenuLink` (prose.css) is the header CTA — the workspace link — and it
+   is built as `background: var(--color-accent); color: var(--color-on-accent)`. In the dark theme
+   the vendored remap sends the first to `CanvasText` and `--color-on-accent` resolves through
+   `--color-bg-primary` to `Canvas`, which is also the colour Chromium paints the backplate behind
+   every glyph — so the label is painted `Canvas` on a `Canvas` plate and disappears, leaving a
+   blank pill. Measured with decoded pixels rather than computed style, because `getComputedStyle`
+   reports `background: CanvasText; color: Canvas` and that reads as 21:1: distinct colours in the
+   label's own text-node crop went 3 (RU) / 2 (EN) while a legible control on the same page measured
+   248–408, and 241 / 221 after this rule. The light theme measured 345 both before and after, and
+   is deliberately left alone — see DESIGN_SYSTEM.md for why the remap never reaches it.
+
+   Two deliberate divergences from the site's version of the fix, both because this control is a
+   bordered `<a href>` and not a borderless `<button>`: `LinkText` instead of `CanvasText`, and no
+   inset ring. DESIGN_SYSTEM.md carries the reasoning, and so does the reason there is nothing here
+   for the external-link arrow: that mark is a mask painted from `background-color`, which this mode
+   rewrites to `Canvas` whatever `color` says, so it is invisible with or without a rule and a
+   `color` declaration aimed at it would be dead code. Verified by measuring both ways. */
+@media (forced-colors: active) {
+  /* `:not([inert]):not([hidden])` is specificity padding, not a guard — the same technique the
+     vendored block uses. The component's own `:hover` rule is (0,3,0) and this sheet loads before
+     prose.css, so matching it would lose the tie on source order; (0,4,0) wins outright and needs
+     no `!important`, which this theme has exactly one of and it is not this. Focus is deliberately
+     NOT excluded: the pair below is what makes the label readable at all, and a focused button
+     with no label is the same defect. Nothing here sets `outline`, so `:focus-visible`'s
+     `Highlight` ring is untouched. */
+  .VPNavBarMenu .VPNavBarMenuLink:not([inert]):not([hidden]) {
+    background: Canvas;
+    color: LinkText;
+  }
 }

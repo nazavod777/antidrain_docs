@@ -57,6 +57,8 @@ For example, if the assets are on Ethereum, do not send the flow on BNB Chain or
 
 Also check RPC. If RPC returns a different chain ID or does not respond, the site may block actions. That is expected: fixing RPC is safer than sending blindly.
 
+When the page loads, and again whenever you point it at a network or an RPC this tab has not asked before, the network actions are unavailable and say the site is checking the chain ID of this RPC. It is not a per-step wait, and not a repeating one: the answer is remembered for that endpoint, so neither moving between steps nor returning to an endpoint you have already used asks again. It is not a problem with your RPC either, and there is nothing to fix — the site is asking the node which chain it is on, and it will not let you build, simulate, fund or send against a node it has not heard from. How long it lasts is however long the node takes to answer; nothing in the site cuts that short, and a slow or silent endpoint can stretch it while the site tries the network's other endpoints in turn. The wording tells the two apart: "checking" clears on its own, while a request to choose a working RPC means the node either answered with the wrong chain or did not answer at all.
+
 ## Check the Recipient
 
 Recipient is the address that should receive the assets.
@@ -79,7 +81,7 @@ It is better to spend time checking than to send the wrong transaction.
 
 ## Check the Final Send Screen
 
-Before Send, review:
+Before the TX Sender step, review:
 
 - action;
 - network;

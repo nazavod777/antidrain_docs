@@ -27,11 +27,21 @@ To a new safe recipient wallet. Do not send funds back to an address whose priva
 
 ## When should I fund the donor?
 
-After successful simulation, on the Fund Donor step. The site shows total required and remaining to fund. Before that, do not keep a large balance on the donor.
+After successful simulation, on the Fund Donor step. The site shows **Total to Fund** and **Remaining to Fund**. Before that, do not keep a large balance on the donor.
 
 ## What should I do after a successful rescue?
 
-Check recipient balance, save the tx hash, withdraw leftovers from the donor, and stop using the compromised key.
+Check recipient balance, save the tx hash, withdraw leftovers from the donor, and stop using the compromised key. Erasing the donor wallet is the one step that waits: the line under the send buttons has to go empty first, which is how the site says the transaction is permanent.
+
+## The transaction is confirmed. Why can I not erase the donor wallet?
+
+Because for a few minutes a network can still reshuffle its most recent blocks, and a transaction reshuffled away stops having happened. The donor holds the only key that could send the rescue again if that happens, so the site will not let you throw it away until your transaction is proved permanent. The same check guards **Generate Wallet** and **Import Wallet**, because a new donor is written over the stored one. Nothing is wrong and nothing is lost — press **Erase and reload** again in a minute. Read the notice the dialog adds before you settle in to wait, though: if it says the transaction is not in a block yet and the place in the queue it was signed for is still free for it, the send step can replace that transaction rather than wait it out. Both cases are covered in [Why an Irreversible Step Can Be Withheld](/en/donor-wallet#why-an-irreversible-step-can-be-withheld) and [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
+
+## The transaction has been sent and is not in a block. What can I do?
+
+Press **Check again** in the line under the send buttons first. It costs nothing, it asks the network afresh, and a transaction that has simply arrived ends the question on its own. If that same line also says the place in the queue your transaction was signed for is still free for it, there is a second button beside it — **Replace with a higher gas price** — which rebuilds the rescue for that same place in the queue and outbids what is waiting there.
+
+Do not send the rescue a second time yourself. A second transaction from the donor takes the *next* place in the queue and waits behind the first, so you would pay for both and arrive no sooner. The full answer, including what to do when a network turns a replacement down, is [Sent, Not in a Block Yet, and Replaceable](/en/simulation-funding-sending#sent-not-in-a-block-yet-and-replaceable).
 
 ## Why do I need simulation?
 
@@ -61,7 +71,7 @@ If DeBank does not see an asset or the site says the flow is unsupported, that a
 
 ## What is a native token?
 
-It is the main coin used for gas on a network: ETH, BNB, MATIC, and similar coins. ERC-20 tokens like USDT or USDC usually do not pay gas.
+It is the main coin used for gas on a network: ETH, BNB, POL, and similar coins. ERC-20 tokens like USDT or USDC usually do not pay gas.
 
 ## What is RPC?
 

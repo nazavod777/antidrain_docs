@@ -55,7 +55,7 @@ Treat the old address as closed: do not accept payouts to it, do not use it for 
 
 ## If the Attacker Got There First
 
-It happens, and it is worth saying plainly: blockchain transactions are irreversible. If the assets are already gone, AntiDrain cannot bring them back — the site prepares and sends transactions, it does not undo someone else's.
+It happens, and it is worth saying plainly: a transaction that has been sent cannot be cancelled. If the assets are already gone, AntiDrain cannot bring them back — the site prepares and sends transactions, it does not undo someone else's.
 
 What is still worth checking:
 

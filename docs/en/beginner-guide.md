@@ -36,7 +36,7 @@ If you are using someone else's computer, screen sharing, recording your screen,
 
 **Donor** means a separate wallet that pays gas and sends rescue transactions. Do not keep large balances on it.
 
-**Gas** means the network fee for running a transaction. Gas is paid in the native coin of the network, such as ETH, BNB, or MATIC.
+**Gas** means the network fee for running a transaction. Gas is paid in the native coin of the network, such as ETH, BNB, or POL.
 
 **Network** means the blockchain where the assets are. An asset on Ethereum cannot be rescued by a transaction sent on BNB Chain.
 
@@ -71,11 +71,11 @@ If you do not know what to choose, start small: find the network and one asset, 
 5. Choose a rescue action.
 6. Add only the wallets and tokens required for that action.
 7. Enter the recipient address. This should be your new safe address.
-8. Click Build Transaction.
-9. Run Simulation.
+8. Click **Build Transaction**.
+9. Click **Run Simulation**.
 10. If simulation succeeds, carefully review the summary.
 11. On Fund Donor, fund the donor only with the shown amount plus a small gas buffer.
-12. Go to Send only if the network, recipient, amount, and simulation result look expected.
+12. Go to TX Sender only if the network, recipient, amount, and simulation result look expected.
 13. Save the tx hash and check the recipient balance in your wallet or explorer.
 
 ## When You Must Not Continue

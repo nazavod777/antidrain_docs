@@ -64,7 +64,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
 | `npm run test:for -- --audit` | That the test map still describes this repository: every path claimed by a rule or by a documented gap, every check reachable from its own source, the `lint` chain, the `--self-test` pairing and the build's own sub-checks matching `package.json`, and the tier table in `TESTING.md` matching `scripts/testMap.mjs`. `TESTING.md` § When the map is wrong lists all twelve failures. |
 | VitePress dead-link check | Internal links. Relative links break because pages are rewritten into directories — always link `/ru/page`, never `page.md`. |
 | `npm run check:urls` | All 63 live URLs are backed by a file, including the legacy `*.html` redirect stubs. The page list comes from `docs/.vitepress/pages.ts`, so it cannot fall behind the sidebar. |
-| `npm run check:layout` | Drives a real browser over `dist/` at six widths in both themes: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, and `prefers-reduced-motion` actually suppressing transitions. 81 navigations in about 100s. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
+| `npm run check:layout` | Drives a real browser over `dist/` at six widths in dark and the two extremes (390, 1440) in light: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, `prefers-reduced-motion` actually suppressing transitions, and no label lost to forced-colors mode. 83 navigations — 10 pages x (6 dark + 2 light), plus one reduced-motion pass and two forced-colors passes — in about 100s. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
 
 Seven of the eight are npm scripts of ours, and every one of those runs its own
 `--self-test` immediately before the real check, inside the same npm script
@@ -88,9 +88,10 @@ that passes says nothing about what it never looked at.
   axe violation. Closing it means ten more page types, not ten more URLs.
 - **A targeted `check:layout` run is not the gate.** `--page <url>` and
   `--changed <path>` narrow the set of pages — never the set of checks per page:
-  the same six dark widths, two light widths and axe at 390 and 1440. The single
-  thing structurally outside a targeted run is the `prefers-reduced-motion`
-  pass, which is a fixed extra pass on one URL rather than a per-page check.
+  the same six dark widths, two light widths and axe at 390 and 1440. Two things
+  are structurally outside a targeted run, and the run prints a line for each:
+  the `prefers-reduced-motion` pass and the forced-colors pass. Both are fixed
+  extra passes on one URL rather than per-page checks.
   Both themes *are* covered, because the theme loop runs inside the page loop. A
   `--changed` path that is not page markdown escalates the run back to the full
   gate, since a token or a script is not localised to one URL. Every run prints

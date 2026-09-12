@@ -1,9 +1,9 @@
 ---
-title: Donor Asset Manager
+title: Donor Asset Withdrawal
 description: How to withdraw leftover funds and manage assets in the donor wallet after rescue.
 ---
 
-# Donor Asset Manager
+# Donor Asset Withdrawal {#donor-asset-manager}
 
 Donor Asset Withdrawal is the panel on step one that helps you manage the donor wallet's assets.
 

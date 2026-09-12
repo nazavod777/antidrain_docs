@@ -16,9 +16,12 @@ If you are new, do not fix errors by clicking randomly. Read the error, check ne
 | Assets list is empty | [DeBank Did Not Load Assets](#debank-did-not-load-assets) |
 | Simulation fails | [Simulation Failed](#simulation-failed) |
 | Plan is outdated | [Transaction Plan Expired](#transaction-plan-expired) |
-| Transaction has no confirmation | [Transaction Is Pending](#transaction-is-pending) |
+| Transaction sent, but no block holds it | [Transaction Is Pending](#transaction-is-pending) |
+| Confirmed, but not permanent | [Confirmed but Not Permanent](#confirmed-but-not-permanent) |
 | Balance unchanged | [Balance Did Not Update](#balance-did-not-update) |
 | Error after broadcast | [Sending Failed After Broadcast](#sending-failed-after-broadcast) |
+| Saved data disappeared | [Some Saved Data Was Removed](#some-saved-data-was-removed) |
+| Page stayed in the same language | [The Language Did Not Switch](#the-language-did-not-switch) |
 
 ## Button Is Disabled
 
@@ -34,6 +37,8 @@ Check:
 - Simulation passed
 
 If there is a tooltip or disabled-button message, read it. It usually tells you exactly what is missing.
+
+One case after a successful send is not on the list above and no amount of re-entering data will fix it: **Finish — Manage Donor Assets** is greyed out when the network has reorganised your transaction away. **Erase donor wallet** is different again — it is not greyed out at all, but confirming it can refuse, and **Generate Wallet** and **Import Wallet** refuse the same way once a rescue has been sent from this tab. All of them are [Confirmed but Not Permanent](#confirmed-but-not-permanent).
 
 ## Invalid Private Key
 
@@ -97,9 +102,11 @@ Check:
 - Recipient
 - Contract state
 
-If the error is unclear, do not continue to Send through advanced override. Try a simpler action or check one asset separately.
+If the error is unclear, do not continue to TX Sender through advanced override. Try a simpler action or check one asset separately.
 
 :::
+
+In simple mode the failure line tells you what happened and what to try next. It does not show the words the network or the simulation service sent back. Switch to Advanced mode to read those, together with the revert data and which provider answered — that is where an unclear error becomes readable. The notes under the result follow the same rule: simple mode says what was and was not checked, Advanced mode names the methods it was checked with.
 
 ## Transaction Plan Expired
 
@@ -107,21 +114,38 @@ The transaction plan is valid only for a limited time. This prevents old gas and
 
 What to do:
 
-1. return to Simulation;
+1. return to TX Simulator;
 2. run simulation again;
 3. approve the new plan;
 4. check Fund Donor again;
-5. continue to Send.
+5. continue to TX Sender.
+
+These same steps are the fix whenever the site refuses a plan and tells you to build it again, and an expired plan is only one of the reasons it can give. For what happened to your funds, read the message itself rather than guessing. Where it says nothing was signed and nothing was sent, building the plan again costs you nothing but the time. Where it says *this step* was not signed or not sent, a plan can have more than one step and an earlier one may already have gone through — the transaction log above the message is what lists them, and rebuilding is still the way forward.
 
 ## Transaction Is Pending
 
-Check the tx hash in the explorer.
+The transaction went out to the network and no block holds it yet. Check the tx hash in an [explorer](/en/glossary#explorer) — it shows you the same thing the site is looking at.
 
-If the transaction is pending:
+If the rescue was sent from this tab, you do not have to work out what to do from the explorer: the line under the send buttons has already asked the network and says which case this is. One of its answers comes with a button, because the transaction can be replaced instead of waited out — read [Sent, Not in a Block Yet, and Replaceable](/en/simulation-funding-sending#sent-not-in-a-block-yet-and-replaceable).
 
-- Wait
-- Check gas
-- Do not send another transaction without understanding nonce behavior
+In either case, two things hold:
+
+- **Press Check again first.** It costs nothing, it asks the network afresh, and a transaction that has simply arrived ends the whole question on its own.
+- **Do not send the rescue a second time.** A second transaction from the donor is signed for the *next* place in the queue — its [nonce](/en/glossary#nonce) — so it waits behind the first rather than replacing it, and you pay for both. A replacement has to take the same place in the queue, and **Replace with a higher gas price** is the control that builds one.
+
+## Confirmed but Not Permanent
+
+The transaction is confirmed, but a line under the send buttons says it is not permanent yet, or that no block holds the transaction yet, or that no block holds it yet and the place in the queue it was signed for is still free for it — so it can be replaced, or that the check could not be completed, or that it was sent on a network this page is no longer set to, or that the network reorganised. This is not a failure of the site and it is not something you have entered wrongly: a network can still reshuffle its most recent blocks, so the site checks whether your transaction's block is still in the chain before it treats the rescue as final.
+
+Which of the states you are in decides what to do, and they are not the same thing at all: one is normal; two say the transaction is not in a block yet and differ only in whether there is anything to do about it — the second comes with a button that replaces the waiting transaction, the first does not; one says nothing about your rescue; one is only about which network the page is set to; and one means the rescue has to be sent again. Each outcome, the exact sentence it puts on screen and the steps for it are in [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
+
+Three symptoms lead here rather than to [Button Is Disabled](#button-is-disabled):
+
+- **Erase donor wallet** opens its dialog, you confirm, and nothing is erased. See [Why an Irreversible Step Can Be Withheld](/en/donor-wallet#why-an-irreversible-step-can-be-withheld).
+- **Finish — Manage Donor Assets** is greyed out after a successful send. Only a network reorganisation does that; while the transaction is merely not permanent yet, **Finish — Manage Donor Assets** works.
+- **Generate Wallet** or **Import Wallet** opens a dialog about replacing the donor, you confirm, and nothing is replaced. It is the same rule for the same reason — see [Why an Irreversible Step Can Be Withheld](/en/donor-wallet#why-an-irreversible-step-can-be-withheld).
+
+All three dialogs quote the same sentence the line does, so read which one it is before you settle in to wait. If it says the transaction is not in a block yet and the place in the queue it was signed for is still free for it, there is a button — not in the dialog, but in the line under the send controls: [Sent, Not in a Block Yet, and Replaceable](/en/simulation-funding-sending#sent-not-in-a-block-yet-and-replaceable).
 
 ## Balance Did Not Update
 
@@ -139,6 +163,57 @@ Two things are possible:
 - The transaction reverted or was rejected by the network
 
 Do not send again until you understand what happened to the first tx hash.
+
+## Some Saved Data Was Removed
+
+The workspace shows a box titled **Some Saved Data Was Removed**, with a list of what it was. Each
+line in that list names what to do about it; the same four remedies are spelled out below.
+
+This is the site telling you something it had saved could not be read back, so it deleted it. It is
+not an error you can retry, and it is not about the blockchain: your wallets, your funds and any
+transaction already sent are untouched. Only what this browser had written down is gone.
+
+What to do depends on the line in the list:
+
+- **the donor wallet saved in this browser** — generate or import a donor again on the first step.
+  If you exported the backup file, the old donor is still reachable from it and whatever gas is left
+  on that address is still there.
+- **the saved progress of this rescue** — the step that needs a value will ask for it again. Paste
+  the compromised wallet's key once more when the panel asks.
+- **the saved simulator credentials** — enter them again in the simulator settings, or run the
+  simulation without them.
+- **the network you had selected** — pick the network again in the header.
+
+The site removes a saved value only after it has established that the value cannot be read at all —
+never because a read merely failed. That distinction is the point of the other notice, **Saved State
+Not Opened**: it deletes nothing and asks you to try again.
+
+## The Language Did Not Switch
+
+You press the **EN/RU** language toggle in the header and the page stays in the language it was
+already in. A line appears under the header: *The other language could not be downloaded, so the
+page stayed in this one. Check your connection and press again.*
+
+The workspace text is downloaded separately for each language, so in the workspace switching needs
+a working internet connection. When that download does not succeed, the site leaves the page in
+the language it can still display rather than clearing a rescue in progress off the screen. This
+is not something you entered wrongly, and it is not about the blockchain: your donor wallet, your
+saved progress and any transaction already sent are untouched, and every button and field keeps
+working in the language you are in.
+
+What to do:
+
+- Press the toggle again — each press tries the download again.
+- Check your internet connection — the same checks as in [RPC Does Not Work](#rpc-does-not-work).
+- Carry on in the language you have; nothing in the rescue depends on which one it is.
+
+One case looks worse than it is. If you use the browser's Back button to go to the other language's
+copy of a page, a failed download can leave the browser's address bar saying one language while the
+page shows the other — `/ru/workspace` while you are still reading English. It is the address bar
+that is wrong, not the page, and the next switch that does go through makes them match again.
+**Do not reload the page to line them up.** While that language still will not download, a reload
+opens the workspace in the language the address bar names, fails to download it a second time, and
+puts an error screen where your rescue was.
 
 ## Next
 

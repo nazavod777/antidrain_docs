@@ -15,7 +15,7 @@ Network gas is not an AntiDrain service fee. Gas is paid to the network for runn
 
 AntiDrain has two main fee types.
 
-## 1. Token Rescue Fee
+## 1. Token Service Fee {#1-token-rescue-fee}
 
 This is a fee in the token being rescued.
 
@@ -33,7 +33,7 @@ Examples:
 - With an active affiliate link, affiliate receives 5 USDT and protocol receives 15 USDT
 - 1,000 TOKEN is rescued: recipient receives 800 TOKEN, total token fee is 200 TOKEN
 
-## When Token Rescue Fee Appears
+## When Token Service Fee Appears {#when-token-rescue-fee-appears}
 
 Token rescue fee can appear in these cases:
 
@@ -105,13 +105,13 @@ After that, the site tries to get the native coin price from price providers and
 
 If the price is unavailable, the network is custom, or the coin symbol is unsupported, the site may use a fallback estimate. In that case the amount can be based on estimated gas cost, not on the exact $5 per unit price.
 
-If the transaction plan already contains a locked service fee, Fund Donor and Send should use that locked amount.
+If the transaction plan already contains a locked service fee, Fund Donor and TX Sender should use that locked amount.
 
 ## What to Check Before Sending
 
 ::: warning Check All Fees Before Sending
 
-If a fee looks unexpected, do not send immediately. Go back to Build or Simulation and check the selected action and route.
+If a fee looks unexpected, do not send immediately. Go back to TX Builder or TX Simulator and check the selected action and route.
 
 :::
 
