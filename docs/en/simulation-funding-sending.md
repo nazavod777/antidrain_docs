@@ -20,6 +20,21 @@ It can help detect:
 - Gas issue
 - Unsupported flow
 
+### Choosing the Estimation Method
+
+Above **Run Simulation** there is a choice headed **Estimation Method**, with two options: **RPC** and **Tenderly**.
+
+**RPC is the one already selected when you arrive, and it asks nothing of you.** It checks the transaction through the same network connection the rest of the site is using, so **Run Simulation** works straight away.
+
+**Tenderly is an outside service, and you have to select it yourself.** Selecting it opens three fields — **API Key**, **Account Slug** and **Project Slug** — and until all three are filled in, **Run Simulation** stays disabled and says why: *Fill in the Tenderly API key, account, and project first*. You only have those three if you have registered a Tenderly account of your own. If you have not, there is nothing to enter and nothing is lost: RPC checks the same transaction.
+
+There are two cases where the site sends you back to RPC whichever option you selected, and it says so on screen rather than failing quietly:
+
+- **Tenderly does not cover every network.** Where it does not, the site reads *Tenderly simulation is not available on this network. Use RPC simulation instead.* and will not run it.
+- **Tenderly cannot check a delegation rescue.** For [Remove Delegation](/en/rescue-actions#remove-delegation), and for anything else built on an EIP-7702 authorization, the site says Tenderly ignores that authorization and would answer about a transaction you are not sending — so use RPC.
+
+Whichever you pick is remembered for the rest of this browser session, so you pick once. Reloading the page keeps your choice; closing the tab and coming back starts on RPC again.
+
 ## If Simulation Succeeds
 
 If simulation succeeds:

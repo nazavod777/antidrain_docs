@@ -116,6 +116,28 @@ If you do not know where to get calldata, use one of the three types above, or t
 
 ![The custom transaction form: Target Contract and Calldata (hex) on top, then Value (Native) and a Unit dropdown showing "Ether (10^18 wei)". This form has no recipient field.](/screenshots/en/09-tx-custom.webp)
 
+### The "donor" Toggle Beside Recipient Address
+
+On the three transfer forms above — ERC-20, ERC-721 and ERC-1155 — the **Recipient Address** label has a toggle next to it marked **donor**. Turning it on fills the field with the donor wallet's address, so you do not have to go back to step one and copy it. It is a shortcut for typing and nothing more: the transaction that gets built is the same one you would have built by pasting that address yourself.
+
+Three things to know before you use it:
+
+- **The field stays yours to type in.** The toggle does not lock it. Type anything that is not the donor address and the toggle clears itself.
+- **Turning the toggle off empties the field.** It does not bring back an address that was there before, so you enter the recipient again from scratch.
+- **It does nothing until a donor exists.** Before you have generated or imported one, the toggle cannot be turned on, and it says why: *Generate or import a donor wallet first*. Put the mouse on it, tap it, or reach it with the **Tab** key to read that.
+
+The [Custom Transaction](#custom-transaction) form has no recipient field, so it has no toggle either.
+
+::: warning The Donor Is a Stop, Not a Destination
+
+Assets sent to the donor land on the wallet whose private key this browser is holding — and that is the wallet the site later offers to [erase](/en/donor-wallet#how-to-erase-the-donor-wallet) and to [replace](/en/donor-wallet#how-to-replace-the-donor-wallet). Both of those destroy that key, and whatever is still sitting at that address when they do stays there for good.
+
+So a rescue that sends to the donor is not finished when the transaction confirms. Move the assets on to your own new safe wallet through [Donor Asset Withdrawal](/en/asset-manager), and keep the donor's **Export Backup** file until you have. That is one transaction more, and gas for it, than sending straight to your own address.
+
+If you already have the new safe wallet that [Before You Start](/en/prepare) asks you to prepare, put its address in the field and leave the toggle alone.
+
+:::
+
 ## Permit Rescue
 
 Permit Rescue uses token permit signatures when the token supports the required standard.

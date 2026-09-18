@@ -106,6 +106,8 @@ If the error is unclear, do not continue to TX Sender through advanced override.
 
 :::
 
+Check which estimation method ran it, too. The simulator opens on **RPC** and offers **Tenderly** as the other option, the two do not check a transaction the same way, and where the one you selected cannot cover this rescue the site says so on screen — see [Choosing the Estimation Method](/en/simulation-funding-sending#choosing-the-estimation-method).
+
 In simple mode the failure line tells you what happened and what to try next. It does not show the words the network or the simulation service sent back. Switch to Advanced mode to read those, together with the revert data and which provider answered — that is where an unclear error becomes readable. The notes under the result follow the same rule: simple mode says what was and was not checked, Advanced mode names the methods it was checked with.
 
 ## Transaction Plan Expired

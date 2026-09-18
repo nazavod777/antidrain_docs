@@ -32,7 +32,7 @@ Transactions are visible on the network before they are included in a block. An 
 ::: warning This is a race, and it can be lost
 A drainer often runs automatically and reacts faster than a person. That is why AntiDrain prepares the transaction in advance and sends it in one action, instead of having you fill in fields as you go.
 
-For the same reason, choose an MEV-protected RPC in the network settings: it reduces the chance that an attacker sees your transaction in the public queue and front-runs the withdrawal.
+For the same reason, choose an MEV-protected RPC: it reduces the chance that an attacker sees your transaction in the public queue and front-runs the withdrawal. You can recognise one by the **MEV PROTECTED** mark beside the network name in the network selector — it shows both on the closed selector and in the open list.
 :::
 
 ## Never Top Up the Compromised Wallet

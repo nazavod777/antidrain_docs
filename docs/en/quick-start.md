@@ -31,7 +31,9 @@ Go to:
 
 Make sure the correct network is selected. If you need another network, use the network selector at the top of the site.
 
-![The site header: the network selector with the current network and its coin on the left, the block number and gas price next to it, and the advanced-mode and EN/RU language toggles on the right.](/screenshots/en/04-header.webp)
+![The site header: the network selector with the current network, its coin and a MEV PROTECTED mark on the left, the block number and gas price next to it, and the advanced-mode and EN/RU language toggles on the right.](/screenshots/en/04-header.webp)
+
+The **MEV PROTECTED** mark beside the network name means its RPC keeps your transaction out of the public queue. The mark is on the closed selector, so you can see it without opening the list — why it matters is in [How Your Wallet Was Compromised](/en/wallet-compromised). No mark means the network runs through an ordinary RPC.
 
 The first step's panel looks like this, with the fields still empty:
 
