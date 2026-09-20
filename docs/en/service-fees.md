@@ -21,7 +21,7 @@ This is a fee in the asset being rescued: in the token itself, or in the network
 
 It applies where the site or the contract takes a percentage of the amount actually rescued, and the percentage is the same for both — a native rescue is charged exactly like a token rescue.
 
-The recipient's share does not depend on whether an affiliate link is active. Only the way the fee is split inside changes.
+At the fee in the table below, the recipient's share does not depend on whether an affiliate link is active: only the way the fee is split inside changes. What this rescue will actually be charged is shown at the **Fund Donor** step, so read it there rather than counting on a figure from this page.
 
 | To Whom | Without Affiliate | With Active Affiliate |
 | --- | --- | --- |

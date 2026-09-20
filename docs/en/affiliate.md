@@ -38,7 +38,7 @@ If the user's browser already has another affiliate wallet saved, the new addres
 
 ::: info Fee Split Only
 
-The affiliate link does not increase the user's total fee. It only changes how an existing fee is split between protocol and affiliate.
+At the fee shown in [Service Fees](/en/service-fees), the affiliate link does not increase the user's total fee. It only changes how an existing fee is split between protocol and affiliate. What your rescue will actually be charged is shown at the **Fund Donor** step.
 
 :::
 

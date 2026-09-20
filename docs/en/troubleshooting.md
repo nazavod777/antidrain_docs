@@ -206,8 +206,10 @@ again — there is nothing to recover and nothing to retry.
 This is not the same as [Some Saved Data Was Removed](#some-saved-data-was-removed), which is about
 something the site had saved and then could not read back, and not the same as **Pasted Keys Are Not
 Being Saved**, which is about a browser that cannot save pasted keys at all. This notice says neither:
-saving works here, and one particular draft may have missed its turn. It goes away as soon as
-anything is saved under that panel again.
+saving works here, and one particular draft may have missed its turn. It goes away once that draft
+is changed again and the change saves — typing into it again is what clears it, and reopening the
+panel to look at what is already there does not. If it named more than one field, it stays until
+every one of them has been saved that way.
 
 ## The Language Did Not Switch
 
