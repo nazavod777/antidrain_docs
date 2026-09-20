@@ -11,6 +11,8 @@ These steps happen after the transaction is built.
 
 Simulation checks whether the transaction can execute. The button that starts it reads **Run Simulation**.
 
+There is nothing to set up before it runs, and no fields to fill in. The check goes through the same [RPC](/en/glossary#rpc) connection the rest of the site is already using, so it needs no account with any other service and no settings of its own.
+
 It can help detect:
 
 - Wrong address
@@ -19,21 +21,6 @@ It can help detect:
 - Contract revert
 - Gas issue
 - Unsupported flow
-
-### Choosing the Estimation Method
-
-Above **Run Simulation** there is a choice headed **Estimation Method**, with two options: **RPC** and **Tenderly**.
-
-**RPC is the one already selected when you arrive, and it asks nothing of you.** It checks the transaction through the same network connection the rest of the site is using, so **Run Simulation** works straight away.
-
-**Tenderly is an outside service, and you have to select it yourself.** Selecting it opens three fields — **API Key**, **Account Slug** and **Project Slug** — and until all three are filled in, **Run Simulation** stays disabled and says why: *Fill in the Tenderly API key, account, and project first*. You only have those three if you have registered a Tenderly account of your own. If you have not, there is nothing to enter and nothing is lost: RPC checks the same transaction.
-
-There are two cases where the site sends you back to RPC whichever option you selected, and it says so on screen rather than failing quietly:
-
-- **Tenderly does not cover every network.** Where it does not, the site reads *Tenderly simulation is not available on this network. Use RPC simulation instead.* and will not run it.
-- **Tenderly cannot check a delegation rescue.** For [Remove Delegation](/en/rescue-actions#remove-delegation), and for anything else built on an EIP-7702 authorization, the site says Tenderly ignores that authorization and would answer about a transaction you are not sending — so use RPC.
-
-Whichever you pick is remembered for the rest of this browser session, so you pick once. Reloading the page keeps your choice; closing the tab and coming back starts on RPC again.
 
 ## If Simulation Succeeds
 
@@ -44,6 +31,43 @@ If simulation succeeds:
 3. Press **Proceed to Fund Donor**.
 
 ## If Simulation Fails
+
+**Two different things end up here, and they are not the same news.** One is an answer: the check ran, it ran your transaction as a trial, and the trial did not succeed. The other is the absence of an answer: the check never finished — the network did not reply, what came back could not be read, or the request never got out — so nothing was established about your transaction at all, in either direction.
+
+The site shows a different card for each, because what to do next is different. **The card's first line says which one you have**, and the colour of the card says it a second time:
+
+- **The check ran and the transaction failed.** The first line reads *This transaction will likely fail on-chain.* The card behind it is tinted amber, and that line is amber too. Yours is [When the Check Says the Transaction Will Fail](#when-the-check-says-the-transaction-will-fail).
+- **The check did not finish.** The first line reads *The check did not finish, so nothing is known about this transaction yet.* The card behind it is plain grey, with no amber in it at all, and that line is in ordinary text rather than amber. Yours is [When the Check Did Not Finish](#when-the-check-did-not-finish).
+
+Go by the sentence if the two look the same colour to you. A high-contrast mode turned on in your system replaces the site's palette with its own, and the amber goes with it — then the wording is the whole of the difference. Where there is colour, read it off the block the sentence sits in rather than off the buttons: with the header toggle on **Advanced**, both cards grow the same amber tick box and amber button underneath, because going on is the cautious act either way.
+
+### When the Check Did Not Finish
+
+Nothing was run and nothing came back. The site could not reach the network it checks through, or what came back was not something it could read, or the request never went out. None of that is about your transaction, and none of it is a reason to change the transaction: it has not been checked yet.
+
+**Press Check Again first.** The button sits inside the simulator's card, under its text. It costs nothing, sends nothing to the blockchain, spends no gas, and runs exactly the check that did not finish. A check that did not get through once very often does on the next try, so this is the first move rather than the last resort. While it runs, the card disappears and the **Run Simulation** button above shows that a check is in progress; the answer comes back in the same place. (The send step, described much further down this page, has a **Check again** of its own. That is a different button asking a different question — about a transaction that has already gone out.)
+
+If there is no **Check Again** button in the card at all, it is because **Run Simulation** above is blocked for some reason — the retry is the same check, so it is never offered where that button cannot run. Read what that button says is missing, put it right, and run the check from there.
+
+If pressing it keeps giving you this same card, what is in the way is between you and the network rather than in your transaction. There is one thing to try: **set a different [RPC](/en/glossary#rpc) address for this network** in the network selector at the top of the page. A check is only as good as the connection it goes through, and a different address is a different connection.
+
+::: tip An Open Question, Not a Verdict
+
+This card is not the other one worded gently. Nobody ran your transaction, so nothing here says it would fail — and, just as much, nothing here says it would work. Read it as a question still open rather than as bad news: the rescue you are in the middle of is exactly where it was, and the compromised wallet is still the thing that needs you.
+
+:::
+
+**You can go on without the check, and that takes Advanced mode.** In simple mode there is no button for it; in its place the card says *Going on without a finished check is blocked by default. Switch to Advanced mode if you want to send this transaction unchecked.* Set the header toggle to **Advanced** and the card gains a **Gas Limit** field, a tick box, and a button reading **Continue Without the Check**. The **Gas Limit** arrives filled in with a suggested figure, so there is nothing you have to work out.
+
+Read the tick box before you tick it: *I understand nobody checked this transaction, and I am going on without knowing whether it will work.* That is the whole of what you are agreeing to — not that the transaction is bad, only that nobody established anything either way. Until it is ticked, **Continue Without the Check** stays disabled and says why: *Confirm you are going on without a finished check.*
+
+If the transaction then does fail on-chain, what it costs you is the gas it spent getting there, and the time. That is the case for pressing **Check Again** a few times and trying another RPC first: the check is the cheap place to find a problem, and sending is the expensive one. It is also the case for the button existing at all — when your own connection will not answer, there is no second one to switch to, and a rescue abandoned half-way costs more than a failed transaction does.
+
+### When the Check Says the Transaction Will Fail
+
+Here the check finished, and the answer is the bad one. Your transaction really was run as a trial, and the trial did not succeed: the contract reverted it, or the trial run came back failed. So *This transaction will likely fail on-chain.* is a measurement rather than a guess, and that is what earns the warning.
+
+**There is no Check Again button on this card, and that is deliberate.** Running the same check a second time asks the same question of the same network and gets the same answer back. What changes the answer is changing something about the transaction, and that is what the list below is for.
 
 ::: danger Do Not Send
 
@@ -59,9 +83,13 @@ Check:
 - Private keys entered
 - Whether the selected action is supported
 
-Sometimes a manual override may be used, but only if you understand the error.
+The button at the bottom of this card — **Continue Anyway** — is only for someone who understands the error.
 
 :::
+
+**What you change, you change back at the TX Builder step.** It is step 3, and the row of numbered steps across the top of the page takes you there — on a phone that row shows only the numbers, so look for the 3. Put right whatever the list above points at, then simulate again from there.
+
+**Continue Anyway** is built like **Continue Without the Check** on the other card and means something else. It needs the header toggle on **Advanced** in the same way, and it has a tick box of its own — but that tick box says something stronger: *I understand this transaction was not verified by simulation and may fail or spend funds unexpectedly.* What differs is what you accept by pressing it: here, a risk somebody measured; there, the absence of a measurement. This is the one to be slow about.
 
 ## Fund Donor
 

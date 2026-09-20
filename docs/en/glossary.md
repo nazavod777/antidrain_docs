@@ -61,7 +61,7 @@ A per-address transaction counter, and in plain words the place in the queue a t
 
 ### Simulation
 
-A trial run of the transaction without sending it: the site shows what would happen and what it would cost. A successful simulation lowers the risk but is not a guarantee — network state can change.
+A trial run of the transaction without sending it: the site shows what would happen and what it would cost. A successful simulation lowers the risk but is not a guarantee — network state can change. A simulation that did not finish is a third outcome rather than a failure: nothing was established either way, so there is no error to investigate and the check is worth running again — see [If Simulation Fails](/en/simulation-funding-sending#if-simulation-fails).
 
 ### Transaction plan
 

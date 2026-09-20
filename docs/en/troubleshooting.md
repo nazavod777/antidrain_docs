@@ -89,6 +89,8 @@ If the asset is in the wallet but DeBank does not show it, this is not always a 
 
 ## Simulation Failed
 
+**First, read the first line of the card.** If it says *The check did not finish, so nothing is known about this transaction yet.* — the simulation did not fail, it never ran, and nothing in this section applies to it. Press **Check Again**, and read [When the Check Did Not Finish](/en/simulation-funding-sending#when-the-check-did-not-finish). Everything below is about the other card, the one that reads *This transaction will likely fail on-chain.*
+
 ::: danger Do Not Send
 
 Do not send blindly.
@@ -102,13 +104,11 @@ Check:
 - Recipient
 - Contract state
 
-If the error is unclear, do not continue to TX Sender through advanced override. Try a simpler action or check one asset separately.
+If the error is unclear, do not continue to TX Sender with **Continue Anyway** at the bottom of the card. Try a simpler action or check one asset separately.
 
 :::
 
-Check which estimation method ran it, too. The simulator opens on **RPC** and offers **Tenderly** as the other option, the two do not check a transaction the same way, and where the one you selected cannot cover this rescue the site says so on screen — see [Choosing the Estimation Method](/en/simulation-funding-sending#choosing-the-estimation-method).
-
-In simple mode the failure line tells you what happened and what to try next. It does not show the words the network or the simulation service sent back. Switch to Advanced mode to read those, together with the revert data and which provider answered — that is where an unclear error becomes readable. The notes under the result follow the same rule: simple mode says what was and was not checked, Advanced mode names the methods it was checked with.
+In simple mode the failure line tells you what happened and what to try next. It does not show the words the network sent back. Switch to Advanced mode to read those, together with the revert data — that is where an unclear error becomes readable. The notes under the result follow the same rule: simple mode says what was and was not checked, Advanced mode names the methods it was checked with.
 
 ## Transaction Plan Expired
 
@@ -169,7 +169,7 @@ Do not send again until you understand what happened to the first tx hash.
 ## Some Saved Data Was Removed
 
 The workspace shows a box titled **Some Saved Data Was Removed**, with a list of what it was. Each
-line in that list names what to do about it; the same four remedies are spelled out below.
+line in that list names what to do about it; the same three remedies are spelled out below.
 
 This is the site telling you something it had saved could not be read back, so it deleted it. It is
 not an error you can retry, and it is not about the blockchain: your wallets, your funds and any
@@ -182,8 +182,6 @@ What to do depends on the line in the list:
   on that address is still there.
 - **the saved progress of this rescue** — the step that needs a value will ask for it again. Paste
   the compromised wallet's key once more when the panel asks.
-- **the saved simulator credentials** — enter them again in the simulator settings, or run the
-  simulation without them.
 - **the network you had selected** — pick the network again in the header.
 
 The site removes a saved value only after it has established that the value cannot be read at all —

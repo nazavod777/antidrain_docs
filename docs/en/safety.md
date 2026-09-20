@@ -71,7 +71,7 @@ It is best to create a new safe recipient wallet first and send rescued assets t
 
 A successful simulation reduces risk, but it is not a full guarantee. Network state can change between simulation and sending.
 
-If simulation failed, a normal user should not use advanced override. Override is only for someone who understands the failure reason and accepts the gas risk.
+If the check ran and answered that the transaction will fail, a normal user should not press **Continue Anyway**. That override is only for someone who understands the failure reason and accepts the gas risk. A check that never finished is a different card with a different answer — it establishes nothing, so there is no measured risk to override, and **Check Again** is the first thing to press rather than the last; see [If Simulation Fails](/en/simulation-funding-sending#if-simulation-fails).
 
 ## Do Not Use the Site Blindly
 

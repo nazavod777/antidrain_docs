@@ -87,10 +87,10 @@ Do not send the transaction if:
 - The wrong network is selected
 - You do not recognize the recipient address
 - The site shows an unexpected address
-- Simulation failed and you do not understand why
+- The check ran, reported the transaction will fail, and you do not understand why
 - The amount is larger than expected
 - RPC shows a different chain ID
-- The UI asks for an advanced override and you do not understand why
+- The site asks you to confirm continuing past a failure, and you do not understand why
 - You accidentally pasted the donor private key into a rescue-wallet field
 
 In these cases, go back, check the data, and rebuild the scenario.

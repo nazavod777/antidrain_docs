@@ -97,9 +97,9 @@ A disabled button usually means the site is protecting you from incomplete data:
 
 Simulation checks the flow before broadcast.
 
-If simulation shows an error, do not send the transaction until you understand the reason.
+Read the first line of the result before anything else. If it says the check did not finish, nothing was established either way: press **Check Again** rather than changing the transaction. If it says the transaction will likely fail, that is a real answer — do not send until you understand the reason.
 
-A successful simulation does not guarantee recovery, but a failed simulation almost always means you should stop and investigate.
+A successful simulation does not guarantee recovery, but a failure the check actually measured almost always means you should stop and investigate. Both results, and what to press for each, are in [If Simulation Fails](/en/simulation-funding-sending#if-simulation-fails).
 
 ## 7. Fund the Donor
 

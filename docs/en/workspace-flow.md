@@ -36,7 +36,7 @@ Simulation checks the transaction before sending.
 
 If simulation succeeds, you can move to donor funding.
 
-If simulation fails, understand the error first.
+If simulation fails, understand the error first — unless it reports that the check did not finish, which establishes nothing and simply asks to be run again.
 
 ## 5. Fund Donor
 
