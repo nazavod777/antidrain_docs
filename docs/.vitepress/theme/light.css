@@ -72,10 +72,16 @@
   --focus-ring: 2px solid var(--color-accent-text);
 
   /* Shadows on white need to be far softer than on near-black, or cards look
-     like they are floating in smoke. */
+     like they are floating in smoke. Each one mirrors the structure of the dark
+     token it overrides and changes only the values: the modal tier keeps its two
+     layers here too, because the tight contact edge is what draws the panel's
+     own boundary, and a panel on white needs that boundary more than one on
+     near-black does, not less. */
   --shadow-card: 0 1px 3px rgba(20, 20, 30, 0.08);
   --shadow-card-hover: 0 4px 16px rgba(20, 20, 30, 0.12);
-  --shadow-lg: 0 8px 32px rgba(20, 20, 30, 0.16);
+  --shadow-modal:
+    0 1px 2px rgba(20, 20, 30, 0.10),
+    0 14px 36px -10px rgba(20, 20, 30, 0.18);
 
   /* An inset panel rather than a darker-than-page terminal: on white there is
      nothing below the page background to go to. */

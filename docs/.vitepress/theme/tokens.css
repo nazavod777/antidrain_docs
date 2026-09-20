@@ -156,7 +156,6 @@
   --panel-list-max-height: 320px;
   --panel-list-max-height-lg: 360px;
   --builder-inline-form-height: 44px;
-  --builder-inline-action-size: 44px;
 
   --max-width: 1240px;
   --workspace-width: 1240px;
@@ -503,11 +502,17 @@
     --icon-size-lg: 20px;
     --icon-size-xl: 24px;
 
-    /* The hit target does not shrink here any more. This block used to take `-sm` to 35px and `-md`
-       to 40px on width alone, so a touch laptop and a large tablet got the mouse-sized target too —
-       the accepted risk that `docs/security-audit-tradeoffs.md` carried until the plates above
-       replaced it. `-lg` still grows, and nothing reads it yet. */
-    --icon-button-size-lg: 45px;
+    /* The hit target does not shrink here any more, and it does not grow either. This block used to
+       take `-sm` to 35px and `-md` to 40px on width alone, so a touch laptop and a large tablet got
+       the mouse-sized target too — the accepted risk that `docs/security-audit-tradeoffs.md` carried
+       until the plates above replaced it. `-lg` was left growing to 45px when the shrinking stopped,
+       excused as "nothing reads it yet", and that override is now gone: the scale's own contract
+       three declarations up is that the hit target is 44px at every width and every pointer type,
+       and a spare rung that contradicts it is a trap rather than a spare rung. Removed on 18.09.2026
+       with `--builder-inline-action-size`, which had the same 44/45 split and five readers that had
+       inherited it — the only icon controls in the app that were not 44px on a desktop. The rung
+       itself stays at its base value, for the reason the block above gives. There is deliberately no
+       `--icon-button-size-*` override in this tier. */
 
     --media-thumb-sm: 35px;
 
@@ -515,7 +520,6 @@
     --panel-list-max-height: 360px;
     --panel-list-max-height-lg: 400px;
     --builder-inline-form-height: 50px;
-    --builder-inline-action-size: 45px;
 
     --max-width: 1360px;
     --workspace-width: 1360px;
@@ -562,33 +566,6 @@
   }
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 6px currentColor;
-  }
-  50% {
-    box-shadow: 0 0 14px currentColor;
-  }
-}
-
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.35);
-  }
-}
-
-@keyframes drawLine {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -602,11 +579,6 @@
  * DOCS-ONLY ADDITIONS — deviations from the site. See DESIGN_SYSTEM.md.
  * ------------------------------------------------------------------------- */
 :root {
-  /* The site references --shadow-lg in .pending-nav-dialog but never defines it,
-     so that modal renders with no shadow. Value taken from .net-sel__dropdown,
-     which is the same elevation level. Reported upstream. */
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-
   /* Accent as a TEXT colour. In dark mode it is the accent itself; the light
      theme overrides it, because #00d4aa on white measures 1.9:1 and cannot
      carry body text. Components must use this token for text/links and

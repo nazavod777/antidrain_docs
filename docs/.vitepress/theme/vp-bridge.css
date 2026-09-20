@@ -123,12 +123,19 @@
      silently shrinks the sidebar — 1680px cost 120px of sidebar at exactly
      1440px wide. VitePress's 1440px default keeps that term at zero or above. */
 
-  /* --- elevation ------------------------------------------------------ */
+  /* --- elevation ------------------------------------------------------
+     The top two rungs take the site's modal tier. They used to take
+     `--shadow-lg`, which this repository defined itself because the site asked
+     for it and never declared it; the site has since declared the tier as
+     `--shadow-modal` and the docs-only stand-in went with the re-vendor, which
+     left these two pointing at nothing. Nothing in VitePress reads rung 4 or 5
+     today — only rung 3 has consumers — so the break was silent, which is
+     exactly why it is mapped rather than deleted. */
   --vp-shadow-1: var(--shadow-card);
   --vp-shadow-2: var(--shadow-card);
   --vp-shadow-3: var(--shadow-card-hover);
-  --vp-shadow-4: var(--shadow-lg);
-  --vp-shadow-5: var(--shadow-lg);
+  --vp-shadow-4: var(--shadow-modal);
+  --vp-shadow-5: var(--shadow-modal);
 
   /* --- z-index ---------------------------------------------------------
      Deliberately NOT mapped onto the site's --z-* scale. The two scales describe

@@ -64,11 +64,8 @@ Two asymmetries that are easy to get wrong:
 If the site ever gains a light theme, these values should move there and be
 vendored back, the same way the dark palette is.
 
-### 3. Two tokens that the site needs but does not define
+### 3. A token that the site needs but does not define
 
-- `--shadow-lg` — the site references it in `.pending-nav-dialog` but never
-  defines it, so that modal renders with no shadow. Defined here from
-  `.net-sel__dropdown`, which is the same elevation. **Bug to report upstream.**
 - `--color-accent-text` — `#00d4aa` measures 1.9:1 on white and cannot carry
   text. In dark mode it equals the accent; in light mode it is a darker step.
   Use it for text and links, and `--color-accent` for fills, borders and active
