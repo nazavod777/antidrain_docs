@@ -104,6 +104,8 @@ The donor usually needs funds for:
 
 The panel adds these up as **Total to Fund**.
 
+The same panel can also list **Token Service Fee**, and that one is not part of the total. It is a percentage of what the rescue moves, taken out of the rescued assets when the transaction runs rather than out of the donor's balance — and some of its rows carry an extra line saying the fee may not be charged at all. [Service Fees](/en/service-fees#when-a-fee-row-says-it-may-not-apply) explains both.
+
 ## TX Sender {#send}
 
 The TX Sender step broadcasts the transaction.

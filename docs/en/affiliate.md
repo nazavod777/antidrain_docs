@@ -48,7 +48,7 @@ There are two payout types.
 
 ### 1. Token Service Fee {#1-token-rescue-fee}
 
-This is a fee in the token being rescued.
+This is a fee in the asset being rescued: in the token itself, or in the network's native coin when the rescue moves a native balance.
 
 When a supported token rescue flow applies the standard token fee:
 
@@ -105,7 +105,8 @@ The affiliate can receive a payout in these cases:
 
 - Supported ERC-20 token rescue where token fee applies
 - Permit Rescue when the selected mode uses token fee
-- DeBank/Bundler token transfer or native transfer-all when that route applies fee split
+- DeBank/Bundler token transfer when that route applies fee split
+- DeBank native transfer-all, which is added when a selected pool pays out the native coin: the native balance is swept with the same percentage split, so the affiliate share is taken out of it whenever there is a balance large enough to split
 - Custom TX Builder / DeBank actions with native service fee, such as raw calls, NFT/pool actions, or other fee-bearing operations
 
 The affiliate does not receive a payout if:
