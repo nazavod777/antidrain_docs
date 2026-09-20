@@ -128,7 +128,7 @@ Once the transaction is confirmed, the send controls also offer **Erase donor wa
 
 A confirmed transaction is not automatically a finished rescue. For a short while a network can still reshuffle its most recent blocks, and a transaction whose block gets reshuffled away stops having happened at all.
 
-So the moment the send reports success, the site asks the network whether your transaction's block is still part of the chain. The answer appears in a line below the buttons, and it decides four things: whether **Finish — Manage Donor Assets** works, whether the donor wallet can be replaced, whether it can be erased, and whether the whole rescue session can be erased from this browser.
+So the moment the send step finishes — whether it succeeded or failed — the site asks the network whether your transaction's block is still part of the chain. The answer appears in a line below the buttons, and it decides whether four things are allowed: **Finish — Manage Donor Assets**, replacing the donor wallet, erasing it, and erasing the whole rescue session from this browser.
 
 The last three are the ones that leave the donor's private key unrecoverable, so this page speaks of them together — **the three that discard the donor**. Replacing counts because **Generate Wallet** and **Import Wallet** write the new donor over the stored one; see [How to Replace the Donor Wallet](/en/donor-wallet#how-to-replace-the-donor-wallet).
 
@@ -137,7 +137,15 @@ Two things to know about the check itself:
 - **It runs once on its own, and after that when you ask.** There is no timer, so a line that has not settled stays as it is until you press **Check again** beside it. Changing the network or the RPC starts a fresh check on its own.
 - **It only reads.** It does not send anything, costs no gas, and cannot undo the transaction. If your rescue was sent as more than one transaction, every one of them is checked and the line reports the worst answer, which may not be about the last tx hash you saw.
 
-The line has seven possible answers. Two things are worth knowing before you read them: the good one is silence, and exactly one of them comes with a button that changes something.
+**Which buttons you have depends on how the send step itself ended, not on this line.** The line can hold a button back; it can never hand you one. So where an answer below says **Finish — Manage Donor Assets** works, or says anything about the success card — the card the send step shows when the transaction went through — it is describing a send that reported success, which is the ordinary way to arrive here.
+
+A send that ended in an **error** gets a line too, because the check reads back everything this rescue has already sent rather than only the last attempt. There you see the error instead of the success card, **Retry — Back to TX Builder** is offered and **Finish — Manage Donor Assets** is not, whatever the line says. The three that discard the donor are held back either way.
+
+That much is true of every answer below, so the answers below take it as read. One of them is the error case and nothing else: [Sent, Not in a Block Yet, and Replaceable](#sent-not-in-a-block-yet-and-replaceable) is only ever reached by a send that ended in an error, so there Retry without Finish is the ordinary case rather than a sign that something extra went wrong.
+
+One more thing about the buttons themselves: **a button the page has held back tells you why.** Put the mouse on it, tap it, or move to it with the **Tab** key — a held-back button still takes its turn in the tab order, and tapping one opens its reason instead of doing nothing — and the reason appears beside it. **Esc** closes the reason again, and so does moving on to anything else. The answers below quote those reasons without repeating how to reach them.
+
+Every answer the line can give has a section of its own below. Two things are worth knowing before you read them: the good one is silence, and exactly one of them comes with a button that changes something.
 
 ### While the Site Is Still Checking
 
@@ -165,15 +173,35 @@ Every transaction on every network passes through this state. Seeing it does not
 
 :::
 
+### On the Blockchain, but the Page Could Not See How Many Blocks Are on Top
+
+The line reads *This transaction is on the blockchain, in a block the network still stands behind. What this page could not get is how many blocks have been built on top of it, so it cannot yet call the rescue permanent — that is the only thing missing, and nothing here says anything went wrong. Wait a moment and run the check again; nothing is lost while you wait.*
+
+This is the one answer that is partly good news, and the good part is the part that matters most: your transaction is in a block, and that block is still one the network stands behind. The check established that, it did not assume it. What it could not get is the second half of the same question — how many blocks the network has built on top of yours — and that second half is what proof of permanence is made of.
+
+What it means:
+
+- **The transaction is on the blockchain.** That much is settled rather than hoped for. Nothing here says your rescue went wrong, and nothing here is a reason to send it again.
+- **The success card stays.** Nothing has refuted it, and a number the page could not read is not news.
+- **Finish — Manage Donor Assets works.** You can go on and withdraw the donor's leftovers, exactly as in [Not Yet Permanent — Wait and Check Again](#not-yet-permanent-wait-and-check-again) above.
+- **The three that discard the donor are held back.** Replacing the donor wallet, erasing it and erasing the whole rescue session each ask for proof that the rescue can no longer be undone — and that proof is the one thing missing.
+- **Retry — Back to TX Builder is not offered**, because nothing has been refuted. Sending the rescue a second time would spend gas on a transaction that is already in a block.
+
+Wait a moment, then press **Check again**. Ordinarily the blocks on top of yours only pile up, so a check that could not read the count this time may read it the next — and the waiting itself costs you nothing. The one thing that takes blocks back is a reorganisation, and it does not leave you reading this sentence: it has answers of its own, starting with [The Network Reorganised and the Rescue Did Not Happen](#the-network-reorganised-and-the-rescue-did-not-happen).
+
+This answer is ordinary rather than rare. A great many networks are read through a source that hands out blocks by height perfectly happily and simply will not answer how deep one of them sits: everything except the last question goes through, which is why the sentence blames nothing. There is nothing here to blame.
+
+If every press gives you this same sentence, the source you are reading that network through is one of those, and it is not going to start answering because you asked again. [When the Check Keeps Refusing](#when-the-check-keeps-refusing) is about exactly that: which networks it happens on, what still works meanwhile, and what to do about a key you pasted on someone else's computer.
+
 ### Sent, but Not in a Block Yet
 
 The line reads *The transaction has been sent, and it cannot be confirmed yet that a block holds
 it. This says nothing about your rescue, only that the check could not be completed. Wait a minute
 and check again; nothing is lost while you wait.*
 
-This is not the state above. There, your transaction is already in a block and the block is waiting
-to become permanent; here there is no block yet — the network accepted the transaction and has not
-put it in one. An ordinary queue at a low gas price looks exactly like this.
+This is not either of the two states above. In both of those your transaction is already in a block;
+here there is no block yet — the network accepted the transaction and has not put it in one. An
+ordinary queue at a low gas price looks exactly like this.
 
 Wait a minute and press **Check again**. Do not send the transaction a second time: it will not make
 the first one arrive sooner, and the site is already watching for the one you sent.
@@ -186,17 +214,27 @@ when a replacement cannot be aimed — the site could not read the queue, could 
 something else has already taken that place in the queue — and then waiting really is the honest
 advice.
 
-**Finish — Manage Donor Assets** works in this state. None of the three that discard the donor does,
-for the same reason as above: the site treats only a proven block as a yes.
+This sentence usually comes from a send that ended in an error, the same as the one below it — a
+broadcast that nothing came back to confirm is what produces both — so **Finish — Manage Donor
+Assets** is usually not available here either. It can also reach a send that succeeded, and then it
+works. None of the three that discard the donor works in either case, for the same reason as above:
+the site treats only a proven block as a yes.
 
 ### Sent, Not in a Block Yet, and Replaceable
 
 The line reads *The transaction has been sent and is not in a block yet, and the place in the queue it was signed for is still free for it — so it can still go through on its own. Wait a moment and check again; nothing is lost while you wait. If nothing changes, you can replace it by offering more for gas: the replacement takes that same place in the queue instead of queueing up behind it.*
 
-Beside **Check again** there is a second button: **Replace with a higher gas price**. It is the only
-answer on this page that comes with a way forward of its own, and that is not an oversight in the
-others — this is the one state where a send is neither finished nor failed, so neither **Retry — Back
-to TX Builder** nor **Finish — Manage Donor Assets** is the right control for it.
+This is the answer that arrives with the send step reporting an **error**, and it is the one place on
+this page where that is the ordinary case rather than the exception. The send failed because nothing
+came back to confirm it — the transaction is out there all the same, which is what the line is
+telling you. So **Retry — Back to TX Builder** is already offered above, and **Finish — Manage Donor
+Assets** is not, exactly as after any failed send.
+
+Beside **Check again** there is then a second button: **Replace with a higher gas price**. It is the
+only answer on this page that comes with a button of its own, and what it adds is not a way out that
+Retry does not already give you — it goes to the same place. What it adds is the *name*: it says what
+rebuilding will do with your money here, which is to outbid the transaction already waiting rather
+than to start a second one.
 
 Read the two buttons in the order they sit in, because that order is the advice:
 
@@ -257,12 +295,13 @@ Two things this state is not:
   whether there is an action. If your line has no **Replace with a higher gas price** button, the
   replacement cannot be aimed from here, and the section above is yours.
 
-**Finish — Manage Donor Assets** works in this state. None of the three that discard the donor does,
-exactly as in the state above: a transaction that is not yet in a block is not a proven one. If you
-met this sentence inside a confirmation dialog rather than in the line — erasing the donor, erasing
-the session, or replacing the donor — the button is not in the dialog. Close the dialog with its keep
-button, and both **Check again** and **Replace with a higher gas price** are waiting in the line
-under the send controls.
+**Finish — Manage Donor Assets** does not work in this state, and here that is because the send
+failed rather than because of anything the line says. None of the three that discard the donor works
+either, for the reason it does not in the state above: a transaction that is not yet in a block is
+not a proven one. If you met this sentence inside a confirmation dialog rather than in the line —
+erasing the donor, erasing the session, or replacing the donor — the button is not in the dialog.
+Close the dialog with its keep button, and both **Check again** and **Replace with a higher gas
+price** are waiting in the line under the send controls.
 
 ### Sent on a Different Network
 
@@ -273,6 +312,42 @@ This one is about the page, not about your transaction. The check asks whichever
 It is also the one answer where waiting is the thing that will not help. The states above are waiting on the network to do something; here nothing was asked at all, so there is nothing for time to change, and **Check again** with another network selected gives the same answer for as long as you keep pressing it.
 
 There is one fix, and one control does it: set the network selector back to the network you sent on. Switching starts a fresh check by itself, so the line answers again without you pressing anything. If you no longer remember which network that was, set the header toggle to **Advanced**: the same sentence then ends with a technical line giving the [chain ID](/en/glossary#chain-id) the transaction went to and the one this page is set to now. If you met this sentence inside a confirmation dialog rather than in the line — erasing the donor, erasing the session, or replacing the donor — the fix is the same one: close the dialog, switch the selector back, then press the button again.
+
+**Finish — Manage Donor Assets** works in this state. None of the three that discard the donor does: a question nobody asked is never treated as a yes.
+
+### The Source for That Network Would Not Say Which Network It Is
+
+The line reads *We could not confirm that the transaction is permanent, because the source this page reads that network through would not say which network it is — and a source that will not identify itself cannot be trusted to answer about your money. This says nothing about your rescue. Wait a moment and run the check again; nothing is lost while you wait. If it keeps happening, set a different address for that network at the top of the page, then run the check again.*
+
+This is the neighbour of [Sent on a Different Network](#sent-on-a-different-network) above, and what separates them is what you can do about it. Before every check the site asks each address it is about to read through which network it serves — and nothing further down asks again. An address quietly serving a different network answers about a different wallet entirely, and the site would have called the rescue done on the strength of that answer. So an address that will not answer that question is not used at all.
+
+Refusing to answer is a fact about the address, not about your transaction. It is exactly where you left it, and your rescue has not been refuted.
+
+Switching networks does not help here, and that is the whole difference from the section above: selecting this network asks the same silent addresses and gets the same silence. Waiting does not fix it by itself either, though it is worth one try — the address may simply have been unavailable for a moment.
+
+What to do:
+
+1. Press **Check again**. A single refusal here is ordinary.
+2. If it keeps happening, set a different [RPC](/en/glossary#rpc) address for that network in the network selector at the top of the page. That is the fix that works here.
+
+**Finish — Manage Donor Assets** works in this state. None of the three that discard the donor does: an answer the site could not get never counts as a yes.
+
+### The Page Could Not Read Back What This Rescue Has Sent
+
+The line reads *We could not confirm that the transaction is permanent, because this page could not read back its own list of what this rescue has already sent. This says nothing about your rescue and nothing about the network — only that the check could not be completed. Wait a moment and run the check again; nothing is lost while you wait. If it keeps happening, whatever is in the way is here rather than on the network — this browser may not be letting the page keep its own data for this session.*
+
+This one is about the page, not about the network, and that is the whole difference between it and [The Check Could Not Be Completed](#the-check-could-not-be-completed) below. The site writes down what this rescue sends, and the check reads that list first, to know which transactions to ask the network about. When the list cannot be read in full there is nothing to ask about, so no question goes out at all — your transaction is exactly where you left it, and what the site has lost sight of is its own note of it, not the transaction.
+
+Several different things end in this sentence: this browser refuses the page the data it keeps for this session, something written down cannot be read back by this version of the site, a send could not be written down in the first place, or one of those turns up again after the checks have finished. None of them is about your rescue, and none of them is about the network.
+
+What to do:
+
+1. Press **Check again**. A one-off refusal like this is common, so it is worth pressing, and nothing is lost while you wait.
+2. If every press gives you the same sentence, what is in the way is on this side rather than on the network, and it is not going to clear on its own. Which of the reasons above it is, the sentence does not say. If it is this browser not letting the page keep its own data for this session — a private window with site data blocked does exactly that — an ordinary window or a different browser is the way out of it. If it is one of the others, the browser is storing perfectly well and moving to another one changes nothing.
+
+What will not help either way is a different [RPC](/en/glossary#rpc) or a different network. No endpoint was contacted about this, so neither selector has anything to change.
+
+**Finish — Manage Donor Assets** works in this state. None of the three that discard the donor does, for the same reason as everywhere else on this page: an answer the site could not get is never treated as a yes. If you met this sentence inside a confirmation dialog rather than in the line — erasing the donor, erasing the session, or replacing the donor — it means the same thing there, and every press of confirm asks again.
 
 ### The Check Could Not Be Completed
 
@@ -288,11 +363,25 @@ Try these, in order:
 
 The network selector is not on that list, and it used to be. A transaction sent on another network now gets [its own answer](#sent-on-a-different-network) instead of this one, so if you are reading this sentence, the selector is not what went wrong.
 
+This sentence is now only about the network in the other direction as well. It used to be shown when the site could not read back its own list of what this rescue has sent — an obstacle inside this browser, where checking your internet connection was never going to help. That case has [its own answer](#the-page-could-not-read-back-what-this-rescue-has-sent) above, so reading this sentence means a lookup really was made and the network did not answer it.
+
 **Finish — Manage Donor Assets** works in this state as well. None of the three that discard the donor does: an answer the site could not get is never treated as a yes.
 
 ### When the Check Keeps Refusing
 
-On some networks all three of those remedies can fail, every time, and nothing is wrong with your
+More than one sentence can repeat for as long as you keep pressing, and this section is about the two
+that repeat because of the network: the one that says the page could not see how many blocks are on
+top of yours, and the one that says the network did not answer at all. If the first of those is what
+you are reading, your transaction is in a block and only its permanence is open — the reasons below
+are why that question goes unanswered on some networks, and [On the Blockchain, but the Page Could
+Not See How Many Blocks Are on
+Top](#on-the-blockchain-but-the-page-could-not-see-how-many-blocks-are-on-top) is the section for the
+sentence itself. If yours is the one about the page not being able to read back
+its own list of what this rescue has sent, the network is not what is refusing, and a different RPC
+will not change it — [The Page Could Not Read Back What This Rescue Has
+Sent](#the-page-could-not-read-back-what-this-rescue-has-sent) is yours instead.
+
+On some networks all three of the remedies above can fail, every time, and nothing is wrong with your
 browser. Your rescue is not affected by any of this; if you would rather skip the reason, what still
 works and what to do about a key you pasted on someone else's computer are listed further down. The
 site treats the network's own **finalized** block as the answer, and where an endpoint will not serve
@@ -317,8 +406,8 @@ discarding the donor early cannot be recovered, and discarding it can always be 
 
 What you have in that state:
 
-- **everything except those three works.** **Finish — Manage Donor Assets**, the transaction log, the
-  tx hash it gave you and your rescued funds are all unaffected;
+- **none of this reaches anything except those three.** **Finish — Manage Donor Assets**, the
+  transaction log, the tx hash it gave you and your rescued funds are all unaffected;
 - **an [explorer](/en/glossary#explorer) answers the question the site could not** — you can see for
   yourself that your transaction is where you left it;
 - **if what you wanted erased is the private key you pasted in**, and this is not your own computer,
@@ -331,18 +420,35 @@ What you have in that state:
   walk away from.
 
 
+### The Check Was Overtaken by Your Own Rescue
+
+The line reads *Something about this rescue changed while the check was running, so its answer would describe how things were a moment ago rather than how they are now. Nothing is lost — run the check again.*
+
+This one looks like [the previous answer](#the-check-could-not-be-completed) and is about something else. The previous one is about a question that came back empty; this one is about an answer that went out of date while it was being assembled — a block arrived for the very transaction being checked, or the send still running in this tab reached its next step.
+
+So the answer the site had assembled was about a state that no longer exists, and it threw it away rather than show it to you. That matters most in one case: had it shown you the earlier reading, it could have offered to replace a transaction that is already in a block — a payment for nothing.
+
+There is one thing to do:
+
+1. Press **Check again**.
+
+You do not need to wait a minute first, and you do not need to look at your connection — the site is not asking you to fix anything. It is telling you that the thing it was measuring was still moving, and by the time you read the sentence it has usually stopped. If a send in this tab is still running, it may take another try or two before the check and the send stop overlapping.
+
+**Finish — Manage Donor Assets** works in this state as well. None of the three that discard the donor does, for the same reason as everywhere else on this page: an answer the site does not stand behind is never treated as a yes.
+
+
 ### The Network Reorganised and the Rescue Did Not Happen
 
-The line reads *The network reorganised and this transaction is no longer part of the blockchain, so the rescue did not take effect. Nothing has been erased: the donor wallet is still here and still funded, so run the rescue again.*
+The line reads *The network reorganised and this transaction is no longer part of the blockchain, so the rescue did not take effect. Nothing has been erased: the donor wallet is still here, so run the rescue again — it checks what that wallet holds before it sends anything.*
 
 This is the one answer that is bad news, and it is recoverable. What it means:
 
 - **The assets were not moved.** Whatever the transaction was going to do, it did not happen.
-- **Nothing was deleted.** The donor wallet, its private key and the gas on it are all still here.
-- **Finish — Manage Donor Assets** is blocked. Hover it and it says *This transaction is no longer on the blockchain, so there is nothing to finish yet — run the rescue again.*
+- **Nothing was deleted.** The donor wallet and its private key are still in this browser, and that is what makes running the rescue again possible. What is left on that wallet is a separate question, and not one this check asks — it reads blocks, not balances. The funding step is where it gets answered.
+- **Finish — Manage Donor Assets** is blocked, and its reason reads *This transaction is no longer on the blockchain, so there is nothing to finish yet — run the rescue again.*
 - **Retry — Back to TX Builder** becomes available. That is the way out, and it is available for exactly this reason.
 
-Press **Retry — Back to TX Builder**, build the transaction again, simulate it again and send it again. The donor is still funded, so no new funding step is usually needed.
+Press **Retry — Back to TX Builder**, build the transaction again, simulate it again and send it again. A rollback returns the gas that transaction would have spent, so a fresh funding step is usually not needed — but the site does not assume it: the funding step reads what the donor wallet actually holds and asks you to top it up if it is short.
 
 Notice that the sentence says *run the rescue again* and not "start over". How much of the plan that costs depends on the plan, and where the site can prove the answer it tells you. A rescue sent as more than one transaction carries a step-scope sentence — see [Which Step of the Plan the Answer Is About](#which-step-of-the-plan-the-answer-is-about) — and where every *other* step of that plan has been proved permanent, one more sentence follows it: *The rest of this plan already went through and is not affected — running the rescue again will not repeat it, only pick up from here.*
 
@@ -353,6 +459,46 @@ That sentence appears only when the site holds that proof for every other step, 
 The compromised wallet is still compromised and whatever was draining it is still draining it. A rescue the network has reorganised away is a rescue that has not happened, so treat this as being back where you started, not as a finished job with a warning on it.
 
 :::
+
+### The Network Included the Transaction Again and Something Else Came of It
+
+The line reads *This transaction is on the blockchain, but not with the result this page recorded for it: the network reorganised and included it again, and what came of it the second time is different. So what you were shown about this step is no longer what happened. Nothing has been erased and the donor wallet is still here, though the attempt may have spent some of its gas. Check the balance of the wallet you were rescuing, and the gas left on the donor wallet, before you do anything else; then run the rescue again if the funds are still where they were.*
+
+This is the neighbour of the section above and its other half. There the reorganisation threw the transaction out of the blockchain altogether; here the network threw it out of one block and included it in another — and the second time round, something else came of it. Most often that means a transaction that went through reverted on its way back in: gas was spent and nothing was moved.
+
+So the sentence does not say the transaction is gone: it is there, and sending it again as though it were not would be wrong. And for the same reason it does not stay quiet: the step is still showing a success the site can no longer stand behind.
+
+What changes on screen:
+
+- **The success card goes away.** The site stops claiming what it can no longer prove.
+- **Finish — Manage Donor Assets** is blocked, as it is after a reorganisation — but it says something else, because something else is true here. Its reason reads *This transaction is on the blockchain, but it came out differently from what is recorded here, so there is nothing to finish yet — run the rescue again.* After a reorganisation it says the transaction is no longer on the blockchain; here it is, and that is the whole difference between the two answers.
+- **Retry — Back to TX Builder** becomes available, and it does so whether the step ended in success or in an error, because that is the way out.
+
+Check the balance of the wallet you were rescuing first — in [an explorer](/en/glossary#explorer) or in your own wallet. That is the only thing that settles it here: the result the page recorded and the result the network reports disagree, and the balance is what tells the truth. If the funds are still where they were, run the rescue again; if they have already left, there is nothing to repeat.
+
+Running it again is offered rather than urged: sending again costs gas and can revert the same way. The donor wallet itself is still here either way — it is the key the rescue is run with, and nothing removes it. How much gas is left on it is a different question, and the site does not know the answer: a transaction that reverted on its way back into the blockchain spent its gas doing so, while one the reorganisation returned did not. So check that balance too before you send anything again, in the same explorer.
+
+::: danger Do Not Put Off Checking the Balance
+
+The compromised wallet is still compromised. If the rescue reverted on its way back in then it did not happen — and whatever was draining the wallet has not gone anywhere in the meantime.
+
+:::
+
+### The Network Included the Transaction Again and the Site Cannot Compare the Result
+
+The line reads *This transaction is on the blockchain, but this page cannot tell whether what came of it is what it recorded for this step — one of the two results is missing, not different, so nothing here says your rescue went wrong. Check the balance of the wallet you were rescuing, because that is what settles it, and run the check again.*
+
+This is the quietest neighbour of the two sections above, and the difference is worth being exact about, because the words are close and what they mean is not.
+
+In the section above, the site has *two* answers about what came of the transaction — its own and the network's — and they disagree. Here it has only one. Either the step was recorded by an older version of the site that did not store what came of the transaction, or the network reported the result in a form this site will not guess at. In both cases there is nothing to compare, and a comparison that was not made is not a comparison that failed.
+
+So the sentence claims nothing:
+
+- **The success card stays.** Nothing has refuted it. Taking it down because a field is missing would be inventing bad news, and this site does not do that in either direction.
+- **Finish — Manage Donor Assets works**, and that is one more thing separating this answer from the one above, where it is blocked. Nothing here has been refuted, so nothing is taken away from you: go on and withdraw the donor's leftovers if that is what you were doing. What stays held back is the three that discard the donor — replacing the donor wallet, erasing it, and erasing the whole rescue session — because the site did not reach "this is permanent", and only reaching it unlocks those three.
+- **Retry — Back to TX Builder is not offered**, because nothing says the rescue needs repeating — and repeating it costs gas.
+
+What ends it is the same thing that ends the section above: look at the balance of the wallet you were rescuing, in [an explorer](/en/glossary#explorer) or in your own wallet. If the funds have moved, the rescue happened. Then run the check again — on a later check the network may name the block in a form the site can read.
 
 ### Which Step of the Plan the Answer Is About
 
@@ -389,10 +535,12 @@ exactly the ones described in
 the reason on it if the answer is anything but a clear yes, and every press asks again.
 
 There is one more answer, and it comes from the browser rather than from the network: where the
-browser blocks this site from deleting its own data, the erase says so instead of reloading. Either
-*nothing* was erased — everything is exactly where it was — or *part* of it was, in which case the
-page is deliberately left as it is rather than reloaded, because a reload would look like success. In
-both cases the sentence under the button ends the same way: close the tab, which drops what was in
+browser will not confirm that this site's own data was deleted, the erase says so instead of
+reloading. Either *nothing* was erased — the browser is blocking storage for this site, so everything
+is exactly where it was — or the erase *did not finish*: the browser did not confirm that every entry
+was deleted, so some of it may still be here and some of it may already be gone, and the page is
+deliberately left as it is rather than reloaded, because a reload would look like success. In both
+cases the sentence under the button ends the same way: close the tab, which drops what was in
 memory, then clear this site's data in your browser settings.
 
 ::: warning Have the Pasted Keys to Hand
