@@ -111,9 +111,9 @@ AntiDrain helps you prepare and check actions, but you still decide whether to s
 
 ## What It Costs
 
-On top of network gas, the site takes 20% of the rescued amount on token and native withdrawals. Individual actions, an NFT transfer for example, are charged at $5 per unit.
+On top of network gas, the site takes up to 20% of each token or native withdrawal. Individual actions, an NFT transfer for example, are charged at $5 per unit.
 
-The amount is visible before sending, on the Fund Donor step. Every case is covered on [Service Fees](/en/service-fees).
+The amount is visible before sending, on the Fund Donor step. Treat it as a calculation rather than a final bill: the percentage is the most taken from one transfer, less is sometimes collected, and a token that keeps a cut of its own transfers delivers less than the figure shown. Every case is covered on [Service Fees](/en/service-fees).
 
 ## Next
 

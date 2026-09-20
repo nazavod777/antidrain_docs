@@ -154,7 +154,7 @@ export const SCRIPTS = [
     selfTests: true,
     inBuild: true,
     implements: "docs/.vitepress/scripts/check-layout.mjs",
-    covers: "a real browser over dist/ at six widths in both themes: sideways scroll, touch targets, axe, console errors, reduced motion, and forced colours read as decoded pixels",
+    covers: "a real browser over dist/ at six widths in dark and the two extremes (390, 1440) in light, because layout does not vary by palette: sideways scroll, touch targets, axe at those two widths, console errors, reduced motion, and forced colours read as decoded pixels",
     cost: "~105 s, once dist exists — almost the whole build",
   },
   {

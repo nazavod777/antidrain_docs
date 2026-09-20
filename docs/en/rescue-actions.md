@@ -63,11 +63,19 @@ The most common case: USDT, USDC and most other tokens. Suitable for a beginner 
 Fields:
 
 - **Token Contract** — the contract address of the token you are moving.
-- **Decimals** — a unit dropdown, where `Wei (10^-18)` corresponds to 18 places. Ordinary tokens use 18, but there are exceptions: USDT and USDC use 6. If you are unsure, check it in an [explorer](/en/glossary#explorer).
+- **Decimals** — a unit dropdown, where `Wei (10^-18)` corresponds to 18 places. Ordinary tokens use 18, but there are exceptions: USDT and USDC use 6. The site tries to read this number out of the token contract and fill it in for you. If you are unsure, check it in an [explorer](/en/glossary#explorer).
 - **Amount** — how much to move. There is a "max" toggle next to it: with it on, the field reads "Transferring all tokens" and the amount comes from the full balance at execution time.
 - **Recipient Address** — your new safe wallet.
 
 ![The ERC-20 transfer form: Token Contract and Recipient Address on top, then Amount with its max toggle and the Decimals dropdown showing "Wei (10^-18) — Decimals 18". Required fields are marked with an asterisk.](/screenshots/en/06-tx-erc20.webp)
+
+::: warning If the decimals could not be read, set them yourself
+Sometimes the site cannot get this number out of the contract. It then says *Decimals could not be read from this contract — enter them yourself*.
+
+**The field does not go empty.** It keeps whatever was already in it, and a fresh ERC-20 transfer starts at 18 — so if the token really uses 6, a wrong number sits there looking exactly like a correct one.
+
+Look the token up in an [explorer](/en/glossary#explorer), find its decimals, and set the dropdown to that number by hand. Every place you are out multiplies the amount by ten, and 18 where the real answer is 6 puts you twelve places out. Set the number too high and the transfer asks for a million million times what you meant: there is not that much in the wallet, so it fails — simulation will at least show you that. Set it too low and it succeeds, moving a speck of what you were trying to save, with nothing anywhere reporting a problem.
+:::
 
 ### Transfer NFT (ERC-721)
 
@@ -116,6 +124,8 @@ If you do not know where to get calldata, use one of the three types above, or t
 
 ![The custom transaction form: Target Contract and Calldata (hex) on top, then Value (Native) and a Unit dropdown showing "Ether (10^18 wei)". This form has no recipient field.](/screenshots/en/09-tx-custom.webp)
 
+A call written out by hand is charged like any other. If the calldata you paste turns out to be an ordinary ERC-20 transfer, the token service fee applies to it exactly as it would to a transfer built with the form above. The **Fund Donor** step shows it as a row saying the fee may not apply, because the site cannot tell from the data alone whether the call really moves a token balance — [When a Fee Row Says It May Not Apply](/en/service-fees#when-a-fee-row-says-it-may-not-apply) explains what that row promises and what it does not.
+
 ### The "donor" Toggle Beside Recipient Address
 
 On the three transfer forms above — ERC-20, ERC-721 and ERC-1155 — the **Recipient Address** label has a toggle next to it marked **donor**. Turning it on fills the field with the donor wallet's address, so you do not have to go back to step one and copy it. It is a shortcut for typing and nothing more: the transaction that gets built is the same one you would have built by pasting that address yourself.
@@ -159,6 +169,8 @@ Prepare:
 - Recipient address
 - Amount or balance-at-execution mode
 - A clear deadline, meaning when the signature expires
+
+**Min received (base units)** is the smallest delivery you are willing to accept: if less than that arrives, the rescue is rejected rather than going through. The service fee is 20% of the rescued amount and comes out of the tokens themselves, so the calculation leaves 80% — but that 80% is a calculation, and it leaves out what the token itself charges for a transfer. Choose the minimum below what you expect to receive rather than copying the calculated figure into it, or a token that charges for its own transfers has your rescue rejected for arriving short.
 
 When to Stop:
 

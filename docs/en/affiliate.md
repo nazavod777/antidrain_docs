@@ -38,7 +38,9 @@ If the user's browser already has another affiliate wallet saved, the new addres
 
 ::: info Fee Split Only
 
-At the fee shown in [Service Fees](/en/service-fees), the affiliate link does not increase the user's total fee. It only changes how an existing fee is split between protocol and affiliate. What your rescue will actually be charged is shown at the **Fund Donor** step.
+At the fee shown in [Service Fees](/en/service-fees), the affiliate link does not increase the user's total fee. It only changes how an existing fee is split between protocol and affiliate. The **Fund Donor** step shows the rate that applies to your rescue and the calculation made from it; what is finally collected is settled while the transaction runs.
+
+It can still change what ends up being collected. The fee is then paid out to two addresses instead of one, and if the affiliate address cannot accept its share, that share usually goes to the protocol rather than staying with the user.
 
 :::
 
@@ -50,7 +52,7 @@ There are two payout types.
 
 This is a fee in the asset being rescued: in the token itself, or in the network's native coin when the rescue moves a native balance.
 
-When a supported token rescue flow applies the standard token fee:
+When a supported token rescue flow applies the standard token fee, and the whole fee is collected:
 
 - Total fee is 20% of the rescued amount
 - User/recipient receives 80%
@@ -69,6 +71,8 @@ Examples:
 - If 1,000 TOKEN is rescued, the affiliate receives 50 TOKEN
 - If 0.5 ETH is rescued through a supported native transfer-all flow with the same split, the affiliate receives 0.025 ETH
 
+These figures are the ordinary case, worked out from the percentage. The rate is the most that is taken from a transfer, not a guaranteed amount: a token whose rules refuse part of the fee leaves less to split, and a token that keeps a cut of every transfer delivers less than the arithmetic here to every address involved, yours included. [Service Fees](/en/service-fees#1-token-rescue-fee) explains both.
+
 ### 2. Native Service Fee
 
 This is a separate fee in the network's native coin: ETH, BNB, POL, AVAX, and so on.
@@ -80,7 +84,7 @@ If an affiliate wallet is active:
 - Protocol receives 75% of the native service fee
 - Affiliate receives 25% of the native service fee
 
-So the affiliate receives $1.25 for each fee unit.
+The rule is the share, not a fixed figure: 25% of whatever the native service fee comes to. When a fee unit is quoted at $5, that works out to $1.25 per unit — but when the site cannot price the native coin it falls back to an estimate, and then a unit is not $5 and the reward is not $1.25.
 
 Examples:
 
@@ -104,7 +108,7 @@ The affiliate receives a payout only when all of these are true:
 The affiliate can receive a payout in these cases:
 
 - Supported ERC-20 token rescue where token fee applies
-- Permit Rescue when the selected mode uses token fee
+- Permit Rescue in either of its modes, since the token fee applies to both
 - DeBank/Bundler token transfer when that route applies fee split
 - DeBank native transfer-all, which is added when a selected pool pays out the native coin: the native balance is swept with the same percentage split, so the affiliate share is taken out of it whenever there is a balance large enough to split
 - Custom TX Builder / DeBank actions with native service fee, such as raw calls, NFT/pool actions, or other fee-bearing operations

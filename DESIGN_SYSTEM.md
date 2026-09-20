@@ -30,9 +30,20 @@ Imported in this order from `theme/index.ts`:
 | `base.css` | root font-size, focus-visible, selection, scrollbars, reduced motion |
 | `prose.css` | long-form typography, callouts, tables, cards, nav and sidebar detail |
 
-Nothing in these files uses `!important`. The GitBook stylesheet it replaced
-used it 405 times in 1799 lines, because it was fighting a theme instead of
-configuring one.
+`!important` appears in exactly one place in these files: the
+`prefers-reduced-motion` blanket in `base.css`, which carries five of them
+across `animation-*`, `transition-duration` and `scroll-behavior`. That one is
+deliberate and correct. An accessibility override has to beat **every** author
+rule, including VitePress's own component transitions, which it cannot outrank
+on specificity alone — this is the same blanket the site ships, and the reason
+it exists is that the GitBook stylesheet declared `transition: none` *without*
+it against transitions that had it, so the sidebar, header and prev/next kept
+animating for readers who had asked them not to.
+
+Everywhere else, use specificity. The GitBook stylesheet this theme replaced
+used `!important` 405 times in 1799 lines, because it was fighting a theme
+instead of configuring one; the contrast is the point, and one accessibility
+blanket does not blunt it.
 
 ## Deliberate deviations from the site
 

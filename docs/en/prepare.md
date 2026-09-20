@@ -68,9 +68,9 @@ Open the site from a link you typed yourself or took from your bookmarks — not
 
 ## What It Costs
 
-On top of gas, the site takes a fee from the rescued amount: 20% on token and native withdrawals, of which 5% goes to an affiliate when a link is active. Some actions are charged at $5 per unit instead of a percentage.
+On top of gas, the site takes a fee out of the rescued amount: up to 20% of each token or native withdrawal, of which 5% goes to an affiliate when a link is active and that address can accept it. Some actions are charged at $5 per unit instead of a percentage.
 
-The fee is visible before sending, on the Fund Donor step. Every case is covered on [Service Fees](/en/service-fees).
+The percentage is the most taken from one transfer, not a bill for the whole rescue, and the amounts beside it are calculated rather than measured — a token that keeps a cut of its own transfers delivers less. The fee is visible before sending, on the Fund Donor step. Every case is covered on [Service Fees](/en/service-fees).
 
 ## Next
 

@@ -30,6 +30,10 @@ If simulation succeeds:
 2. Make sure the action looks expected.
 3. Press **Proceed to Fund Donor**.
 
+A rescue is sometimes sent as two transactions rather than one. The site calls those two the *steps* of the rescue, and a successful result does not always mean it measured both. When it did not, it says so underneath the result: *Both steps were not checked together. The first was estimated on its own; the second was calculated rather than measured, so the real cost can differ — and nothing measures it before sending either.*
+
+That is a limit on the number, not a problem with the transaction. The cost of the second step is worked out rather than observed, so the real one can come out higher or lower, and no later step goes back and measures it — it stays an estimate right up to sending. Fund with the buffer the next step already includes, and do not read the total as an exact price.
+
 ## If Simulation Fails
 
 **Two different things end up here, and they are not the same news.** One is an answer: the check ran, it ran your transaction as a trial, and the trial did not succeed. The other is the absence of an answer: the check never finished — the network did not reply, what came back could not be read, or the request never got out — so nothing was established about your transaction at all, in either direction.
@@ -111,7 +115,11 @@ The donor usually needs funds for:
 
 The panel adds these up as **Total to Fund**.
 
+Use the figure this plan shows you. The estimate is worked out for the route this particular rescue takes, so the same wallet and the same token can need a different amount on another run — an amount you remember from last time is not a substitute for the one on screen.
+
 The same panel can also list **Token Service Fee**, and that one is not part of the total. It is a percentage of what the rescue moves, taken out of the rescued assets when the transaction runs rather than out of the donor's balance — and some of its rows carry an extra line saying the fee may not be charged at all. [Service Fees](/en/service-fees#when-a-fee-row-says-it-may-not-apply) explains both.
+
+Read that percentage as the most that transfer will be charged. Less can be collected, for reasons the site cannot see beforehand, and the amounts beside it — including the **Calculated recipient share** — are worked out from the rate rather than measured. They do not include what the token itself charges for a transfer, so what reaches your recipient can be lower than the figure on screen. [Service Fees](/en/service-fees#1-token-rescue-fee) works through why.
 
 ## TX Sender {#send}
 

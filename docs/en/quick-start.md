@@ -7,7 +7,7 @@ description: Step-by-step guide through the workspace to rescue wallet assets.
 
 This guide shows the simplest path through the workspace: `https://antidrain.me/workspace`.
 
-If this is your first time, read [Before You Start](/en/prepare) first: it covers creating the recipient wallet, finding the network, and getting the gas coin. On top of gas, the site takes 20% of the rescued amount on token and native withdrawals, and some actions are charged at $5 per unit; see [Service Fees](/en/service-fees).
+If this is your first time, read [Before You Start](/en/prepare) first: it covers creating the recipient wallet, finding the network, and getting the gas coin. On top of gas, the site takes up to 20% of each token or native withdrawal, and some actions are charged at $5 per unit; the percentage is the most taken from one transfer and the amounts shown are calculated rather than measured, so see [Service Fees](/en/service-fees).
 
 If this is your first web3 rescue, keep three addresses in mind:
 
