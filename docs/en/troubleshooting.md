@@ -21,6 +21,7 @@ If you are new, do not fix errors by clicking randomly. Read the error, check ne
 | Balance unchanged | [Balance Did Not Update](#balance-did-not-update) |
 | Error after broadcast | [Sending Failed After Broadcast](#sending-failed-after-broadcast) |
 | Saved data disappeared | [Some Saved Data Was Removed](#some-saved-data-was-removed) |
+| A panel came back empty | [A Draft May Not Have Been Saved](#a-draft-may-not-have-been-saved) |
 | Page stayed in the same language | [The Language Did Not Switch](#the-language-did-not-switch) |
 
 ## Button Is Disabled
@@ -187,6 +188,26 @@ What to do depends on the line in the list:
 The site removes a saved value only after it has established that the value cannot be read at all —
 never because a read merely failed. That distinction is the point of the other notice, **Saved State
 Not Opened**: it deletes nothing and asks you to try again.
+
+## A Draft May Not Have Been Saved
+
+The workspace shows a box titled **A Draft May Not Have Been Saved**.
+
+This one is about a save that was still running. Everything you type into a panel is encrypted before
+it is written down, and that takes a moment; the site gives each save a minute and then stops waiting
+for it. The minute runs out on its own, whatever you were doing — the panel does not have to have
+been closed, and a tab left in the background reaches the same deadline with the panel still on
+screen. Nothing was deleted — the value never got as far as being saved at all.
+
+What to do: look over the panel you were last typing in. In most cases what you entered is still
+there, because the panel had kept it in memory and saved it again. If a field is empty, type it in
+again — there is nothing to recover and nothing to retry.
+
+This is not the same as [Some Saved Data Was Removed](#some-saved-data-was-removed), which is about
+something the site had saved and then could not read back, and not the same as **Pasted Keys Are Not
+Being Saved**, which is about a browser that cannot save pasted keys at all. This notice says neither:
+saving works here, and one particular draft may have missed its turn. It goes away as soon as
+anything is saved under that panel again.
 
 ## The Language Did Not Switch
 
