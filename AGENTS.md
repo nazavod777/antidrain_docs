@@ -97,11 +97,11 @@ third depends on whether the browser keeps pasted keys; everything else about it
 is shared. Replacing the donor is a seventh flow, also not an action: "Replace
 the donor wallet" / "Заменить кошелёк донора" — the confirmation that **Generate
 Wallet** and **Import Wallet** open when this browser may already be holding a
-donor. **It is not an erase, and these pages must never call it one.** The site's
-own test for what the finality gate guards is not "does this control delete the
-donor" but "can the donor key stop being recoverable after it", and writing a new
-wallet over the stored one answers yes. Four controls are guarded, not two: the
-erase on either surface, the session wipe on the send step, and this pair.
+donor. **It is not an erase, and these pages must never call it one** — but it is
+guarded by the same finality gate as the erase, so a page that describes one as
+warned and the other as instant is wrong about both. Which controls that gate
+covers, and the test that decides it, belong to the product:
+`../antidrain_site/AGENTS.md` §4.
 
 - One concept, one name, everywhere, in both languages. If you find two names
   for one thing, that is a defect — fix it or report it, do not add a third.
@@ -219,14 +219,13 @@ file adds:
 
 ## Commands
 
+[`README.md`](README.md) lists the everyday commands — `dev`, `lint`, `build`,
+`tokens:check` and `test:for` — with what each one covers. Three are not there,
+and each is a local-only command whose output a person has to look at:
+
 | Command | Use |
 | --- | --- |
-| `npm run dev` | Dev server, hot reload |
-| `npm run lint` | Fast loop: contrast + anchor contract + RU/EN parity + anchor links + the test-map audit. ~0.6s, no build |
-| `npm run test:for` | Which checks can see the change you just made, and what it leaves out. Runs nothing |
-| `npm run build` | Everything: `lint`, the VitePress build with its dead-link check, redirect stubs, `check:urls`, `check:layout` |
 | `npm run preview` | Serve the built output |
-| `npm run tokens:check` | Local only: diff `tokens.css` against the site. Needs `ANTIDRAIN_SITE` |
 | `npm run screenshots` | Regenerates the UI screenshots from a live site. Local only; review every image before committing |
 | `npm run og-image` | Regenerates the social preview card. Reproducible; look at the result before committing |
 
