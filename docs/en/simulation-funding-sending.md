@@ -156,7 +156,7 @@ Two things to know about the check itself:
 
 A send that ended in an **error** gets a line too, because the check reads back everything this rescue has already sent rather than only the last attempt. There you see the error instead of the success card, **Retry — Back to TX Builder** is offered and **Finish — Manage Donor Assets** is not, whatever the line says. The three that discard the donor are held back either way.
 
-That is the ordinary shape of it, and the answers below take it as read. One of them is the error case and nothing else: [Sent, Not in a Block Yet, and Replaceable](#sent-not-in-a-block-yet-and-replaceable) is only ever reached by a send that ended in an error, so there Retry without Finish is the ordinary case rather than a sign that something extra went wrong.
+That is the ordinary shape of it, and the answers below take it as read. One of them is the error case and nothing else: [Sent, Not in a Block Yet, and Replaceable](#sent-not-in-a-block-yet-and-replaceable) is almost always reached by a send that ended in an error, so there Retry without Finish is the ordinary case rather than a sign that something extra went wrong. The rare exception is described in that section.
 
 Two of them are the exception, and they are the only two: [The Network Reorganised and the Rescue Did Not Happen](#the-network-reorganised-and-the-rescue-did-not-happen) and [The Network Included the Transaction Again and Something Else Came of It](#the-network-included-the-transaction-again-and-something-else-came-of-it). Those two refute what the send step recorded, so there the line does more than hold a button back: after a send that reported success, **Finish — Manage Donor Assets** is blocked and **Retry — Back to TX Builder** is offered anyway. No other answer overrules the send step like that — the rest can only take something away.
 
@@ -241,7 +241,7 @@ the site treats only a proven block as a yes.
 
 The line reads *The transaction has been sent and is not in a block yet, and the place in the queue it was signed for is still free for it — so it can still go through on its own. Wait a moment and check again; nothing is lost while you wait. If nothing changes, you can replace it by offering more for gas: the replacement takes that same place in the queue instead of queueing up behind it.*
 
-This is the answer that arrives with the send step reporting an **error**, and it is the one place on
+This answer almost always arrives with the send step reporting an **error**, and it is the one place on
 this page where that is the ordinary case rather than the exception. The send failed because nothing
 came back to confirm it — the transaction is out there all the same, which is what the line is
 telling you. So **Retry — Back to TX Builder** is already offered above, and **Finish — Manage Donor
@@ -252,6 +252,10 @@ only answer on this page that comes with a button of its own, and what it adds i
 Retry does not already give you — it goes to the same place. What it adds is the *name*: it says what
 rebuilding will do with your money here, which is to outbid the transaction already waiting rather
 than to start a second one.
+
+Rarely, the same line appears while the send step reports **success**. Then **Retry — Back to TX
+Builder** stays greyed out, **Finish — Manage Donor Assets** works, and **Replace with a higher gas
+price** is the only way to rebuild — it goes where Retry would have gone.
 
 Read the two buttons in the order they sit in, because that order is the advice:
 
