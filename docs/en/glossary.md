@@ -73,7 +73,7 @@ The moment a signed transaction goes out to the network. After broadcast it cann
 
 ### Permanent transaction
 
-A transaction the network can no longer take back. Being confirmed is not the same thing: for a few minutes a network can still reshuffle its most recent blocks, and a transaction reshuffled away stops having happened. The site checks this before it lets the donor wallet be replaced or erased, or the whole rescue session erased — see [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
+A transaction the network can no longer take back. Being confirmed is not the same thing: for a while — from a few seconds to about half an hour, depending on the network — a network can still reshuffle its most recent blocks, and a transaction reshuffled away stops having happened. The site checks this before it lets the donor wallet be replaced or erased, or the whole rescue session erased — see [After Sending: Is the Transaction Permanent?](/en/simulation-funding-sending#after-sending-is-the-transaction-permanent).
 
 ### Tx hash
 

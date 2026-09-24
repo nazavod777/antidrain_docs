@@ -149,7 +149,7 @@ The last three are the ones that leave the donor's private key unrecoverable, so
 
 Two things to know about the check itself:
 
-- **It runs once on its own, and after that when you ask.** There is no timer, so a line that has not settled stays as it is until you press **Check again** beside it. Changing the network or the RPC starts a fresh check on its own.
+- **It runs on its own, and keeps asking while the answer is to wait.** While the line says the transaction is not yet permanent, the site checks again by itself every so often, quietly — the line changes only when the answer does. It stops once the answer is final, or after about three times the usual wait for that network, at most an hour and a half. Every other answer stays as it is until you press **Check again** beside it, and pressing it also starts the automatic checks over. Changing the network or the RPC starts a fresh check on its own.
 - **It only reads.** It does not send anything, costs no gas, and cannot undo the transaction. If your rescue was sent as more than one transaction, every one of them is checked and the line reports the worst answer, which may not be about the last tx hash you saw.
 
 **Which buttons you have depends on two things: how the send step itself ended, and what this line answers.** Usually the send step is what decides and the line only holds something back. So where an answer below says **Finish — Manage Donor Assets** works, or says anything about the success card — the card the send step shows when the transaction went through — it is describing a send that reported success, which is the ordinary way to arrive here.
@@ -178,15 +178,17 @@ This is the outcome you want, and it is worth knowing in advance, because the si
 
 ### Not Yet Permanent — Wait and Check Again
 
-The line reads *The transaction is on the blockchain but not yet permanent. For a few minutes a network can still reshuffle its most recent blocks, and until that settles the rescue could be undone. Wait a moment, then check again.*
+The line reads *The transaction is on the blockchain but not yet permanent. For a while a network can still reshuffle its most recent blocks — anywhere from a few seconds to about half an hour, depending on the network — and until that settles the rescue could be undone. Wait, then check again.*
+
+On a network where the site knows how long this usually takes, the line adds that too — for example *On this network that usually takes about 20 minutes from when the transaction was sent.*
 
 Your transaction is on the blockchain and everything is going the way it should. **Finish — Manage Donor Assets** works normally, so you can go on and withdraw the donor's leftovers. The only things being held back are the three that discard the donor: replacing the donor wallet, erasing it, and erasing the whole rescue session.
 
-Wait a minute or two, then press **Check again**. You do not have to sit and watch it: this state holds back only the three that discard the donor, so if you are not erasing or replacing anything, press **Finish — Manage Donor Assets** and carry on.
+You do not have to press anything: while this line is showing, the site checks again by itself, and the line goes empty once the transaction is permanent. **Check again** asks right away if you would rather not wait for the next automatic check. You do not have to sit and watch it either: this state holds back only the three that discard the donor, so if you are not erasing or replacing anything, press **Finish — Manage Donor Assets** and carry on.
 
 ::: tip This Is Normal, Not an Error
 
-Every transaction on every network passes through this state. Seeing it does not mean anything went wrong, and there is nothing to fix — the network simply has not put enough blocks on top of yours yet. How long that takes depends on the network, and the site will not guess at a number it cannot know.
+Every transaction on every network passes through this state. Seeing it does not mean anything went wrong, and there is nothing to fix — the network simply has not put enough blocks on top of yours yet. How long that takes depends on the network — seconds on some, up to about half an hour on others. The figure the line gives is a usual time, not a deadline: a transaction that takes longer has not gone wrong.
 
 :::
 

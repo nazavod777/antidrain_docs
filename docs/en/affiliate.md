@@ -111,6 +111,7 @@ The affiliate can receive a payout in these cases:
 - Permit Rescue in either of its modes, since the token fee applies to both
 - DeBank/Bundler token transfer when that route applies fee split
 - DeBank native transfer-all, which is added when a selected pool pays out the native coin: the native balance is swept with the same percentage split, so the affiliate share is taken out of it whenever there is a balance large enough to split
+- The native coin a Custom TX Builder rescue returns from the compromised wallet to the donor at the end: it is swept with the same percentage split, so the affiliate share is taken out of it whenever there is a balance large enough to split
 - Custom TX Builder / DeBank actions with native service fee, such as raw calls, NFT/pool actions, or other fee-bearing operations
 
 The affiliate does not receive a payout if:
