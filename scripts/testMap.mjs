@@ -170,7 +170,7 @@ export const SCRIPTS = [
     tier: "local",
     selfTests: true,
     implements: "docs/.vitepress/scripts/check-tokens.mjs",
-    covers: "the vendored token block against ../antidrain_site, byte for byte. Needs ANTIDRAIN_SITE",
+    covers: "the vendored token block against ../antidrain_site, byte for byte. ANTIDRAIN_SITE overrides the path",
     cost: "~0.1 s",
   },
   {

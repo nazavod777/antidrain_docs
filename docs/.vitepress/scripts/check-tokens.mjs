@@ -2,8 +2,8 @@
  * Reports drift between the vendored token block and the site's tokens.css.
  *
  * The site is a separate repository that is not available inside CI, so this is
- * a local-only tool: point ANTIDRAIN_SITE at the checkout and run
- * `npm run tokens:check`. It exits 1 on drift so it can be wired into a
+ * a local-only tool: it reads the sibling ../antidrain_site checkout, or
+ * ANTIDRAIN_SITE if set, when you run `npm run tokens:check`. It exits 1 on drift so it can be wired into a
  * pre-release check if the two repos ever end up side by side on a runner.
  * Exit 2 means the comparison could not be made at all, which is a different
  * thing from a clean diff and must never be read as one.

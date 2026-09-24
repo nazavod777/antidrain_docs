@@ -73,8 +73,8 @@ self-test rather than a green run. The eighth, the VitePress dead-link check, is
 VitePress' own. The map audit checks that pairing itself, as `self-test-drift`.
 
 `npm run tokens:check` is separate and local-only: it diffs the vendored token
-block against the site. The site is not available in CI, so point `ANTIDRAIN_SITE` at
-your checkout and run it by hand after touching tokens.
+block against the site. The site is not available in CI, so it reads the sibling `../antidrain_site`
+checkout, or `ANTIDRAIN_SITE` if set, and is run by hand after touching tokens.
 
 ## Named gaps
 

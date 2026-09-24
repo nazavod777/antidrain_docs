@@ -74,7 +74,7 @@ Reaches outside this checkout — into ../antidrain_site, or into a browser driv
 
 | Script | What it covers | Cost |
 | --- | --- | --- |
-| `tokens:check` | the vendored token block against ../antidrain_site, byte for byte. Needs ANTIDRAIN_SITE | ~0.1 s |
+| `tokens:check` | the vendored token block against ../antidrain_site, byte for byte. ANTIDRAIN_SITE overrides the path | ~0.1 s |
 | `screenshots` | regenerates every UI screenshot by driving the site's own dev server. Wipes docs/public/screenshots/ first | not measured |
 | `og-image` | regenerates docs/public/og-image.jpg from tokens.css and the wordmark, in a browser, offline | not measured |
 
