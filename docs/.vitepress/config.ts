@@ -137,6 +137,7 @@ export default defineConfig({
     pageData.frontmatter.head ??= []
     pageData.frontmatter.head.push(
       ['link', { rel: 'canonical', href: `${SITE}/${path}` }],
+      ['meta', { property: 'og:url', content: `${SITE}/${path}` }],
       ['meta', { property: 'og:title', content: title ? `${title} · AntiDrain Docs` : 'AntiDrain Docs' }],
       ['meta', { name: 'twitter:title', content: title ? `${title} · AntiDrain Docs` : 'AntiDrain Docs' }],
     )
