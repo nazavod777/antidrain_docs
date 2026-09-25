@@ -220,13 +220,14 @@ file adds:
 ## Commands
 
 [`README.md`](README.md) lists the everyday commands — `dev`, `lint`, `build`,
-`tokens:check` and `test:for` — with what each one covers. Three are not there,
+`tokens:check` and `test:for` — with what each one covers. Four are not there,
 and each is a local-only command whose output a person has to look at:
 
 | Command | Use |
 | --- | --- |
 | `npm run preview` | Serve the built output |
-| `npm run screenshots` | Regenerates the UI screenshots from a live site. Local only; review every image before committing |
+| `npm run screenshots` | Regenerates the UI screenshots from a live site, and records what each frame rendered in `docs/.vitepress/screenshots/manifest.json`. Local only; review every image, and commit the images and the manifest together |
+| `npm run screenshots:check` | Renders the same flow against a live site and fails when the committed frames no longer match it — text, elements, geometry and a few styles, never pixels. Writes nothing. Part of the site's pre-deploy sequence; it cannot see icons, images or pseudo-elements, so a redesign still needs eyes on the frames |
 | `npm run og-image` | Regenerates the social preview card. Reproducible; look at the result before committing |
 
 ## Which check sees what — ask, do not remember

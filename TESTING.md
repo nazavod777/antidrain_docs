@@ -75,7 +75,8 @@ Reaches outside this checkout — into ../antidrain_site, or into a browser driv
 | Script | What it covers | Cost |
 | --- | --- | --- |
 | `tokens:check` | the vendored token block against ../antidrain_site, byte for byte. ANTIDRAIN_SITE overrides the path | ~0.1 s |
-| `screenshots` | regenerates every UI screenshot by driving the site's own dev server. Wipes docs/public/screenshots/ first | not measured |
+| `screenshots` | regenerates every UI screenshot by driving the site's own dev server, and records what each frame rendered in docs/.vitepress/screenshots/manifest.json. Replaces the committed frames only after every frame and the budget pass, and rolls the replacement back if a step of it fails | not measured |
+| `screenshots:check` | renders the same flow against the site's dev server and fails when a frame's text, elements, geometry or key styles no longer match the manifest, or an image no longer matches its recorded hash. Writes nothing | not measured |
 | `og-image` | regenerates docs/public/og-image.jpg from tokens.css and the wordmark, in a browser, offline | not measured |
 
 #### Manual
