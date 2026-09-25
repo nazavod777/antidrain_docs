@@ -547,11 +547,12 @@ not the same button as [Erase the donor wallet](/en/donor-wallet#how-to-erase-th
 erases more. It takes the donor mnemonic and private key, the compromised wallet keys you pasted,
 and the saved state of this session, and then reloads the page. The text above it says so, and how
 it ends follows the line described in
-[After Sending: Is the Transaction Permanent?](#after-sending-is-the-transaction-permanent). While
-that line still shows anything — the check is still running, or it has any answer other than
-silence — the text adds that erasing waits until the network confirms the rescue is permanent. Once
-the line goes empty, it says instead that the network has confirmed the rescue is permanent and that
-you can erase them now.
+[After Sending: Is the Transaction Permanent?](#after-sending-is-the-transaction-permanent). Until
+that check has confirmed the rescue is permanent, the text adds that erasing waits for that
+confirmation. Once the check confirms it, the text says instead that the network has confirmed the
+rescue is permanent and that you can erase them now. Go by this text, not by the line: the line can
+also be empty right after sending, before the check has answered, and an empty line then does not
+mean the rescue is permanent.
 
 Pressing it opens a dialog titled **Erase the rescue session?**, with **Keep them for now** and
 **Erase and reload**. Nothing is deleted until you choose **Erase and reload**, and not even then
