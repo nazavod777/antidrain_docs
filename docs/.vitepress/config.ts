@@ -207,6 +207,14 @@ export default defineConfig({
         lightModeSwitchTitle: 'Светлая тема',
         darkModeSwitchTitle: 'Тёмная тема',
         lastUpdatedText: 'Обновлено',
+        // Copied from the site's `src/constants/translations/notFound.ts`, not written here.
+        notFound: {
+          title: 'Страница не найдена',
+          quote:
+            'Страница, которую вы ищете, не существует или была перемещена. Проверьте адрес или вернитесь на известную страницу.',
+          linkLabel: 'На главную',
+          linkText: 'На главную',
+        },
       },
     },
     en: {
@@ -228,6 +236,15 @@ export default defineConfig({
     siteTitle: 'AntiDrain',
     socialLinks,
     externalLinkIcon: true,
+    // The root and `en` inherit this; `ru` overrides it. Copied from the site's
+    // `src/constants/translations/notFound.ts`, not written here.
+    notFound: {
+      title: 'Page not found',
+      quote:
+        'The page you are looking for does not exist or has been moved. Check the URL or head back to a known page.',
+      linkLabel: 'Go Home',
+      linkText: 'Go Home',
+    },
     footer: {
       message: `<a href="${APP}">antidrain.me</a> · <a href="${APP}/workspace">workspace</a> · <a href="${APP}/affiliate">affiliate</a>`,
       copyright: 'AntiDrain',
