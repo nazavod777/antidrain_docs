@@ -125,6 +125,8 @@ What to do:
 
 These same steps are the fix whenever the site refuses a plan and tells you to build it again, and an expired plan is only one of the reasons it can give. For what happened to your funds, read the message itself rather than guessing. Where it says nothing was signed and nothing was sent, building the plan again costs you nothing but the time. Where it says *this step* was not signed or not sent, a plan can have more than one step and an earlier one may already have gone through — the transaction log above the message is what lists them, and rebuilding is still the way forward.
 
+There is one exception. When the message says the plan's Permit signatures are expiring, running the simulation again does not help: a new plan cannot outlast the signatures it is built from. Go back to TX Builder, sign again in the Permit Rescue panel and build a new plan — on Fund Donor the **Return to TX Builder and sign again** button takes you there. [Permit Rescue](/en/rescue-actions#permit-rescue) describes where each of these messages appears.
+
 ## Transaction Is Pending
 
 The transaction went out to the network and no block holds it yet. Check the tx hash in an [explorer](/en/glossary#explorer) — it shows you the same thing the site is looking at.
