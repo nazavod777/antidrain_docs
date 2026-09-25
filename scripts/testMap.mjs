@@ -38,7 +38,7 @@ export const TIERS = [
   {
     id: "rendered",
     title: "Rendered",
-    why: "Needs a built dist/, and for the layout check a real Chromium. Minutes, not seconds, and the only thing that can say what a page actually looks like.",
+    why: "Needs a built dist/, and for the layout check a real Chromium. Tens of seconds, not tenths, and the only thing that can say what a page actually looks like.",
   },
   {
     id: "local",
@@ -80,7 +80,7 @@ export const TIERS = [
  *   structural tier. Nothing may be reported as unchecked while the plan's own gate runs it.
  * - **What the plan does not repeat**, the marked ones that read `dist/`. For those there is no
  *   order that works — before the build they measure the previous version of the site, after it
- *   they repeat 105 seconds the gate has just spent. `lint` is marked and is *not* dropped: it
+ *   they repeat the browser pass the gate has just spent. `lint` is marked and is *not* dropped: it
  *   costs 0.6 s, reads no `dist/`, and running it first is exactly what `AGENTS.md` asks for.
  *
  * `command` is the invocation to print when `npm run <name>` is not the thing that does the work.
@@ -154,8 +154,8 @@ export const SCRIPTS = [
     selfTests: true,
     inBuild: true,
     implements: "docs/.vitepress/scripts/check-layout.mjs",
-    covers: "a real browser over dist/ at six widths in dark and the two extremes (390, 1440) in light, because layout does not vary by palette: sideways scroll, touch targets, axe at those two widths, console errors, reduced motion, and forced colours read as decoded pixels",
-    cost: "~105 s, once dist exists — almost the whole build",
+    covers: "a real browser over every page URL in dist/, eight navigations at a time: the ten layout types at six widths in dark and the two extremes (390, 1440) in light, because layout does not vary by palette, and every other page swept at 390/1024/1440 in dark and 390/1440 in light. Sideways scroll, touch targets, axe at 390 and 1440 in both themes, console errors, reduced motion, forced colours read as decoded pixels, and a probe proving a mid-run failure still exits",
+    cost: "~39 s, once dist exists — most of the build",
   },
   {
     name: "build",
@@ -163,7 +163,7 @@ export const SCRIPTS = [
     selfTests: true,
     implements: "docs/.vitepress/scripts/html-stubs.mjs",
     covers: "lint, the VitePress build with its dead-link check, the redirect stubs, check:urls and check:layout — the gate",
-    cost: "~110 s",
+    cost: "~42 s",
   },
   {
     name: "tokens:check",
@@ -397,7 +397,7 @@ export const MANUAL = [
     id: "rendering",
     prefixes: ["docs/ru/", "docs/en/", "docs/index.md", "docs/.vitepress/theme/", "docs/public/screenshots/"],
     run: "`npm run dev`, then look at 390 / 480 / 768 / 1024 / 1280 / 1440 in both themes",
-    proves: "What the change actually looks like. check:layout opens 10 of the 33 page URLs and asserts only what someone wrote an assertion for; DEPLOY.md § Named gaps records both halves of that.",
+    proves: "What the change actually looks like. check:layout opens every page URL, but most of them only at the widths it sweeps, and it asserts only what someone wrote an assertion for; DEPLOY.md § Named gaps records both halves of that.",
     required: "the diff changes anything a person looks at",
     costs: "~5 min",
     evidence: "the widths and themes you looked at, and on which pages",

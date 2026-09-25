@@ -28,7 +28,7 @@ import {
  * say so when a check was skipped; nothing enforced it. This prints the skipped list for you.
  *
  * It runs nothing. Deciding and executing are separate on purpose: the plan is short enough to read
- * before you commit to two minutes of browser time, and a resolver that also ran things would be a
+ * before you commit to most of a minute of browser time, and a resolver that also ran things would be a
  * second, worse `npm run build`.
  *
  * The command is called `test:for` and not `check:for`, even though everything else here is
@@ -200,7 +200,7 @@ function printPlan(plan, { list }) {
 
     console.log(
       "  The rest are listed when your change reaches them: tenths of a second each, and a " +
-        "mistake found before the gate spends two minutes is the cheapest kind.",
+        "mistake found before the gate spends most of a minute is the cheapest kind.",
     );
   }
 

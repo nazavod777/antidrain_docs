@@ -60,13 +60,13 @@ Reads the source and renders nothing. Tenths of a second, no build, no browser �
 
 #### Rendered
 
-Needs a built dist/, and for the layout check a real Chromium. Minutes, not seconds, and the only thing that can say what a page actually looks like.
+Needs a built dist/, and for the layout check a real Chromium. Tens of seconds, not tenths, and the only thing that can say what a page actually looks like.
 
 | Script | What it covers | Cost |
 | --- | --- | --- |
 | `check:urls` | every live URL, including the legacy .html redirect stubs, is backed by a file in dist/ | ~0.15 s, once dist exists |
-| `check:layout` | a real browser over dist/ at six widths in dark and the two extremes (390, 1440) in light, because layout does not vary by palette: sideways scroll, touch targets, axe at those two widths, console errors, reduced motion, and forced colours read as decoded pixels | ~105 s, once dist exists — almost the whole build |
-| `build` | lint, the VitePress build with its dead-link check, the redirect stubs, check:urls and check:layout — the gate | ~110 s |
+| `check:layout` | a real browser over every page URL in dist/, eight navigations at a time: the ten layout types at six widths in dark and the two extremes (390, 1440) in light, because layout does not vary by palette, and every other page swept at 390/1024/1440 in dark and 390/1440 in light. Sideways scroll, touch targets, axe at 390 and 1440 in both themes, console errors, reduced motion, forced colours read as decoded pixels, and a probe proving a mid-run failure still exits | ~39 s, once dist exists — most of the build |
+| `build` | lint, the VitePress build with its dead-link check, the redirect stubs, check:urls and check:layout — the gate | ~42 s |
 
 #### Local only
 
@@ -107,17 +107,25 @@ exists because that has happened.
 
 **A targeted `check:layout` run is not the gate.** `--page <url>` and `--changed <path>` narrow the
 set of pages, never the set of checks per page, and the run prints what it did not do. `DEPLOY.md`
-§ Named gaps records both halves: the ten page URLs the gate opens out of thirty-three, and what a
-narrowed run structurally leaves out. Every rule that names `check:layout` or `check:urls` names
-`build` next to it, and the audit fails as `build-order` on one that does not: both read
-`docs/.vitepress/dist/` and neither has any idea how old it is, so a plan that skips the build is a
-plan that passes against the previous version of the site.
+§ Named gaps records both halves: the widths at which the gate only sweeps the pages that are not
+layout types, and what a narrowed run structurally leaves out. The gate opens every page URL in
+`pages.ts`. Every rule that names `check:layout` or `check:urls` names `build` next to it, and the
+audit fails as `build-order` on one that does not: both read `docs/.vitepress/dist/` and neither has
+any idea how old it is, so a plan that skips the build is a plan that passes against the previous
+version of the site.
+
+`check:layout` also proves its own teardown before it measures anything: a child process runs real
+navigations over `dist/`, one of them throws with Chromium and the server both up, and the child has
+to exit non-zero on its own within 30 seconds. That probe is part of every real run, targeted or
+not, because the failure it guards — a gate that hangs instead of failing — would stall CI until its
+timeout. It needs a browser, so it lives in the real run and not in the `--self-test`, which proves
+the probe's verdict and the worker pool with no browser at all.
 
 Once `build` is in a plan, the plan stops printing `check:urls` and `check:layout` at all: there is
 no position for them. It then lists everything the gate runs — those two, `lint`, and through `lint`
 the whole structural tier — under "also run by `npm run build`", so that nothing the gate performs
 can appear under what the run did not check. `lint` itself stays in the plan, because it reads no
-`dist/` and 0.6 seconds before a two-minute gate is exactly the order `AGENTS.md` asks for.
+`dist/` and 0.6 seconds before a forty-second gate is exactly the order `AGENTS.md` asks for.
 `build-drift` is what keeps that division true.
 
 ## Manual checks
@@ -173,8 +181,8 @@ different things from that mark, which is the distinction the first version of t
 **What the gate runs** is the closure: those three, plus the structural tier that `lint` aggregates,
 and none of it may ever be printed as unchecked. **What the plan stops printing** is narrower: only
 `check:urls` and `check:layout`, because they read `dist/` and no position works — before the build
-they measure the previous version of the site, after it they repeat 105 seconds the gate has just
-spent. Both readings are only safe while the build really does run them, and both are checked as
+they measure the previous version of the site, after it they repeat the browser pass the gate has
+just spent. Both readings are only safe while the build really does run them, and both are checked as
 steps rather than as substrings: `npx eslint .` contains the word `lint`, and a substring test would
 have let this repository swap out its fast loop while the plan went on calling it covered.
 

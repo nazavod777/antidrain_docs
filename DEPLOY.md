@@ -64,7 +64,7 @@ PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
 | `npm run test:for -- --audit` | That the test map still describes this repository: every path claimed by a rule or by a documented gap, every check reachable from its own source, the `lint` chain, the `--self-test` pairing and the build's own sub-checks matching `package.json`, and the tier table in `TESTING.md` matching `scripts/testMap.mjs`. `TESTING.md` § When the map is wrong lists all twelve failures. |
 | VitePress dead-link check | Internal links. Relative links break because pages are rewritten into directories — always link `/ru/page`, never `page.md`. |
 | `npm run check:urls` | All 63 live URLs are backed by a file, including the legacy `*.html` redirect stubs. The page list comes from `docs/.vitepress/pages.ts`, so it cannot fall behind the sidebar. |
-| `npm run check:layout` | Drives a real browser over `dist/` at six widths in dark and the two extremes (390, 1440) in light: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, `prefers-reduced-motion` actually suppressing transitions, and no label lost to forced-colors mode. 83 navigations — 10 pages x (6 dark + 2 light), plus one reduced-motion pass and two forced-colors passes — in about 100s. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
+| `npm run check:layout` | Drives a real browser over every page URL in `dist/`: no horizontal page scroll, no touch target under 44px below 960px, no axe (WCAG 2.1 AA) violations, no console errors, `prefers-reduced-motion` actually suppressing transitions, and no label lost to forced-colors mode. The ten layout types get six widths in dark and the two extremes (390, 1440) in light; every other URL is swept at 390, 1024 and 1440 in dark and 390 and 1440 in light; axe runs at 390 and 1440 in both themes on every page — the matrix is under "Named gaps". Each navigation is its own browser context, eight at a time by default (`--concurrency <n>`, `1` for a sequential run), and findings print in page, theme, width order whatever finished first. Before measuring, it proves its own teardown: a child process runs real navigations, one of them throws, and the child must exit non-zero by itself within 30 s, or the gate fails rather than risk hanging CI. It serves `dist` with GitHub Pages' resolution order, so URL behaviour matches production. |
 
 Seven of the eight are npm scripts of ours, and every one of those runs its own
 `--self-test` immediately before the real check, inside the same npm script
@@ -81,16 +81,27 @@ checkout, or `ANTIDRAIN_SITE` if set, and is run by hand after touching tokens.
 These are known, deliberate and unclosed. They are written down because a check
 that passes says nothing about what it never looked at.
 
-- **`check:layout` renders 10 of the 33 page URLs — 23 are never opened in a
-  browser.** The ten are layout *types*: root landing, both locale indexes, the
-  widest table, the pages carrying screenshots. A page whose markdown produces a
-  shape none of those ten covers can therefore ship with horizontal scroll or an
-  axe violation. Closing it means ten more page types, not ten more URLs.
+- **`check:layout` opens every page URL, but not every page at every width.**
+  The page list is `pages.ts`, so a new page is rendered without being listed
+  anywhere else. Two depths:
+
+  | Pages | Dark | Light | axe |
+  | --- | --- | --- | --- |
+  | The ten layout types — root landing, both locale indexes, the widest table, the pages carrying screenshots | 390, 480, 768, 1024, 1280, 1440 | 390, 1440 | 390 and 1440, both themes |
+  | Every other URL, swept | 390, 1024, 1440 | 390, 1440 | 390 and 1440, both themes |
+
+  A swept page is never rendered at 480, 768 or 1280 in dark. Those widths
+  exercise chrome every page shares, which the ten types already render; what a
+  swept page adds is its own content, and content overflows first at 390 and in
+  the narrow column at 1024. A page whose markdown only breaks at 480, 768 or
+  1280 therefore ships unnoticed unless it is one of the ten or a targeted run
+  names it. The run prints this line on every gate run.
 - **A targeted `check:layout` run is not the gate.** `--page <url>` and
   `--changed <path>` narrow the set of pages — never the set of checks per page:
-  the same six dark widths, two light widths and axe at 390 and 1440. Two things
-  are structurally outside a targeted run, and the run prints a line for each:
-  the `prefers-reduced-motion` pass and the forced-colors pass. Both are fixed
+  every named page gets the full depth, six dark widths, two light widths and
+  axe at 390 and 1440, even one the gate only sweeps. Two things are
+  structurally outside a targeted run, and the run prints a line for each: the
+  `prefers-reduced-motion` pass and the forced-colors pass. Both are fixed
   extra passes on one URL rather than per-page checks.
   Both themes *are* covered, because the theme loop runs inside the page loop. A
   `--changed` path that is not page markdown escalates the run back to the full
