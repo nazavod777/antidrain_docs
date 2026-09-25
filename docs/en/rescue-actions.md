@@ -168,9 +168,10 @@ Prepare:
 
 - Private key of the wallet holding the token
 - Token contract address
-- Recipient address
+- A donor wallet: the rescued tokens go to it, so there is no recipient address to enter
 - Amount or balance-at-execution mode
-- A clear deadline, meaning when the signature expires
+
+You do not choose a deadline. Until you sign, the **Permit deadline** field shows "Set automatically when you sign": signing sets how long the signature stays valid, and the field then shows the time it expires. The window is short on purpose, so sign when you are ready to go through the remaining steps straight away. If it runs out before the rescue is sent, the site says "The permit deadline has passed. Sign again to get a fresh one — an expired permit only spends gas."
 
 **Min received (base units)** is the smallest delivery you are willing to accept: if less than that arrives, the rescue is rejected rather than going through. The service fee is 20% of the rescued amount and comes out of the tokens themselves, so the calculation leaves 80% — but that 80% is a calculation, and it leaves out what the token itself charges for a transfer. Choose the minimum below what you expect to receive rather than copying the calculated figure into it, or a token that charges for its own transfers has your rescue rejected for arriving short.
 
@@ -180,7 +181,7 @@ When to Stop:
 - The token shows Not checked and Retry check does not help — switch the RPC endpoint and try again
 - The row warns that the wallet had a delegation installed: some tokens refuse signatures from a delegated wallet. Run Remove Delegation first
 - Signing fails
-- The site asks you to regenerate permitData after changing amount, network, donor, or deadline
+- The site asks you to regenerate permitData after changing amount, mode, donor wallet, network, or token context
 - You do not understand what amount will move or what minimum should arrive
 
 What can go wrong:
@@ -223,7 +224,7 @@ If a Permit token is selected inside DeBank Withdraw, sending may be unavailable
 | --- | --- | --- |
 | Remove Delegation | Need to clear EIP-7702 delegation | Private key of wallet, donor, correct network |
 | Custom TX Builder | Need to move tokens or NFTs manually | Private key, contract addresses, recipient, network |
-| Permit Rescue | Token supports permit signatures | Private key, contract address, recipient, deadline, network |
+| Permit Rescue | Token supports permit signatures | Private key, contract address, donor wallet, network |
 | DeBank Withdraw | Assets are visible in DeBank and supported | Private key, recipient, time for data load, network |
 
 ## How to Choose
