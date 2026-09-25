@@ -160,7 +160,9 @@ Supported ideas:
 
 This action is useful when token transfer can be approved by signature instead of a separate approval transaction.
 
-In simple words: some tokens let you sign permission for a transfer without sending a separate approve transaction. The site checks Permit support and asks you to generate permitData.
+In simple words: some tokens let you sign permission for a transfer without sending a separate approve transaction. When you add a token, the site asks the network which kind of Permit the token supports and fills in the amount with the wallet's balance. Once the check finishes, you generate permitData.
+
+Only tokens that passed the site's Permit check can be selected here. Tokens this panel cannot sign a permit for can be rescued with Custom TX Builder.
 
 Prepare:
 
@@ -174,10 +176,16 @@ Prepare:
 
 When to Stop:
 
-- The token shows No Permit or Unknown
+- The token shows No Permit
+- The token shows Not checked and Retry check does not help — switch the RPC endpoint and try again
+- The row warns that the wallet had a delegation installed: some tokens refuse signatures from a delegated wallet. Run Remove Delegation first
 - Signing fails
 - The site asks you to regenerate permitData after changing amount, network, donor, or deadline
 - You do not understand what amount will move or what minimum should arrive
+
+What can go wrong:
+
+- The note on the EIP-2612 badge says the standard format is assumed: the token does not say which Permit format it uses. If it uses another one, one of two things happens. Either the rescue fails as a whole: nothing moves and no service fee is taken, but the network fee already paid for the transactions sent stays spent — the failed one, and the contract deployment if it went first. Or it goes through without moving that token: the network fee is paid, and so is the service fee in the network's own coin if one is due. The check before sending does not show the second case, so after sending, check that the token arrived; if it did not, rescue it with Custom TX Builder
 
 ## DeBank Withdraw
 

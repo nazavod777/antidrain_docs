@@ -61,7 +61,7 @@ Simpler: it is like a program connected to the account. Remove Delegation discon
 
 It is a flow that uses a token permit signature if the token supports that approval method.
 
-Not every token supports Permit. If the site shows No Permit, Unknown, or asks you to regenerate permitData, fix that first and do not send blindly.
+Not every token supports Permit. If the site shows No Permit or Not checked, or asks you to regenerate permitData, fix that first and do not send blindly.
 
 ## What is DeBank Withdraw?
 
