@@ -189,9 +189,58 @@
    table layout and still scroll inside its own box, leaving the page itself
    free of horizontal scroll. */
 .vp-doc .vp-table-scroll {
-  margin: var(--spacing-md) 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
+}
+
+/* A phone shows no scrollbar until the reader touches the table, so an
+   overflowing one looked cut off mid-word with nothing saying it scrolls (the
+   Russian scenario comparison at 390px). The frame fades whichever edge still
+   hides content. It cannot be a background on the scroller: VitePress paints
+   every row opaque, which covers it.
+
+   Which edge hides content is marked on the frame by tableScrollHints.ts. A
+   scroll-driven animation would need no script, but Firefox has no scroll
+   timelines. The fades sit inside the scroller's box and the focus ring is
+   offset outside it, so they never cover the ring. */
+.vp-doc .vp-table-frame {
+  position: relative;
+  margin: var(--spacing-md) 0;
+}
+
+.vp-doc .vp-table-frame::before,
+.vp-doc .vp-table-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--spacing-md);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.vp-doc .vp-table-frame[data-hidden-start]::before,
+.vp-doc .vp-table-frame[data-hidden-end]::after {
+  opacity: 1;
+}
+
+.vp-doc .vp-table-frame::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg-primary), transparent);
+}
+
+.vp-doc .vp-table-frame::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg-primary), transparent);
+}
+
+/* A fade is a hue effect, and this mode keeps none. */
+@media (forced-colors: active) {
+  .vp-doc .vp-table-frame::before,
+  .vp-doc .vp-table-frame::after {
+    display: none;
+  }
 }
 
 .vp-doc .vp-table-scroll > table {

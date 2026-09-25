@@ -177,9 +177,11 @@ export default defineConfig({
       // otherwise a keyboard user cannot scroll a wide table at all. axe flags
       // this as scrollable-region-focusable, and check:layout caught it on
       // rescue-actions at 390px. VitePress does the same on its code blocks.
+      // The outer frame does not scroll, so the edge shades drawn on it stay
+      // put while the table moves under them (prose.css).
       md.renderer.rules.table_open = () =>
-        '<div class="vp-table-scroll" tabindex="0">\n<table>\n'
-      md.renderer.rules.table_close = () => '</table>\n</div>\n'
+        '<div class="vp-table-frame">\n<div class="vp-table-scroll" tabindex="0">\n<table>\n'
+      md.renderer.rules.table_close = () => '</table>\n</div>\n</div>\n'
     },
   },
 

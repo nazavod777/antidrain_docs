@@ -1,7 +1,8 @@
 import DefaultTheme from 'vitepress/theme'
-import type { Theme } from 'vitepress'
+import { useRoute, type Theme } from 'vitepress'
 import LangToggle from './LangToggle.vue'
-import { h } from 'vue'
+import { bindTableScrollHints } from './tableScrollHints'
+import { h, nextTick, onMounted, watch } from 'vue'
 
 // Order matters: tokens define the dark palette, light overrides it, the
 // bridge maps both onto VitePress, then prose/base add what variables cannot
@@ -21,4 +22,13 @@ export default {
       // so docs does too — rather than VitePress's "Languages" dropdown.
       'nav-bar-content-after': () => h(LangToggle),
     }),
+  setup() {
+    const route = useRoute()
+    // Hooks run only in the browser, so the prerender never reaches the DOM.
+    onMounted(() => bindTableScrollHints())
+    watch(
+      () => route.path,
+      () => nextTick(() => bindTableScrollHints()),
+    )
+  },
 } satisfies Theme
